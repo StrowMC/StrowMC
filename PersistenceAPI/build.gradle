@@ -1,14 +1,28 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'fr.strow.persistence'
 version '1.0-SNAPSHOT'
 
 repositories {
-    mavenCentral()
+    maven {
+        name = 'HikariCP'
+        url = 'https://mvnrepository.com/artifact/com.zaxxer/HikariCP'
+    }
+    maven {
+        name = 'Jedis'
+        url = 'https://mvnrepository.com/artifact/redis.clients/jedis'
+    }
+    maven {
+        name = 'SnakeYAML'
+        url = 'https://mvnrepository.com/artifact/org.yaml/snakeyaml'
+    }
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.4.5'
+    implementation group: 'redis.clients', name: 'jedis', version: '3.3.0'
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.26'
 }
