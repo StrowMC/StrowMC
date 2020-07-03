@@ -1,0 +1,6 @@
+rootProject.name = 'StrowMC'
+include 'StrowCore'
+include 'StrowAPI'
+include 'PersistenceAPI'
+include 'EvolvedCommands'
+

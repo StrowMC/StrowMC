@@ -1,0 +1,4 @@
+name: StrowCore
+version: 1.0-SNASPSHOT
+author: Choukas
+main: fr.strow.core.StrowCore
