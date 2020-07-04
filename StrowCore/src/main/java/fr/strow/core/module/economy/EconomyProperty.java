@@ -18,10 +18,9 @@ import java.util.UUID;
 
 public class EconomyProperty implements AbstractProperty, Economy {
 
-    // DAO
     private final EconomyDao economyDao;
 
-    // Properties
+    private UUID uuid;
     private int coins;
 
     @Inject
@@ -31,6 +30,8 @@ public class EconomyProperty implements AbstractProperty, Economy {
 
     @Override
     public void load(UUID uuid) {
+        this.uuid = uuid;
+
         EconomyBean bean = economyDao.loadEconomy(uuid);
         coins = bean.getCoins();
     }
@@ -50,6 +51,8 @@ public class EconomyProperty implements AbstractProperty, Economy {
     public void addCoins(int amount) {
         if (amount > 0) {
             coins += amount;
+
+            save(uuid);
         }
     }
 
@@ -57,6 +60,8 @@ public class EconomyProperty implements AbstractProperty, Economy {
     public void removeCoins(int amount) {
         if (amount > 0) {
             coins -= amount;
+
+            save(uuid);
         }
     }
 }

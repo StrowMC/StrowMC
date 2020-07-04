@@ -8,6 +8,22 @@
 
 package fr.strow.api.game.factions;
 
+import fr.strow.api.game.factions.player.FactionInvitation;
+import fr.strow.api.game.players.StrowPlayer;
+
+import java.util.List;
+
 public interface FactionManager {
 
+    void createFaction(StrowPlayer leader, String name);
+
+    void createFaction(StrowPlayer leader, String name, String description);
+
+    boolean factionExists(String name);
+
+    void invitePlayer(StrowPlayer sender, StrowPlayer target);
+
+    List<FactionInvitation> getPendingInvitations();
+
+    void leaveFaction(StrowPlayer player);
 }

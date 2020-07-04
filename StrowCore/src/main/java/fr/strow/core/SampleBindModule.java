@@ -8,6 +8,7 @@
 
 package fr.strow.core;
 
+import com.google.gson.Gson;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import fr.strow.api.StrowPlugin;
@@ -25,11 +26,18 @@ import fr.strow.core.module.economy.EconomyModule;
 import fr.strow.core.module.faction.FactionManagerImpl;
 import fr.strow.core.module.faction.FactionModule;
 import fr.strow.core.module.player.PlayerManagerImpl;
+import fr.strow.persistence.data.redis.RedisAccess;
+import fr.strow.persistence.data.redis.RedisCredentials;
+import fr.strow.persistence.data.sql.SQLAccess;
+import fr.strow.persistence.data.sql.SQLCredentials;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SampleBindModule extends AbstractModule {
 
@@ -59,8 +67,50 @@ public class SampleBindModule extends AbstractModule {
         return properties;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void configure() {
+        InputStream in = getClass().getClassLoader().getResourceAsStream("credentials.yml");
+
+        Yaml yaml = new Yaml();
+        Map<String, ?> config = (Map<String, ?>) yaml.load(in);
+
+        String sqlHost = (String) config.get("sql.host");
+        String sqlUsername = (String) config.get("sql.username");
+        String sqlPassword = (String) config.get("sql.password");
+        int sqlPort = (Integer) config.get("sql.port");
+        String sqlDatabase = (String) config.get("sql.database");
+
+        SQLCredentials sqlCredentials = new SQLCredentials(
+                sqlHost,
+                sqlUsername,
+                sqlPassword,
+                sqlPort,
+                sqlDatabase
+        );
+
+        SQLAccess sqlAccess = new SQLAccess(sqlCredentials);
+
+        bind(SQLAccess.class).toInstance(sqlAccess);
+
+        String redisHost = (String) config.get("redis.host");
+        int redisPort = (Integer) config.get("redis.port");
+        int redisTimeout = (Integer) config.get("redis.timeout");
+        String redisPassword = (String) config.get("redis.password");
+
+        RedisCredentials redisCredentials = new RedisCredentials(
+                redisHost,
+                redisPort,
+                redisTimeout,
+                redisPassword
+        );
+
+        RedisAccess redisAccess = new RedisAccess(redisCredentials);
+
+        bind(RedisAccess.class).toInstance(redisAccess);
+
+        bind(Gson.class).toInstance(new Gson());
+
         bind(JavaPlugin.class).toInstance(plugin);
         bind(PluginManager.class).toInstance(plugin.getServer().getPluginManager());
 

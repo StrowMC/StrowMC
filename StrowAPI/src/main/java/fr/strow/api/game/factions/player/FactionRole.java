@@ -15,7 +15,7 @@ public enum FactionRole {
 
     MEMBER(1),
     MODERATOR(2),
-    ADMINISTRATOR(3);
+    LEADER(3);
 
     private final int id;
 

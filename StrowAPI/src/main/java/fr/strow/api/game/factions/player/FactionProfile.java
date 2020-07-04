@@ -8,9 +8,9 @@
 
 package fr.strow.api.game.factions.player;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.game.OptionalProperty;
 
-public interface FactionProfile extends Property {
+public interface FactionProfile extends OptionalProperty {
 
     FactionUUID getFactionUUID();
 

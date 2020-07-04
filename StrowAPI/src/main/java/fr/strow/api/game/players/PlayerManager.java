@@ -15,4 +15,6 @@ public interface PlayerManager {
     void loadPlayer(UUID uuid);
 
     void unloadPlayer(UUID uuid);
+
+    StrowPlayer getPlayer(UUID uuid);
 }

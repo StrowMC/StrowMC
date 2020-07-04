@@ -9,8 +9,13 @@
 package fr.strow.core.api.commands;
 
 import com.google.inject.Inject;
+import fr.strow.api.commands.CommandsCollection;
 import fr.strow.api.commands.CommandsManager;
+import fr.strow.api.commands.ConditionsCollection;
+import fr.strow.api.commands.ParametersCollection;
 import me.choukas.commands.EvolvedCommand;
+import me.choukas.commands.api.Condition;
+import me.choukas.commands.api.Parameter;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.SimplePluginManager;
@@ -20,6 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CommandsManagerImpl implements CommandsManager {
+
+    private static final CommandsCollection commandsCollection = new CommandsCollection();
+    private static final ConditionsCollection conditionsCollection = new ConditionsCollection();
+    private static final ParametersCollection parametersCollection = new ParametersCollection();
 
     private CommandMap commandMap;
     private final Map<String, EvolvedCommand> commands = new HashMap<>();
@@ -41,14 +50,56 @@ public class CommandsManagerImpl implements CommandsManager {
     }
 
     @Override
-    public void registerCommand(String name, EvolvedCommand command) {
-        commands.put(name, command);
-        commandMap.register(name, command);
+    public void registerCommand(EvolvedCommand command) {
+        commandsCollection.registerCommand(command);
     }
 
     @Override
-    public void unregisterCommand(String name) {
-        commandMap.getCommand(name).unregister(commandMap);
+    public void registerCommand(String name, EvolvedCommand command) {
+        commands.put(name, command);
+        commandMap.register(name, command);
+
+        registerCommand(command);
+    }
+
+    @Override
+    public void unregisterCommand(EvolvedCommand command) {
+        commandsCollection.unregisterCommand(command);
+    }
+
+    @Override
+    public <T extends EvolvedCommand> T getCommand(Class<T> command) {
+        return commandsCollection.getCommand(command);
+    }
+
+    @Override
+    public void registerCondition(Condition condition) {
+        conditionsCollection.registerCondition(condition);
+    }
+
+    @Override
+    public void unregisterCondition(Condition condition) {
+        conditionsCollection.unregisterCondition(condition);
+    }
+
+    @Override
+    public <T extends Condition> T getCondition(Class<T> condition) {
+        return conditionsCollection.getCondition(condition);
+    }
+
+    @Override
+    public void registerParameter(Parameter<?> parameter) {
+        parametersCollection.registerParameter(parameter);
+    }
+
+    @Override
+    public void unregisterParameter(Parameter<?> parameter) {
+        parametersCollection.unregisterParameter(parameter);
+    }
+
+    @Override
+    public <T extends Parameter<?>> T getParameter(Class<T> parameter) {
+        return parametersCollection.getParameter(parameter);
     }
 
     @Override

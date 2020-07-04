@@ -3,11 +3,11 @@
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  *
- * Written by Choukas <juan.vlroo@gmail.com>, 02/07/2020 22:16
+ * Written by Choukas <juan.vlroo@gmail.com>, 04/07/2020 17:02
  */
 
-package fr.strow.core.api.properties;
+package fr.strow.core.module.faction.commands;
 
-public class PropertyFactory {
+public class FactionShowCommand {
 
 }

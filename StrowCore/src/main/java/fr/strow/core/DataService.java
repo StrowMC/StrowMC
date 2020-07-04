@@ -3,26 +3,24 @@
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  *
- * Written by Choukas <juan.vlroo@gmail.com>, 22/06/2020 20:48
+ * Written by Choukas <juan.vlroo@gmail.com>, 04/07/2020 19:49
  */
 
-package fr.strow.persistence;
+package fr.strow.core;
 
-import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 import fr.strow.persistence.bridges.PermissionsBridge;
 import fr.strow.persistence.bridges.PlayersBridge;
 import fr.strow.persistence.data.sql.SQLAccess;
-
-import java.nio.file.Path;
 
 public class DataService {
 
     private final Injector injector;
 
-    public DataService(Path configPath) {
-        injector = Guice.createInjector(new BindModule(configPath));
+    @Inject
+    public DataService(Injector injector) {
+        this.injector = injector;
     }
 
     public void start() {
@@ -36,9 +34,5 @@ public class DataService {
         injector.getInstance(SQLAccess.class).closePool();
 
         injector.getInstance(PlayersBridge.class).unloadPlayers();
-    }
-
-    public Injector createChildInjector(Module... modules) {
-        return injector.createChildInjector(modules);
     }
 }
