@@ -29,6 +29,3 @@ hs_err_pid*
 
 # EvolvedCommands
 /EvolvedCommands/
-
-# Class files
-*.class

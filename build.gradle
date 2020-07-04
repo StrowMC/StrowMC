@@ -43,6 +43,9 @@ configure(subprojects.findAll {it.name != 'EvolvedCommands'}) {
             name = 'Guice'
             url = 'https://mvnrepository.com/artifact/com.google.inject/guice'
         }
+        maven {
+            url = "https://maven.enginehub.org/repo/"
+        }
     }
 
     dependencies {

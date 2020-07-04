@@ -6,7 +6,11 @@ group 'fr.strow.core'
 version '1.0-SNAPSHOT'
 
 dependencies {
+
+    implementation 'com.sk89q.worldguard:worldguard-bukkit:7.0.2'
+
     implementation project(":StrowAPI")
     implementation project(":PersistenceAPI")
     implementation project(":EvolvedCommands")
+
 }
