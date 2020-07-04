@@ -23,7 +23,7 @@ public abstract class AbstractConfiguration {
     public void loadConfig(){
         for(Field field : Arrays.stream(this.getClass().getDeclaredFields()).filter(field -> field.isAnnotationPresent(Config.class)).collect(Collectors.toList())){
             Config annotation = field.getAnnotation(Config.class);
-            boolean oldAccessible = field.canAccess(field);
+            boolean oldAccessible = field.isAccessible();
             field.setAccessible(true);
             try {
                 field.set(field, config.get(path + "." + annotation.path()));
@@ -36,7 +36,7 @@ public abstract class AbstractConfiguration {
     public void saveConfig(){
         for(Field field : Arrays.stream(this.getClass().getDeclaredFields()).filter(field -> field.isAnnotationPresent(Config.class)).collect(Collectors.toList())){
             Config annotation = field.getAnnotation(Config.class);
-            boolean oldAccessible = field.canAccess(field);
+            boolean oldAccessible = field.isAccessible();
             field.setAccessible(true);
             try {
                 config.set(path + "." + annotation.path(), field.get(field));
