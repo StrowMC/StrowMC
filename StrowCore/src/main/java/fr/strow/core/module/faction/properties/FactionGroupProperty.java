@@ -11,7 +11,7 @@ package fr.strow.core.module.faction.properties;
 import com.google.inject.Inject;
 import fr.strow.api.game.factions.player.FactionGroup;
 import fr.strow.api.game.factions.player.FactionRole;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PersistentProperty;
 import fr.strow.persistence.beans.factions.players.FactionPermissionsBean;
 import fr.strow.persistence.beans.factions.players.FactionRoleBean;
 import fr.strow.persistence.dao.factions.players.FactionPermissionsDao;
@@ -20,7 +20,7 @@ import fr.strow.persistence.dao.factions.players.FactionRoleDao;
 import java.util.List;
 import java.util.UUID;
 
-public class FactionGroupProperty implements AbstractProperty, FactionGroup {
+public class FactionGroupProperty implements PersistentProperty, FactionGroup {
 
     private final FactionRoleDao factionRoleDao;
     private final FactionPermissionsDao factionPermissionsDao;

@@ -8,11 +8,11 @@
 
 package fr.strow.api.game.factions.player;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.game.AbstractProperty;
 
 import java.util.UUID;
 
-public interface FactionUUID extends Property {
+public interface FactionUUID extends AbstractProperty {
 
     UUID getFactionUuid();
 }

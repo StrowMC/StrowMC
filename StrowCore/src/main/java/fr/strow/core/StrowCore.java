@@ -11,14 +11,14 @@ package fr.strow.core;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import fr.strow.api.StrowPlugin;
-import fr.strow.api.modules.ModuleHandler;
+import fr.strow.api.modules.ModulesHandler;
 
 import java.io.File;
 
 public class StrowCore extends StrowPlugin {
 
     private DataService dataService;
-    private ModuleHandler moduleHandler;
+    private ModulesHandler modulesHandler;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
@@ -34,14 +34,14 @@ public class StrowCore extends StrowPlugin {
         dataService = injector.getInstance(DataService.class);
         dataService.start();
 
-        moduleHandler = new SampleModuleHandler(injector);
-        moduleHandler.enableModules();
+        modulesHandler = new SampleModulesHandler(injector);
+        modulesHandler.enableModules();
     }
 
     @Override
     public void onDisable() {
         dataService.shutdown();
 
-        moduleHandler.disableModules();
+        modulesHandler.disableModules();
     }
 }

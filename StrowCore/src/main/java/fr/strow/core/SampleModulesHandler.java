@@ -2,7 +2,7 @@ package fr.strow.core;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import fr.strow.api.modules.ModuleHandler;
+import fr.strow.api.modules.ModulesHandler;
 import fr.strow.api.modules.StrowModule;
 import fr.strow.core.module.economy.EconomyModule;
 import fr.strow.core.module.faction.FactionModule;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by Hokkaydo on 27-06-2020.
  */
-public class SampleModuleHandler implements ModuleHandler {
+public class SampleModulesHandler implements ModulesHandler {
 
     private static final List<Class<? extends StrowModule>> definitions = new ArrayList<>();
 
@@ -25,7 +25,7 @@ public class SampleModuleHandler implements ModuleHandler {
     private final Injector injector;
 
     @Inject
-    public SampleModuleHandler(Injector injector) {
+    public SampleModulesHandler(Injector injector) {
         this.injector = injector;
     }
 

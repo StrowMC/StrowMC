@@ -10,13 +10,13 @@ package fr.strow.core.module.faction.properties;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.factions.player.FactionClaimer;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PersistentProperty;
 import fr.strow.persistence.beans.factions.players.FactionClaimerBean;
 import fr.strow.persistence.dao.factions.players.FactionClaimerDao;
 
 import java.util.UUID;
 
-public class FactionClaimerProperty implements FactionClaimer, AbstractProperty {
+public class FactionClaimerProperty implements PersistentProperty, FactionClaimer {
 
     private final FactionClaimerDao factionClaimerDao;
 

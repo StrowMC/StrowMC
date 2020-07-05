@@ -8,9 +8,9 @@
 
 package fr.strow.api.game.factions.player;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.game.AbstractProperty;
 
-public interface FactionAutoClaiming extends Property {
+public interface FactionAutoClaiming extends AbstractProperty {
 
     boolean isAutoClaiming();
 

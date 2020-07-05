@@ -10,8 +10,8 @@ package fr.strow.api.modules;
 
 import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.configuration.AbstractConfiguration;
-import fr.strow.api.properties.AbstractProperty;
-import fr.strow.api.properties.PropertiesCollection;
+import fr.strow.api.properties.PropertiesHandler;
+import fr.strow.api.properties.Property;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
@@ -28,12 +28,12 @@ public abstract class StrowModule {
 
     private final JavaPlugin plugin;
     private final CommandsManager commandsManager;
-    private final PropertiesCollection properties;
+    private final PropertiesHandler propertiesHandler;
 
-    public StrowModule(JavaPlugin plugin, CommandsManager commandsManager, PropertiesCollection properties) {
+    public StrowModule(JavaPlugin plugin, CommandsManager commandsManager, PropertiesHandler propertiesHandler) {
         this.plugin = plugin;
         this.commandsManager = commandsManager;
-        this.properties = properties;
+        this.propertiesHandler = propertiesHandler;
     }
 
     public void onEnable() {
@@ -51,8 +51,8 @@ public abstract class StrowModule {
             commandsManager.registerCondition(condition);
         }
 
-        for (AbstractProperty property : getProperties()) {
-            properties.registerProperty(property);
+        for (Class<? extends Property> property : getProperties()) {
+            propertiesHandler.registerProperty(property);
         }
     }
 
@@ -65,8 +65,8 @@ public abstract class StrowModule {
             commandsManager.unregisterCommand(command.getValue());
         }
 
-        for (AbstractProperty property : getProperties()) {
-            properties.registerProperty(property);
+        for (Class<? extends Property> property : getProperties()) {
+            propertiesHandler.registerProperty(property);
         }
     }
 
@@ -90,7 +90,7 @@ public abstract class StrowModule {
         return Collections.emptyList();
     }
 
-    public List<AbstractProperty> getProperties() {
+    public List<Class<? extends Property>> getProperties() {
         return Collections.emptyList();
     }
 }
