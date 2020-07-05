@@ -26,12 +26,12 @@ public class StrowPlayerImpl implements StrowPlayer {
     }
 
     @Override
-    public <T extends Property> void register(T property) {
+    public <T extends Property> void registerProperty(T property) {
         properties.put(property.getClass(), property);
     }
 
     @Override
-    public <T extends Property> void unregister(Class<T> property) {
+    public <T extends Property> void unregisterProperty(Class<T> property) {
         properties.remove(property);
     }
 

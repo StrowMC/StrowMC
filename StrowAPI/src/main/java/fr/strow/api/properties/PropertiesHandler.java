@@ -6,5 +6,7 @@ public interface PropertiesHandler {
 
     void registerProperty(Class<? extends Property> property);
 
+    <T extends Property> T getProperty(Class<T> property);
+
     List<Property> getProperties();
 }

@@ -18,9 +18,9 @@ import java.util.Optional;
 
 public interface StrowPlayer {
 
-    <T extends Property> void register(T property);
+    <T extends Property> void registerProperty(T property);
 
-    <T extends Property> void unregister(Class<T> property);
+    <T extends Property> void unregisterProperty(Class<T> property);
 
     <T extends AbstractProperty> T get(Class<T> property);
 

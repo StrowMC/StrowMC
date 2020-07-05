@@ -11,10 +11,7 @@ package fr.strow.core.module.player;
 import com.google.inject.Inject;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
-import fr.strow.api.properties.OptionalPersistentProperty;
-import fr.strow.api.properties.PersistentProperty;
-import fr.strow.api.properties.PropertiesHandler;
-import fr.strow.api.properties.Property;
+import fr.strow.api.properties.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,8 +33,8 @@ public class PlayerManagerImpl implements PlayerManager {
         Map<Class<? extends Property>, Property> propertiesHandler = new HashMap<>();
 
         for (Property property : this.propertiesHandler.getProperties()) {
-            if (!(property instanceof OptionalPersistentProperty) || ((OptionalPersistentProperty) property).has(uuid)) {
-                property.load(uuid);
+            if (property instanceof ImplicitInitialisedProperty && (!(property instanceof OptionalPersistentProperty) || ((OptionalPersistentProperty) property).has(uuid))) {
+                ((ImplicitInitialisedProperty) property).load(uuid);
                 propertiesHandler.put(property.getClass(), property);
             }
         }

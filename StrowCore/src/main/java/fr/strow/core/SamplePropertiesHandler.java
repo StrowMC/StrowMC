@@ -25,11 +25,16 @@ public class SamplePropertiesHandler implements PropertiesHandler {
     }
 
     @Override
+    public <T extends Property> T getProperty(Class<T> property) {
+        return injector.getInstance(property);
+    }
+
+    @Override
     public List<Property> getProperties() {
         List<Property> properties = new ArrayList<>();
 
         for (Class<? extends Property> definition : definitions) {
-            properties.add(injector.getInstance(definition));
+            properties.add(getProperty(definition));
         }
 
         return properties;
