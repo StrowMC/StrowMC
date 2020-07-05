@@ -13,7 +13,7 @@ import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
 import fr.strow.api.properties.OptionalPersistentProperty;
 import fr.strow.api.properties.PersistentProperty;
-import fr.strow.api.properties.PropertiesCollection;
+import fr.strow.api.properties.PropertiesHandler;
 import fr.strow.api.properties.Property;
 
 import java.util.HashMap;
@@ -24,25 +24,25 @@ public class PlayerManagerImpl implements PlayerManager {
 
     private static final Map<UUID, StrowPlayer> players = new HashMap<>();
 
-    private final PropertiesCollection properties;
+    private final PropertiesHandler propertiesHandler;
 
     @Inject
-    public PlayerManagerImpl(PropertiesCollection properties) {
-        this.properties = properties;
+    public PlayerManagerImpl(PropertiesHandler propertiesHandler) {
+        this.propertiesHandler = propertiesHandler;
     }
 
     @Override
     public void loadPlayer(UUID uuid) {
-        Map<Class<? extends Property>, Property> properties = new HashMap<>();
+        Map<Class<? extends Property>, Property> propertiesHandler = new HashMap<>();
 
-        for (PersistentProperty property : this.properties.getProperties()) {
+        for (Property property : this.propertiesHandler.getProperties()) {
             if (!(property instanceof OptionalPersistentProperty) || ((OptionalPersistentProperty) property).has(uuid)) {
                 property.load(uuid);
-                properties.put(property.getClass(), property);
+                propertiesHandler.put(property.getClass(), property);
             }
         }
 
-        StrowPlayer player = new StrowPlayerImpl(properties);
+        StrowPlayer player = new StrowPlayerImpl(propertiesHandler);
         players.put(uuid, player);
     }
 

@@ -10,13 +10,12 @@ package fr.strow.core;
 
 import com.google.gson.Gson;
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 import fr.strow.api.StrowPlugin;
 import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.game.factions.FactionManager;
 import fr.strow.api.game.players.PlayerManager;
-import fr.strow.api.properties.Properties;
-import fr.strow.api.properties.PropertiesCollection;
+import fr.strow.api.modules.ModulesHandler;
+import fr.strow.api.properties.PropertiesHandler;
 import fr.strow.api.utils.Scheduler;
 import fr.strow.core.api.commands.CommandsManagerImpl;
 import fr.strow.core.api.utils.SchedulerImpl;
@@ -35,18 +34,10 @@ import java.util.Map;
 
 public class SampleBindModule extends AbstractModule {
 
-    private static final PropertiesCollection properties = new PropertiesCollection();
-
     private final StrowPlugin plugin;
 
     public SampleBindModule(StrowPlugin plugin) {
         this.plugin = plugin;
-    }
-
-    @Provides
-    @Properties
-    public PropertiesCollection getProperties() {
-        return properties;
     }
 
     @SuppressWarnings("unchecked")
@@ -95,6 +86,9 @@ public class SampleBindModule extends AbstractModule {
 
         bind(JavaPlugin.class).toInstance(plugin);
         bind(PluginManager.class).toInstance(plugin.getServer().getPluginManager());
+
+        bind(ModulesHandler.class).to(SampleModulesHandler.class);
+        bind(PropertiesHandler.class).to(SamplePropertiesHandler.class);
 
         bind(CommandsManager.class).to(CommandsManagerImpl.class);
         bind(FactionManager.class).to(FactionManagerImpl.class);

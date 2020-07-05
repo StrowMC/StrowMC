@@ -13,6 +13,8 @@ import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.modules.StrowModule;
 import fr.strow.api.properties.PersistentProperty;
 import fr.strow.api.properties.PropertiesCollection;
+import fr.strow.api.properties.PropertiesHandler;
+import fr.strow.api.properties.Property;
 import fr.strow.core.module.economy.commands.BalTopCommand;
 import fr.strow.core.module.economy.commands.CoinsCommand;
 import me.choukas.commands.EvolvedCommand;
@@ -26,7 +28,11 @@ public class EconomyModule extends StrowModule {
     private final Injector injector;
 
     public EconomyModule(Injector injector) {
-        super(injector.getInstance(JavaPlugin.class), injector.getInstance(CommandsManager.class), injector.getInstance(PropertiesCollection.class));
+        super(
+                injector.getInstance(JavaPlugin.class),
+                injector.getInstance(CommandsManager.class),
+                injector.getInstance(PropertiesHandler.class)
+        );
 
         this.injector = injector;
     }
@@ -40,9 +46,9 @@ public class EconomyModule extends StrowModule {
     }
 
     @Override
-    public List<PersistentProperty> getProperties() {
+    public List<Class<? extends Property>> getProperties() {
         return Collections.singletonList(
-                injector.getInstance(EconomyProperty.class)
+                EconomyProperty.class
         );
     }
 }
