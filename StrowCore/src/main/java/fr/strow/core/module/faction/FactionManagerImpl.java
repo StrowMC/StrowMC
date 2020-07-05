@@ -8,13 +8,22 @@
 
 package fr.strow.core.module.faction;
 
+import com.google.inject.Inject;
 import fr.strow.api.game.factions.FactionManager;
 import fr.strow.api.game.factions.player.FactionInvitation;
 import fr.strow.api.game.players.StrowPlayer;
+import fr.strow.api.properties.PropertiesHandler;
 
 import java.util.List;
 
 public class FactionManagerImpl implements FactionManager {
+
+    private final PropertiesHandler propertiesHandler;
+
+    @Inject
+    public FactionManagerImpl(PropertiesHandler propertiesHandler) {
+        this.propertiesHandler = propertiesHandler;
+    }
 
     @Override
     public void createFaction(StrowPlayer leader, String name) {

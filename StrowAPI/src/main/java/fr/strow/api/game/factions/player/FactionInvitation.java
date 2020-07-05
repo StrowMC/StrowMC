@@ -11,27 +11,9 @@ package fr.strow.api.game.factions.player;
 import fr.strow.api.game.factions.Faction;
 import fr.strow.api.game.players.StrowPlayer;
 
-public class FactionInvitation {
+public interface FactionInvitation {
 
-    private final StrowPlayer sender;
-    private final StrowPlayer target;
-    private final Faction faction;
+    StrowPlayer getSender();
 
-    public FactionInvitation(StrowPlayer sender, StrowPlayer target, Faction faction) {
-        this.sender = sender;
-        this.target = target;
-        this.faction = faction;
-    }
-
-    public StrowPlayer getSender() {
-        return sender;
-    }
-
-    public StrowPlayer getTarget() {
-        return target;
-    }
-
-    public Faction getFaction() {
-        return faction;
-    }
+    Faction getFaction();
 }
