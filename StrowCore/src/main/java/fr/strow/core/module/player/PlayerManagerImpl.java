@@ -11,8 +11,10 @@ package fr.strow.core.module.player;
 import com.google.inject.Inject;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.OptionalPersistentProperty;
+import fr.strow.api.properties.PersistentProperty;
 import fr.strow.api.properties.PropertiesCollection;
+import fr.strow.api.properties.Property;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,11 +33,13 @@ public class PlayerManagerImpl implements PlayerManager {
 
     @Override
     public void loadPlayer(UUID uuid) {
-        Map<Class<? extends AbstractProperty>, AbstractProperty> properties = new HashMap<>();
+        Map<Class<? extends Property>, Property> properties = new HashMap<>();
 
-        for (AbstractProperty property : this.properties.getProperties()) {
-            property.load(uuid);
-            properties.put(property.getClass(), property);
+        for (PersistentProperty property : this.properties.getProperties()) {
+            if (!(property instanceof OptionalPersistentProperty) || ((OptionalPersistentProperty) property).has(uuid)) {
+                property.load(uuid);
+                properties.put(property.getClass(), property);
+            }
         }
 
         StrowPlayer player = new StrowPlayerImpl(properties);
@@ -46,10 +50,17 @@ public class PlayerManagerImpl implements PlayerManager {
     public void unloadPlayer(UUID uuid) {
         StrowPlayer player = players.get(uuid);
 
-        for (AbstractProperty property : player.getProperties()) {
-            property.save(uuid);
+        for (Property property : player.getProperties()) {
+            if (property instanceof PersistentProperty) {
+                ((PersistentProperty) property).save(uuid);
+            }
         }
 
         players.remove(uuid);
+    }
+
+    @Override
+    public StrowPlayer getPlayer(UUID uuid) {
+        return players.get(uuid);
     }
 }

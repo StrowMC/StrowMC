@@ -9,22 +9,17 @@
 package fr.strow.core.module.faction.properties;
 
 import fr.strow.api.game.factions.player.FactionAutoClaiming;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.Property;
 
 import java.util.UUID;
 
-public class FactionAutoClaimingProperty implements FactionAutoClaiming, AbstractProperty {
+public class FactionAutoClaimingProperty implements Property, FactionAutoClaiming {
 
     private boolean autoClaim;
 
     @Override
     public void load(UUID uuid) {
         autoClaim = false;
-    }
-
-    @Override
-    public void save(UUID uuid) {
-        // Empty
     }
 
     @Override

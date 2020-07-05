@@ -10,13 +10,13 @@ package fr.strow.core.module.economy;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.economy.Economy;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PersistentProperty;
 import fr.strow.persistence.beans.EconomyBean;
 import fr.strow.persistence.dao.EconomyDao;
 
 import java.util.UUID;
 
-public class EconomyProperty implements AbstractProperty, Economy {
+public class EconomyProperty implements PersistentProperty, Economy {
 
     private final EconomyDao economyDao;
 

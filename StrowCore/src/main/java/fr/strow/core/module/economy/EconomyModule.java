@@ -10,17 +10,13 @@ package fr.strow.core.module.economy;
 
 import com.google.inject.Injector;
 import fr.strow.api.commands.CommandsManager;
-import fr.strow.api.configuration.AbstractConfiguration;
 import fr.strow.api.modules.StrowModule;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PersistentProperty;
 import fr.strow.api.properties.PropertiesCollection;
 import fr.strow.core.module.economy.commands.BalTopCommand;
 import fr.strow.core.module.economy.commands.CoinsCommand;
 import me.choukas.commands.EvolvedCommand;
-import me.choukas.commands.api.Condition;
-import me.choukas.commands.api.Parameter;
 import me.choukas.commands.utils.Tuple;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -44,7 +40,7 @@ public class EconomyModule extends StrowModule {
     }
 
     @Override
-    public List<AbstractProperty> getProperties() {
+    public List<PersistentProperty> getProperties() {
         return Collections.singletonList(
                 injector.getInstance(EconomyProperty.class)
         );

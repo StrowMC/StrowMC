@@ -8,9 +8,9 @@
 
 package fr.strow.api.game.factions.player;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.game.AbstractProperty;
 
-public interface FactionClaimer extends Property {
+public interface FactionClaimer extends AbstractProperty {
 
     boolean isClaimer();
 

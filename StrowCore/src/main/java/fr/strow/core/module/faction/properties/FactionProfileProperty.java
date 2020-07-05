@@ -10,11 +10,11 @@ package fr.strow.core.module.faction.properties;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.factions.player.*;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PersistentProperty;
 
 import java.util.UUID;
 
-public class FactionProfileProperty implements FactionProfile, AbstractProperty {
+public class FactionProfileProperty implements PersistentProperty, FactionProfile {
 
     private final FactionUUIDProperty factionUUID;
     private final FactionGroupProperty factionGroup;
@@ -51,7 +51,6 @@ public class FactionProfileProperty implements FactionProfile, AbstractProperty 
         factionGroup.save(uuid);
         factionPower.save(uuid);
         factionClaimer.save(uuid);
-        factionAutoClaiming.save(uuid);
     }
 
     @Override

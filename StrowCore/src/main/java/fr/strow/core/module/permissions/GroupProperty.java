@@ -11,7 +11,7 @@ package fr.strow.core.module.permissions;
 import com.google.inject.Inject;
 import fr.strow.api.game.permissions.Group;
 import fr.strow.api.game.permissions.Role;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PersistentProperty;
 import fr.strow.persistence.beans.RoleBean;
 import fr.strow.persistence.beans.permissions.PermissionsBean;
 import fr.strow.persistence.dao.PermissionsDao;
@@ -20,7 +20,7 @@ import fr.strow.persistence.dao.RoleDao;
 import java.util.List;
 import java.util.UUID;
 
-public class GroupProperty implements AbstractProperty, Group {
+public class GroupProperty implements PersistentProperty, Group {
 
     private final RoleDao rolesDao;
     private final PermissionsDao permissionsDao;

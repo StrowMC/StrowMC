@@ -10,13 +10,13 @@ package fr.strow.core.module.faction.properties;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.factions.player.FactionUUID;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PersistentProperty;
 import fr.strow.persistence.beans.factions.players.FactionUUIDBean;
 import fr.strow.persistence.dao.factions.players.FactionUUIDDao;
 
 import java.util.UUID;
 
-public class FactionUUIDProperty implements FactionUUID, AbstractProperty {
+public class FactionUUIDProperty implements PersistentProperty, FactionUUID {
 
     private final FactionUUIDDao factionUUIDDao;
 

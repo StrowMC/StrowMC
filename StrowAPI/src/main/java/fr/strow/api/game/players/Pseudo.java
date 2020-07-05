@@ -8,9 +8,9 @@
 
 package fr.strow.api.game.players;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.game.AbstractProperty;
 
-public interface Pseudo extends Property {
+public interface Pseudo extends AbstractProperty {
 
     String getPseudo();
 

@@ -10,7 +10,7 @@ package fr.strow.api.modules;
 
 import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.configuration.AbstractConfiguration;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PersistentProperty;
 import fr.strow.api.properties.PropertiesCollection;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.Condition;
@@ -51,7 +51,7 @@ public abstract class StrowModule {
             commandsManager.registerCondition(condition);
         }
 
-        for (AbstractProperty property : getProperties()) {
+        for (PersistentProperty property : getProperties()) {
             properties.registerProperty(property);
         }
     }
@@ -65,7 +65,7 @@ public abstract class StrowModule {
             commandsManager.unregisterCommand(command.getValue());
         }
 
-        for (AbstractProperty property : getProperties()) {
+        for (PersistentProperty property : getProperties()) {
             properties.registerProperty(property);
         }
     }
@@ -90,7 +90,7 @@ public abstract class StrowModule {
         return Collections.emptyList();
     }
 
-    public List<AbstractProperty> getProperties() {
+    public List<PersistentProperty> getProperties() {
         return Collections.emptyList();
     }
 }

@@ -10,19 +10,16 @@ package fr.strow.core.module.faction;
 
 import com.google.inject.Injector;
 import fr.strow.api.commands.CommandsManager;
-import fr.strow.api.configuration.AbstractConfiguration;
 import fr.strow.api.modules.StrowModule;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PersistentProperty;
 import fr.strow.api.properties.PropertiesCollection;
 import fr.strow.core.module.faction.commands.FactionCommand;
 import fr.strow.core.module.faction.commands.FactionCreateCommand;
 import fr.strow.core.module.faction.properties.FactionProfileProperty;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.utils.Tuple;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,14 +29,13 @@ public class FactionModule extends StrowModule {
     private final Injector injector;
 
     public FactionModule(Injector injector) {
-        super(injector.getInstance(JavaPlugin.class), injector.getInstance(CommandsManager.class), injector.getInstance(PropertiesCollection.class));
+        super(
+                injector.getInstance(JavaPlugin.class),
+                injector.getInstance(CommandsManager.class),
+                injector.getInstance(PropertiesCollection.class)
+        );
 
         this.injector = injector;
-    }
-
-    @Override
-    public List<Listener> getListeners() {
-        return new ArrayList<>();
     }
 
     @Override
@@ -51,12 +47,7 @@ public class FactionModule extends StrowModule {
     }
 
     @Override
-    public List<AbstractConfiguration> getConfigurations() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<AbstractProperty> getProperties() {
+    public List<PersistentProperty> getProperties() {
         return Collections.singletonList(
                 injector.getInstance(FactionProfileProperty.class)
         );

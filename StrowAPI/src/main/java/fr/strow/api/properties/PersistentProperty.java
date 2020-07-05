@@ -10,9 +10,7 @@ package fr.strow.api.properties;
 
 import java.util.UUID;
 
-public interface AbstractProperty {
-
-    void load(UUID uuid);
+public interface PersistentProperty extends Property {
 
     void save(UUID uuid);
 }
