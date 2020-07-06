@@ -23,9 +23,7 @@
 hs_err_pid*
 
 # Directories
-/build/
-/.idea/
-/.gradle/
-
-# EvolvedCommands
+build/
+.idea/
+.gradle/
 /EvolvedCommands/
