@@ -8,14 +8,12 @@
 
 package fr.strow.api.game.players;
 
-import fr.strow.api.game.Property;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PropertiesOwner;
 
-import java.util.Collection;
+import java.util.UUID;
 
-public interface StrowPlayer {
+public interface StrowPlayer extends PropertiesOwner {
 
-    <T extends Property> T get(Class<T> property);
+    UUID getUniqueId();
 
-    Collection<AbstractProperty> getProperties();
 }
