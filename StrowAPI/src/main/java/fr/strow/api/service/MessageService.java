@@ -1,12 +1,13 @@
 package fr.strow.api.service;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+
 import java.util.UUID;
 import java.util.function.Predicate;
 
-/**
- * Created by Hokkaydo on 06-07-2020.
- */
 public interface MessageService {
+
+    void sendMessage(UUID uuid, BaseComponent component);
 
     void sendMessage(UUID uuid, String message, Object... args);
 
