@@ -9,20 +9,42 @@
 package fr.strow.core.module.player;
 
 import fr.strow.api.game.AbstractProperty;
+import fr.strow.api.game.AbstractService;
+import fr.strow.api.game.factions.FactionName;
+import fr.strow.api.game.factions.profile.FactionClaimer;
 import fr.strow.api.game.players.StrowPlayer;
 import fr.strow.api.properties.Property;
-import net.md_5.bungee.api.chat.BaseComponent;
+import fr.strow.api.services.Service;
+import fr.strow.core.module.faction.FactionImpl;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class StrowPlayerImpl implements StrowPlayer {
 
     private final Map<Class<? extends Property>, Property> properties;
+    private final Map<Class<? extends AbstractProperty>, AbstractProperty> abstractProperties;
 
-    public StrowPlayerImpl(Map<Class<? extends Property>, Property> properties) {
+    private final Map<Class<? extends AbstractService>, AbstractService> services;
+
+    @SuppressWarnings("unchecked")
+    public StrowPlayerImpl(Map<Class<? extends Property>, Property> properties, Map<Class<? extends Service>, Service> services) {
         this.properties = properties;
+        this.abstractProperties = properties.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        entry -> (Class<? extends AbstractProperty>) entry.getKey(),
+                        entry -> (AbstractProperty) entry.getValue()
+                ));
+
+        this.services = services.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        entry -> (Class<? extends AbstractService>) entry.getKey(),
+                        entry -> (AbstractService) entry.getValue()
+                ));
     }
 
     @Override
@@ -35,35 +57,26 @@ public class StrowPlayerImpl implements StrowPlayer {
         properties.remove(property);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends AbstractProperty> T get(Class<T> property) {
-        return (T) properties.get(property);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends AbstractProperty> Optional<T> getOptionalProperty(Class<T> property) {
-        return Optional.ofNullable((T) properties.get(property));
-    }
-
     @Override
     public Collection<Property> getProperties() {
         return properties.values();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void sendMessage(String message) {
-
+    public <T extends AbstractProperty> T getProperty(Class<T> property) {
+        return (T) abstractProperties.get(property);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void sendMessage(String format, Object... args) {
-
+    public <T extends AbstractProperty> Optional<T> getOptionalProperty(Class<T> property) {
+        return Optional.ofNullable((T) abstractProperties.get(property));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void sendMessage(BaseComponent component) {
-
+    public <T extends AbstractService> T getService(Class<T> service) {
+        return (T) services.get(service);
     }
 }

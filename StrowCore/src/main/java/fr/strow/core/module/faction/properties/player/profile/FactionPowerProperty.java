@@ -6,17 +6,20 @@
  * Written by Choukas <juan.vlroo@gmail.com>, 23/06/2020 07:36
  */
 
-package fr.strow.core.module.faction.properties;
+package fr.strow.core.module.faction.properties.player.profile;
 
 import com.google.inject.Inject;
-import fr.strow.api.game.factions.player.FactionPower;
+import fr.strow.api.game.factions.profile.FactionPower;
+import fr.strow.api.properties.ExplicitInitialisedProperty;
+import fr.strow.api.properties.ImplicitInitialisedProperty;
 import fr.strow.api.properties.PersistentProperty;
+import fr.strow.api.properties.PropertyFactory;
 import fr.strow.persistence.beans.factions.players.FactionPowerBean;
 import fr.strow.persistence.dao.factions.players.FactionPowerDao;
 
 import java.util.UUID;
 
-public class FactionPowerProperty implements PersistentProperty, FactionPower{
+public class FactionPowerProperty implements PersistentProperty, ImplicitInitialisedProperty, ExplicitInitialisedProperty<FactionPowerProperty.Factory>, FactionPower {
 
     private final FactionPowerDao factionPowerDao;
 
@@ -55,6 +58,13 @@ public class FactionPowerProperty implements PersistentProperty, FactionPower{
     public void removePower(int amount) {
         if (amount > 0) {
             power -= amount;
+        }
+    }
+
+    public class Factory extends PropertyFactory {
+
+        public void load(int power) {
+            FactionPowerProperty.this.power = power;
         }
     }
 }

@@ -11,11 +11,11 @@ package fr.strow.core.module.faction.commands;
 import com.google.inject.Inject;
 import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.game.factions.FactionManager;
-import fr.strow.api.game.factions.player.FactionProfile;
-import fr.strow.api.game.factions.player.FactionRole;
+import fr.strow.api.game.factions.profile.FactionProfile;
+import fr.strow.api.game.factions.profile.FactionRole;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
-import fr.strow.core.module.faction.commands.conditions.SenderIsInFactionCondition;
+import fr.strow.core.module.faction.commands.conditions.SenderIsInFactionRequirement;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -45,7 +45,7 @@ public class FactionLeaveCommand extends EvolvedCommand {
 
     @Override
     protected void define() {
-        addCondition(commandsManager.getCondition(SenderIsInFactionCondition.class));
+        addCondition(commandsManager.getCondition(SenderIsInFactionRequirement.class));
     }
 
     @Override

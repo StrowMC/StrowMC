@@ -1,6 +1,6 @@
 package fr.strow.api.properties;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface PropertiesHandler {
 
@@ -8,5 +8,5 @@ public interface PropertiesHandler {
 
     <T extends Property> T getProperty(Class<T> property);
 
-    List<Property> getProperties();
+    Collection<Property> getProperties();
 }

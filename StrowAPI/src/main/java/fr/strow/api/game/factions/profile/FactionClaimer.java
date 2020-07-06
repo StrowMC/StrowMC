@@ -6,7 +6,7 @@
  * Written by Choukas <juan.vlroo@gmail.com>, 23/06/2020 07:43
  */
 
-package fr.strow.api.game.factions.player;
+package fr.strow.api.game.factions.profile;
 
 import fr.strow.api.game.AbstractProperty;
 

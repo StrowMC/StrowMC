@@ -6,21 +6,24 @@
  * Written by Choukas <juan.vlroo@gmail.com>, 23/06/2020 07:36
  */
 
-package fr.strow.core.module.faction.properties;
+package fr.strow.core.module.faction.properties.player.profile;
 
 import com.google.inject.Inject;
-import fr.strow.api.game.factions.player.FactionUUID;
+import fr.strow.api.game.factions.profile.FactionUUID;
+import fr.strow.api.properties.ExplicitInitialisedProperty;
+import fr.strow.api.properties.ImplicitInitialisedProperty;
 import fr.strow.api.properties.PersistentProperty;
+import fr.strow.api.properties.PropertyFactory;
 import fr.strow.persistence.beans.factions.players.FactionUUIDBean;
 import fr.strow.persistence.dao.factions.players.FactionUUIDDao;
 
 import java.util.UUID;
 
-public class FactionUUIDProperty implements PersistentProperty, FactionUUID {
+public class FactionUUIDProperty implements PersistentProperty, ImplicitInitialisedProperty, ExplicitInitialisedProperty<FactionUUIDProperty.Factory>, FactionUUID {
 
     private final FactionUUIDDao factionUUIDDao;
 
-    private UUID factionUuid;
+    private UUID factionUUID;
 
     @Inject
     public FactionUUIDProperty(FactionUUIDDao factionUUIDDao) {
@@ -30,17 +33,24 @@ public class FactionUUIDProperty implements PersistentProperty, FactionUUID {
     @Override
     public void load(UUID uuid) {
         FactionUUIDBean bean = factionUUIDDao.loadUuid(uuid);
-        factionUuid = bean.getFactionUuid();
+        factionUUID = bean.getFactionUuid();
     }
 
     @Override
     public void save(UUID uuid) {
-        FactionUUIDBean bean = new FactionUUIDBean(uuid, factionUuid);
+        FactionUUIDBean bean = new FactionUUIDBean(uuid, factionUUID);
         factionUUIDDao.saveUuid(bean);
     }
 
     @Override
     public UUID getFactionUuid() {
-        return factionUuid;
+        return factionUUID;
+    }
+
+    public class Factory extends PropertyFactory {
+
+        public void load(UUID factionUUID) {
+            FactionUUIDProperty.this.factionUUID = factionUUID;
+        }
     }
 }

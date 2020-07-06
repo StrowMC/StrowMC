@@ -8,7 +8,7 @@
 
 package fr.strow.api.game.factions;
 
-import fr.strow.api.game.factions.player.FactionInvitation;
+import fr.strow.api.game.factions.profile.FactionInvitation;
 import fr.strow.api.game.players.StrowPlayer;
 
 import java.util.List;

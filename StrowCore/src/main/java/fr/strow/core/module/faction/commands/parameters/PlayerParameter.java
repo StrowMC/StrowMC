@@ -11,12 +11,15 @@ package fr.strow.core.module.faction.commands.parameters;
 import com.google.inject.Inject;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
+import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class PlayerParameter extends Parameter<StrowPlayer> {
@@ -36,19 +39,24 @@ public class PlayerParameter extends Parameter<StrowPlayer> {
     }
 
     @Override
-    public Optional<StrowPlayer> check(String arg) {
-        Optional<StrowPlayer> o = Optional.empty();
-        Player player = Bukkit.getPlayer(arg);
+    public List<Condition<String>> getConditions() {
+        return Collections.singletonList(
+                new Condition<>() {
+                    @Override
+                    public boolean check(String arg) {
+                        return Bukkit.getPlayer(arg) != null;
+                    }
 
-        if (player != null) {
-            o = player.getPlayer();
-        }
-
-        return o;
+                    @Override
+                    public String getMessage(String arg) {
+                        return "Ce joueur n'est pas connecté";
+                    }
+                }
+        );
     }
 
     @Override
-    public String getMessage(String arg) {
-        return null;
+    public StrowPlayer get(String arg) {
+        return playerManager.getPlayer(Bukkit.getPlayer(arg).getUniqueId());
     }
 }

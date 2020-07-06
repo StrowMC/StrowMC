@@ -9,7 +9,7 @@
 package fr.strow.api.commands;
 
 import me.choukas.commands.EvolvedCommand;
-import me.choukas.commands.api.Condition;
+import me.choukas.commands.api.Requirement;
 import me.choukas.commands.api.Parameter;
 import me.choukas.commands.utils.Tuple;
 
@@ -29,11 +29,11 @@ public interface CommandsManager {
 
     <T extends EvolvedCommand> T getCommand(Class<T> command);
 
-    void registerCondition(Condition condition);
+    void registerCondition(Requirement requirement);
 
-    void unregisterCondition(Condition condition);
+    void unregisterCondition(Requirement requirement);
 
-    <T extends Condition> T getCondition(Class<T> condition);
+    <T extends Requirement> T getCondition(Class<T> condition);
 
     void registerParameter(Parameter<?> parameter);
 

@@ -8,29 +8,9 @@
 
 package fr.strow.api.game.players;
 
-import fr.strow.api.game.AbstractProperty;
-import fr.strow.api.properties.PersistentProperty;
-import fr.strow.api.properties.Property;
-import net.md_5.bungee.api.chat.BaseComponent;
+import fr.strow.api.properties.PropertiesOwner;
+import fr.strow.api.services.ServicesOwner;
 
-import java.util.Collection;
-import java.util.Optional;
+public interface StrowPlayer extends PropertiesOwner, ServicesOwner {
 
-public interface StrowPlayer {
-
-    <T extends Property> void registerProperty(T property);
-
-    <T extends Property> void unregisterProperty(Class<T> property);
-
-    <T extends AbstractProperty> T get(Class<T> property);
-
-    <T extends AbstractProperty> Optional<T> getOptionalProperty(Class<T> property);
-
-    Collection<Property> getProperties();
-
-    void sendMessage(String message);
-
-    void sendMessage(String format, Object... args);
-
-    void sendMessage(BaseComponent component);
 }

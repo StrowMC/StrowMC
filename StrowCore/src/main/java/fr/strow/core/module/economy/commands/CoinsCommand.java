@@ -13,7 +13,7 @@ import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.game.economy.Economy;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
-import fr.strow.core.utils.commands.conditions.SenderIsPlayerCondition;
+import fr.strow.core.utils.commands.conditions.SenderIsPlayerRequirement;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
 import org.bukkit.command.CommandSender;
@@ -39,7 +39,7 @@ public class CoinsCommand extends EvolvedCommand {
 
     @Override
     protected void define() {
-        addCondition(commandsManager.getCondition(SenderIsPlayerCondition.class));
+        addCondition(commandsManager.getCondition(SenderIsPlayerRequirement.class));
     }
 
     @Override

@@ -6,15 +6,15 @@
  * Written by Choukas <juan.vlroo@gmail.com>, 23/06/2020 07:27
  */
 
-package fr.strow.core.module.faction.properties;
+package fr.strow.core.module.faction.properties.player.profile;
 
 import com.google.inject.Inject;
-import fr.strow.api.game.factions.player.*;
-import fr.strow.api.properties.PersistentProperty;
+import fr.strow.api.game.factions.profile.*;
+import fr.strow.api.properties.*;
 
 import java.util.UUID;
 
-public class FactionProfileProperty implements PersistentProperty, FactionProfile {
+public class FactionProfileProperty implements OptionalPersistentProperty, ImplicitInitialisedProperty, ExplicitInitialisedProperty<FactionProfileProperty.Factory>, FactionProfile {
 
     private final FactionUUIDProperty factionUUID;
     private final FactionGroupProperty factionGroup;
@@ -35,6 +35,10 @@ public class FactionProfileProperty implements PersistentProperty, FactionProfil
         this.factionAutoClaiming = factionAutoClaiming;
     }
 
+    @Override
+    public boolean has(UUID uuid) {
+        return false;
+    }
 
     @Override
     public void load(UUID uuid) {
@@ -42,7 +46,6 @@ public class FactionProfileProperty implements PersistentProperty, FactionProfil
         factionGroup.load(uuid);
         factionPower.load(uuid);
         factionClaimer.load(uuid);
-        factionAutoClaiming.load(uuid);
     }
 
     @Override
@@ -76,5 +79,17 @@ public class FactionProfileProperty implements PersistentProperty, FactionProfil
     @Override
     public FactionAutoClaiming getFactionAutoClaiming() {
         return factionAutoClaiming;
+    }
+
+    public class Factory extends PropertyFactory {
+
+        public void load(UUID factionUUID, FactionRole role, int power, boolean claimer) {
+            FactionProfileProperty property = FactionProfileProperty.this;
+
+            property.factionUUID.factory().load(factionUUID);
+            property.factionGroup.factory().load(role);
+            property.factionPower.factory().load(power);
+            property.factionClaimer.factory().load(claimer);
+        }
     }
 }

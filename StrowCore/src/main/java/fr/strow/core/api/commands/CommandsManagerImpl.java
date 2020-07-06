@@ -14,7 +14,7 @@ import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.commands.ConditionsCollection;
 import fr.strow.api.commands.ParametersCollection;
 import me.choukas.commands.EvolvedCommand;
-import me.choukas.commands.api.Condition;
+import me.choukas.commands.api.Requirement;
 import me.choukas.commands.api.Parameter;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.PluginManager;
@@ -73,17 +73,17 @@ public class CommandsManagerImpl implements CommandsManager {
     }
 
     @Override
-    public void registerCondition(Condition condition) {
-        conditionsCollection.registerCondition(condition);
+    public void registerCondition(Requirement requirement) {
+        conditionsCollection.registerCondition(requirement);
     }
 
     @Override
-    public void unregisterCondition(Condition condition) {
-        conditionsCollection.unregisterCondition(condition);
+    public void unregisterCondition(Requirement requirement) {
+        conditionsCollection.unregisterCondition(requirement);
     }
 
     @Override
-    public <T extends Condition> T getCondition(Class<T> condition) {
+    public <T extends Requirement> T getCondition(Class<T> condition) {
         return conditionsCollection.getCondition(condition);
     }
 

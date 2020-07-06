@@ -6,12 +6,15 @@
  * Written by Choukas <juan.vlroo@gmail.com>, 23/06/2020 07:36
  */
 
-package fr.strow.core.module.faction.properties;
+package fr.strow.core.module.faction.properties.player.profile;
 
 import com.google.inject.Inject;
-import fr.strow.api.game.factions.player.FactionGroup;
-import fr.strow.api.game.factions.player.FactionRole;
+import fr.strow.api.game.factions.profile.FactionGroup;
+import fr.strow.api.game.factions.profile.FactionRole;
+import fr.strow.api.properties.ExplicitInitialisedProperty;
+import fr.strow.api.properties.ImplicitInitialisedProperty;
 import fr.strow.api.properties.PersistentProperty;
+import fr.strow.api.properties.PropertyFactory;
 import fr.strow.persistence.beans.factions.players.FactionPermissionsBean;
 import fr.strow.persistence.beans.factions.players.FactionRoleBean;
 import fr.strow.persistence.dao.factions.players.FactionPermissionsDao;
@@ -20,7 +23,7 @@ import fr.strow.persistence.dao.factions.players.FactionRoleDao;
 import java.util.List;
 import java.util.UUID;
 
-public class FactionGroupProperty implements PersistentProperty, FactionGroup {
+public class FactionGroupProperty implements PersistentProperty, ExplicitInitialisedProperty<FactionGroupProperty.Factory>, ImplicitInitialisedProperty, FactionGroup {
 
     private final FactionRoleDao factionRoleDao;
     private final FactionPermissionsDao factionPermissionsDao;
@@ -40,7 +43,7 @@ public class FactionGroupProperty implements PersistentProperty, FactionGroup {
         int factionRoleId = factionRoleBean.getRoleId();
         role = FactionRole.getRoleById(factionRoleId).orElseThrow(RuntimeException::new);
 
-        loadPermissions(factionRoleId);
+        loadPermissions();
     }
 
     @Override
@@ -59,17 +62,26 @@ public class FactionGroupProperty implements PersistentProperty, FactionGroup {
         if (this.role != role) {
             this.role = role;
 
-            loadPermissions(role.getId());
+            loadPermissions();
         }
     }
 
-    private void loadPermissions(int factionRoleId) {
-        FactionPermissionsBean factionPermissionsBean = factionPermissionsDao.loadFactionPermissions(factionRoleId);
+    private void loadPermissions() {
+        FactionPermissionsBean factionPermissionsBean = factionPermissionsDao.loadFactionPermissions(role.getId());
         permissions = factionPermissionsBean.getPermissions();
     }
 
     @Override
     public boolean hasPermission(String permission) {
         return permissions.contains(permission);
+    }
+
+    public class Factory extends PropertyFactory {
+
+        public void load(FactionRole role) {
+            FactionGroupProperty.this.role = role;
+
+            FactionGroupProperty.this.loadPermissions();
+        }
     }
 }

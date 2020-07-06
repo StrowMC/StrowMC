@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
 import fr.strow.api.properties.*;
+import fr.strow.api.services.ServicesHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,24 +23,26 @@ public class PlayerManagerImpl implements PlayerManager {
     private static final Map<UUID, StrowPlayer> players = new HashMap<>();
 
     private final PropertiesHandler propertiesHandler;
+    private final ServicesHandler servicesHandler;
 
     @Inject
-    public PlayerManagerImpl(PropertiesHandler propertiesHandler) {
+    public PlayerManagerImpl(PropertiesHandler propertiesHandler, ServicesHandler servicesHandler) {
         this.propertiesHandler = propertiesHandler;
+        this.servicesHandler = servicesHandler;
     }
 
     @Override
     public void loadPlayer(UUID uuid) {
-        Map<Class<? extends Property>, Property> propertiesHandler = new HashMap<>();
+        Map<Class<? extends Property>, Property> properties = new HashMap<>();
 
         for (Property property : this.propertiesHandler.getProperties()) {
             if (property instanceof ImplicitInitialisedProperty && (!(property instanceof OptionalPersistentProperty) || ((OptionalPersistentProperty) property).has(uuid))) {
                 ((ImplicitInitialisedProperty) property).load(uuid);
-                propertiesHandler.put(property.getClass(), property);
+                properties.put(property.getClass(), property);
             }
         }
 
-        StrowPlayer player = new StrowPlayerImpl(propertiesHandler);
+        StrowPlayerImpl player = new StrowPlayerImpl(properties, services);
         players.put(uuid, player);
     }
 

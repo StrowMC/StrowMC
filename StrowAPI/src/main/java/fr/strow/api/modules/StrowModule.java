@@ -13,7 +13,7 @@ import fr.strow.api.configuration.AbstractConfiguration;
 import fr.strow.api.properties.PropertiesHandler;
 import fr.strow.api.properties.Property;
 import me.choukas.commands.EvolvedCommand;
-import me.choukas.commands.api.Condition;
+import me.choukas.commands.api.Requirement;
 import me.choukas.commands.api.Parameter;
 import me.choukas.commands.utils.Tuple;
 import org.bukkit.event.HandlerList;
@@ -47,8 +47,8 @@ public abstract class StrowModule {
             commandsManager.registerCommand(command);
         }
 
-        for (Condition condition : getConditions()) {
-            commandsManager.registerCondition(condition);
+        for (Requirement requirement : getConditions()) {
+            commandsManager.registerCondition(requirement);
         }
 
         for (Class<? extends Property> property : getProperties()) {
@@ -78,7 +78,7 @@ public abstract class StrowModule {
         return Collections.emptyList();
     }
 
-    public List<Condition> getConditions() {
+    public List<Requirement> getConditions() {
         return Collections.emptyList();
     }
 

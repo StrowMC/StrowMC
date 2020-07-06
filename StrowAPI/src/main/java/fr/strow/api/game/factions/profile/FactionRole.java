@@ -6,7 +6,7 @@
  * Written by Choukas <juan.vlroo@gmail.com>, 01/07/2020 19:49
  */
 
-package fr.strow.api.game.factions.player;
+package fr.strow.api.game.factions.profile;
 
 import java.util.Arrays;
 import java.util.Optional;

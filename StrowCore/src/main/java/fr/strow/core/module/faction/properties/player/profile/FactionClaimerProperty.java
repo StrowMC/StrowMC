@@ -6,17 +6,20 @@
  * Written by Choukas <juan.vlroo@gmail.com>, 23/06/2020 07:36
  */
 
-package fr.strow.core.module.faction.properties;
+package fr.strow.core.module.faction.properties.player.profile;
 
 import com.google.inject.Inject;
-import fr.strow.api.game.factions.player.FactionClaimer;
+import fr.strow.api.game.factions.profile.FactionClaimer;
+import fr.strow.api.properties.ExplicitInitialisedProperty;
+import fr.strow.api.properties.ImplicitInitialisedProperty;
 import fr.strow.api.properties.PersistentProperty;
+import fr.strow.api.properties.PropertyFactory;
 import fr.strow.persistence.beans.factions.players.FactionClaimerBean;
 import fr.strow.persistence.dao.factions.players.FactionClaimerDao;
 
 import java.util.UUID;
 
-public class FactionClaimerProperty implements PersistentProperty, FactionClaimer {
+public class FactionClaimerProperty implements PersistentProperty, ExplicitInitialisedProperty<FactionClaimerProperty.Factory>, ImplicitInitialisedProperty, FactionClaimer {
 
     private final FactionClaimerDao factionClaimerDao;
 
@@ -47,5 +50,12 @@ public class FactionClaimerProperty implements PersistentProperty, FactionClaime
     @Override
     public void setClaimer(boolean claimer) {
         this.claimer = claimer;
+    }
+
+    public class Factory extends PropertyFactory {
+
+        public void load(boolean claimer) {
+           FactionClaimerProperty.this.claimer = claimer;
+        }
     }
 }

@@ -11,8 +11,11 @@ package fr.strow.core.module.faction.commands.parameters;
 import com.google.inject.Inject;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
+import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class NotFactionMemberParameter extends Parameter<StrowPlayer> {
@@ -27,12 +30,24 @@ public class NotFactionMemberParameter extends Parameter<StrowPlayer> {
     }
 
     @Override
-    public Optional<StrowPlayer> check(String s) {
-        return Optional.empty();
+    public List<Condition<String>> getConditions() {
+        return Collections.singletonList(
+                new Condition<>() {
+                    @Override
+                    public boolean check(String o) {
+                        return false;
+                    }
+
+                    @Override
+                    public String getMessage(String o) {
+                        return null;
+                    }
+                }
+        );
     }
 
     @Override
-    public String getMessage(String s) {
+    public StrowPlayer get(String arg) {
         return null;
     }
 }

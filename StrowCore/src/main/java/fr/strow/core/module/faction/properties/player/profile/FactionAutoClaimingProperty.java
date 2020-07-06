@@ -6,21 +6,14 @@
  * Written by Choukas <juan.vlroo@gmail.com>, 23/06/2020 07:36
  */
 
-package fr.strow.core.module.faction.properties;
+package fr.strow.core.module.faction.properties.player.profile;
 
-import fr.strow.api.game.factions.player.FactionAutoClaiming;
+import fr.strow.api.game.factions.profile.FactionAutoClaiming;
 import fr.strow.api.properties.Property;
-
-import java.util.UUID;
 
 public class FactionAutoClaimingProperty implements Property, FactionAutoClaiming {
 
-    private boolean autoClaim;
-
-    @Override
-    public void load(UUID uuid) {
-        autoClaim = false;
-    }
+    private boolean autoClaim = false;
 
     @Override
     public boolean isAutoClaiming() {
