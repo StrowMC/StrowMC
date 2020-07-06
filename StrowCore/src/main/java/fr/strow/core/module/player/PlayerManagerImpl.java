@@ -14,6 +14,7 @@ import fr.strow.api.game.players.StrowPlayer;
 import fr.strow.api.properties.*;
 import fr.strow.api.services.ServicesHandler;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -41,20 +42,20 @@ public class PlayerManagerImpl implements PlayerManager {
                 properties.put(property.getClass(), property);
             }
         }
-
-        StrowPlayerImpl player = new StrowPlayerImpl(properties, services);
-        players.put(uuid, player);
+        //TODO
+        /*StrowPlayerImpl player = new StrowPlayerImpl(properties, services);
+        players.put(uuid, player);*/
     }
 
     @Override
     public void unloadPlayer(UUID uuid) {
         StrowPlayer player = players.get(uuid);
-
-        for (Property property : player.getProperties()) {
+        //TODO
+        /*for (Property property : player.getProperties()) {
             if (property instanceof PersistentProperty) {
                 ((PersistentProperty) property).save(uuid);
             }
-        }
+        }*/
 
         players.remove(uuid);
     }
@@ -62,5 +63,10 @@ public class PlayerManagerImpl implements PlayerManager {
     @Override
     public StrowPlayer getPlayer(UUID uuid) {
         return players.get(uuid);
+    }
+
+    @Override
+    public Collection<StrowPlayer> getPlayers() {
+        return players.values();
     }
 }

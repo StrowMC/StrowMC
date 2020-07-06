@@ -11,17 +11,11 @@ package fr.strow.core.module.faction.commands;
 import com.google.inject.Inject;
 import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.game.factions.FactionManager;
-import fr.strow.api.game.factions.profile.FactionProfile;
-import fr.strow.api.game.factions.profile.FactionRole;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
 import fr.strow.core.module.faction.commands.conditions.SenderIsInFactionRequirement;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -51,8 +45,8 @@ public class FactionLeaveCommand extends EvolvedCommand {
     @Override
     protected void execute(CommandSender sender) {
         StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
-        FactionRole role = strowSender.get(FactionProfile.class).getFactionGroup().getRole();
-
+        /*FactionRole role = strowSender.get(FactionProfile.class).getFactionGroup().getRole();
+        //TODO
         if (role == FactionRole.LEADER) {
             TextComponent text = new TextComponent("Pour quitter votre faction, vous devez la dissoudre");
             text.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/faction disband"));
@@ -61,6 +55,6 @@ public class FactionLeaveCommand extends EvolvedCommand {
             strowSender.sendMessage(text);
         } else {
             factionManager.leaveFaction(strowSender);
-        }
+        }*/
     }
 }

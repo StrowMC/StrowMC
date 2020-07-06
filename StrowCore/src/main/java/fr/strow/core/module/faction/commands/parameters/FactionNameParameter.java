@@ -23,7 +23,7 @@ public class FactionNameParameter extends Parameter<String> {
     @Override
     public List<Condition<String>> getConditions() {
         return Arrays.asList(
-                new Condition<>() {
+                new Condition<String>() {
                     private final Pattern PATTERN = Pattern.compile("[a-zA-Z].{2,254}");
 
                     @Override
@@ -36,7 +36,7 @@ public class FactionNameParameter extends Parameter<String> {
                         return "Le nom de la faction doit commencer par une lettre et doit comporter aumoins 3 caractères";
                     }
                 },
-                new Condition<>() {
+                new Condition<String>() {
                     @Override
                     public boolean check(String arg) {
                         return !factionManager.factionExists(arg);

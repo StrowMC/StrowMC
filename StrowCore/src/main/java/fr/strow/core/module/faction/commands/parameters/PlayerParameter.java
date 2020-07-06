@@ -15,12 +15,10 @@ import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class PlayerParameter extends Parameter<StrowPlayer> {
 
@@ -41,7 +39,7 @@ public class PlayerParameter extends Parameter<StrowPlayer> {
     @Override
     public List<Condition<String>> getConditions() {
         return Collections.singletonList(
-                new Condition<>() {
+                new Condition<String>() {
                     @Override
                     public boolean check(String arg) {
                         return Bukkit.getPlayer(arg) != null;

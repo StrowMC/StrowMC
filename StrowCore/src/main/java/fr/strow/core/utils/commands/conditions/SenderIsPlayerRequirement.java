@@ -17,7 +17,7 @@ public class SenderIsPlayerRequirement extends Requirement {
 
     @Override
     public Condition<CommandSender> getCondition() {
-        return new Condition<>() {
+        return new Condition<CommandSender>() {
             @Override
             public boolean check(CommandSender sender) {
                 return sender instanceof Player;

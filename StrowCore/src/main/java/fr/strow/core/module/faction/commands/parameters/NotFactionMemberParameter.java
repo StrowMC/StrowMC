@@ -16,7 +16,6 @@ import me.choukas.commands.api.Parameter;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class NotFactionMemberParameter extends Parameter<StrowPlayer> {
 
@@ -32,7 +31,7 @@ public class NotFactionMemberParameter extends Parameter<StrowPlayer> {
     @Override
     public List<Condition<String>> getConditions() {
         return Collections.singletonList(
-                new Condition<>() {
+                new Condition<String>() {
                     @Override
                     public boolean check(String o) {
                         return false;

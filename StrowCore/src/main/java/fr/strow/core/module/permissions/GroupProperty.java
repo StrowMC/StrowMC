@@ -13,7 +13,6 @@ import fr.strow.api.game.permissions.Group;
 import fr.strow.api.game.permissions.Role;
 import fr.strow.api.properties.PersistentProperty;
 import fr.strow.persistence.beans.RoleBean;
-import fr.strow.persistence.beans.permissions.PermissionsBean;
 import fr.strow.persistence.dao.PermissionsDao;
 import fr.strow.persistence.dao.RoleDao;
 
@@ -34,7 +33,8 @@ public class GroupProperty implements PersistentProperty, Group {
         this.permissionsDao = permissionsDao;
     }
 
-    @Override
+    //TODO
+    /*@Override
     public void load(UUID uuid) {
         RoleBean roleBean = rolesDao.loadRole(uuid);
         int roleId = roleBean.getRoleId();
@@ -42,7 +42,7 @@ public class GroupProperty implements PersistentProperty, Group {
 
         PermissionsBean permissionsBean = permissionsDao.loadPermissions(roleId);
         permissions = permissionsBean.getPermissions();
-    }
+    }*/
 
     @Override
     public void save(UUID uuid) {

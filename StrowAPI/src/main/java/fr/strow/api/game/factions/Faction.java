@@ -8,6 +8,8 @@
 
 package fr.strow.api.game.factions;
 
+import fr.strow.api.game.factions.profile.FactionProfile;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -85,4 +87,39 @@ public interface Faction {
      * @return collection of the faction members
      */
     Collection<UUID> getMembers();
+
+    /**
+     * Get faction unique id
+     *
+     * @return faction {@link UUID}
+     * */
+    UUID getUniqueId();
+
+    /**
+     * Get faction description
+     *
+     * @return {@link String} containing faction description
+     * */
+    FactionDescription getFactionDescription();
+
+    /**
+     * Get faction leader
+     *
+     * @return {@link FactionProfile} representing faction leader
+     * */
+    FactionProfile getLeader();
+
+    /**
+     * Change faction leader
+     *
+     * @param leader : {@link FactionProfile} representing new faction leader
+     * */
+    void setLeader(FactionProfile leader);
+
+    /**
+     * Send a message to all online faction members
+     *
+     * @param component :  {@link BaseComponent} containing message
+     * */
+    void sendMessage(BaseComponent component);
 }

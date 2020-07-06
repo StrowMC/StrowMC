@@ -11,9 +11,9 @@ package fr.strow.core.module.faction.commands.parameters;
 import fr.strow.api.game.players.StrowPlayer;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
-import org.bukkit.command.CommandSender;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public class FactionMemberParameter extends Parameter<StrowPlayer> {
 
@@ -24,7 +24,7 @@ public class FactionMemberParameter extends Parameter<StrowPlayer> {
     @Override
     public List<Condition<String>> getConditions() {
         return Collections.singletonList(
-                new Condition<>() {
+                new Condition<String>() {
                     @Override
                     public boolean check(String o) {
                         return false;

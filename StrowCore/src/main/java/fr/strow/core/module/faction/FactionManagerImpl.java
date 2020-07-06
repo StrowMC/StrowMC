@@ -9,20 +9,13 @@
 package fr.strow.core.module.faction;
 
 import com.google.inject.Inject;
-import fr.strow.api.game.factions.Faction;
 import fr.strow.api.game.factions.FactionManager;
-import fr.strow.api.game.factions.events.FactionCreateEvent;
 import fr.strow.api.game.factions.profile.FactionInvitation;
-import fr.strow.api.game.factions.profile.FactionProfile;
 import fr.strow.api.game.players.StrowPlayer;
-import fr.strow.api.game.players.UniqueId;
 import fr.strow.api.properties.PropertiesHandler;
-import fr.strow.core.module.faction.properties.player.profile.FactionProfileProperty;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 public class FactionManagerImpl implements FactionManager {
 
@@ -34,10 +27,10 @@ public class FactionManagerImpl implements FactionManager {
         this.propertiesHandler = propertiesHandler;
         this.plugin = plugin;
     }
-
+    //TODO
     @Override
     public void createFaction(StrowPlayer leader, String name) {
-        Optional<FactionProfile> optionalFactionProfile = leader.getOptionalProperty(FactionProfile.class);
+        /*Optional<FactionProfile> optionalFactionProfile = leader.getOptionalProperty(FactionProfile.class);
 
         if (optionalFactionProfile.isPresent()) {
             throw new IllegalArgumentException();
@@ -58,7 +51,7 @@ public class FactionManagerImpl implements FactionManager {
                 Faction faction = new FactionImpl(uuid, new FactionDescriptionImpl(name, description), profile);
                 factions.add(faction);
             }
-        }
+        }*/
     }
 
     @Override

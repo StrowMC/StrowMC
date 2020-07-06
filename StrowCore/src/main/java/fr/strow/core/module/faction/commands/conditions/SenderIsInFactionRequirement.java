@@ -28,7 +28,7 @@ public class SenderIsInFactionRequirement extends Requirement {
 
     @Override
     public Condition<CommandSender> getCondition() {
-        return new Condition<>() {
+        return new Condition<CommandSender>() {
             @Override
             public boolean check(CommandSender sender) {
                 if (sender instanceof Player) {

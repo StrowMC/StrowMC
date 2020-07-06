@@ -29,13 +29,13 @@ import java.util.regex.Pattern;
 
 public class FactionCreateCommand extends EvolvedCommand {
 
-    private static final Parameter<String> DESCRIPTION = new Parameter<>("description") {
+    private static final Parameter<String> DESCRIPTION = new Parameter<String>("description") {
 
         private final Pattern PATTERN = Pattern.compile(".{3,254}");
 
         @Override
         public List<Condition<String>> getConditions() {
-            return Collections.singletonList(new Condition<>() {
+            return Collections.singletonList(new Condition<String>() {
                 @Override
                 public boolean check(String arg) {
                     return PATTERN.matcher(arg).matches();

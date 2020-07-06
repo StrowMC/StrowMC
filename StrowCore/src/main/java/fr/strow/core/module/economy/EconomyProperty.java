@@ -28,13 +28,14 @@ public class EconomyProperty implements PersistentProperty, Economy {
         this.economyDao = economyDao;
     }
 
-    @Override
+    //TODO
+    /*@Override
     public void load(UUID uuid) {
         this.uuid = uuid;
 
         EconomyBean bean = economyDao.loadEconomy(uuid);
         coins = bean.getCoins();
-    }
+    }*/
 
     @Override
     public void save(UUID uuid) {

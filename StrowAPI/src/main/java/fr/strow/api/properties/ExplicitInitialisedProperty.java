@@ -9,7 +9,7 @@ public interface ExplicitInitialisedProperty<T extends PropertyFactory> {
     @SuppressWarnings("unchecked")
     default T factory() {
         T factory = null;
-        TypeToken<T> type = new TypeToken<>() {};
+        TypeToken<T> type = new TypeToken<T>() {};
 
         try {
             factory = (T) type.getType().getClass().getConstructor().newInstance();

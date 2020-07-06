@@ -8,16 +8,12 @@
 
 package fr.strow.core.module.faction.commands.conditions;
 
-import fr.strow.api.game.factions.profile.FactionProfile;
-import fr.strow.api.game.factions.profile.FactionRole;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Requirement;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Optional;
 
 public class SenderIsLeaderRequirement extends Requirement {
 
@@ -29,15 +25,16 @@ public class SenderIsLeaderRequirement extends Requirement {
 
     @Override
     public Condition<CommandSender> getCondition() {
-        return new Condition<>() {
+        return new Condition<CommandSender>() {
 
             @Override
             public boolean check(CommandSender sender) {
                 if (sender instanceof Player) {
                     StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
-                    Optional<FactionProfile> optionalFactionProfile = Optional.ofNullable(strowSender.get(FactionProfile.class));
-
-                    return optionalFactionProfile.isPresent() && optionalFactionProfile.get().getFactionGroup().getRole() == FactionRole.LEADER;
+                    //Optional<FactionProfile> optionalFactionProfile = Optional.ofNullable(strowSender.get(FactionProfile.class));
+                    //TODO
+                    //return optionalFactionProfile.isPresent() && optionalFactionProfile.get().getFactionGroup().getRole() == FactionRole.LEADER;
+                    return false;
                 } else {
                     return false;
                 }

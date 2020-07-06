@@ -10,7 +10,6 @@ package fr.strow.core.module.economy.commands;
 
 import com.google.inject.Inject;
 import fr.strow.api.commands.CommandsManager;
-import fr.strow.api.game.economy.Economy;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
 import fr.strow.core.utils.commands.conditions.SenderIsPlayerRequirement;
@@ -45,7 +44,7 @@ public class CoinsCommand extends EvolvedCommand {
     @Override
     protected void execute(CommandSender sender) {
         StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
-
-        strowSender.sendMessage("Vous possèdez %s$ sur votre compte", strowSender.get(Economy.class));
+        //TODO
+        //strowSender.sendMessage("Vous possédez %s$ sur votre compte", strowSender.get(Economy.class));
     }
 }

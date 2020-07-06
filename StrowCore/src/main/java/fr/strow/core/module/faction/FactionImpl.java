@@ -1,6 +1,8 @@
 package fr.strow.core.module.faction;
 
 import fr.strow.api.game.factions.Faction;
+import fr.strow.api.game.factions.FactionDescription;
+import fr.strow.api.game.factions.profile.FactionProfile;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -13,9 +15,9 @@ public class FactionImpl implements Faction {
 
     private final UUID uuid;
     private final String name;
-    private final String description;
+    private final FactionDescription description;
 
-    private UUID leader;
+    private FactionProfile leader;
     private ItemStack[] chest;
     private int points;
     private Location home;
@@ -29,8 +31,20 @@ public class FactionImpl implements Faction {
                        String description,
                        FactionProfile leader) {
         this.uuid = uuid;
-        this.description = description;
+        this.description = new FactionDescription() {
+            private String description;
+            @Override
+            public String getDescription() {
+                return description;
+            }
+
+            @Override
+            public void setDescription(String description) {
+                this.description = description;
+            }
+        };
         this.leader = leader;
+        this.name = name;
     }
 
     public FactionImpl(UUID uuid,
@@ -52,7 +66,9 @@ public class FactionImpl implements Faction {
 
         this.warps = warps;
         this.claims = claims;
-        this.members = members;
+        this.members = new ArrayList<>(); //TODO
+        //this.members = members;
+        this.name = ""; //TODO
     }
 
     @Override
@@ -62,8 +78,8 @@ public class FactionImpl implements Faction {
 
     @Override
     public void sendMessage(BaseComponent component) {
-        for (FactionProfile member : members) {
-            Bukkit.getPlayer(member.getUniqueId()).spigot().sendMessage(component);
+        for (UUID member : members) {
+            Bukkit.getPlayer(member).spigot().sendMessage(component);
         }
     }
 
@@ -142,7 +158,7 @@ public class FactionImpl implements Faction {
     }
 
     @Override
-    public List<FactionProfile> getMembers() {
-        return members;
+    public List<UUID> getMembers() {
+        return new ArrayList<>(members);
     }
 }

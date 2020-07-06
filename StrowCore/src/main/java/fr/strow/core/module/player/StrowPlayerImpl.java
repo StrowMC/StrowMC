@@ -10,12 +10,9 @@ package fr.strow.core.module.player;
 
 import fr.strow.api.game.AbstractProperty;
 import fr.strow.api.game.AbstractService;
-import fr.strow.api.game.factions.FactionName;
-import fr.strow.api.game.factions.profile.FactionClaimer;
 import fr.strow.api.game.players.StrowPlayer;
 import fr.strow.api.properties.Property;
 import fr.strow.api.services.Service;
-import fr.strow.core.module.faction.FactionImpl;
 
 import java.util.Collection;
 import java.util.Map;
@@ -46,18 +43,18 @@ public class StrowPlayerImpl implements StrowPlayer {
                         entry -> (AbstractService) entry.getValue()
                 ));
     }
-
-    @Override
+    //TODO
+    //@Override
     public <T extends Property> void registerProperty(T property) {
         properties.put(property.getClass(), property);
     }
 
-    @Override
+    //@Override
     public <T extends Property> void unregisterProperty(Class<T> property) {
         properties.remove(property);
     }
 
-    @Override
+    //@Override
     public Collection<Property> getProperties() {
         return properties.values();
     }
@@ -65,6 +62,7 @@ public class StrowPlayerImpl implements StrowPlayer {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends AbstractProperty> T getProperty(Class<T> property) {
+        properties.get(property);
         return (T) abstractProperties.get(property);
     }
 
