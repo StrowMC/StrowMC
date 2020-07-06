@@ -9,14 +9,13 @@
 package fr.strow.core.module.player;
 
 import fr.strow.api.game.AbstractProperty;
-import fr.strow.api.game.AbstractService;
 import fr.strow.api.game.players.StrowPlayer;
 import fr.strow.api.properties.Property;
-import fr.strow.api.services.Service;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class StrowPlayerImpl implements StrowPlayer {
@@ -24,10 +23,10 @@ public class StrowPlayerImpl implements StrowPlayer {
     private final Map<Class<? extends Property>, Property> properties;
     private final Map<Class<? extends AbstractProperty>, AbstractProperty> abstractProperties;
 
-    private final Map<Class<? extends AbstractService>, AbstractService> services;
+    private final UUID uuid;
 
     @SuppressWarnings("unchecked")
-    public StrowPlayerImpl(Map<Class<? extends Property>, Property> properties, Map<Class<? extends Service>, Service> services) {
+    public StrowPlayerImpl(UUID uuid, Map<Class<? extends Property>, Property> properties) {
         this.properties = properties;
         this.abstractProperties = properties.entrySet()
                 .stream()
@@ -35,13 +34,7 @@ public class StrowPlayerImpl implements StrowPlayer {
                         entry -> (Class<? extends AbstractProperty>) entry.getKey(),
                         entry -> (AbstractProperty) entry.getValue()
                 ));
-
-        this.services = services.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        entry -> (Class<? extends AbstractService>) entry.getKey(),
-                        entry -> (AbstractService) entry.getValue()
-                ));
+        this.uuid = uuid;
     }
     //TODO
     //@Override
@@ -72,9 +65,8 @@ public class StrowPlayerImpl implements StrowPlayer {
         return Optional.ofNullable((T) abstractProperties.get(property));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T extends AbstractService> T getService(Class<T> service) {
-        return (T) services.get(service);
+    public UUID getUniqueId() {
+        return uuid;
     }
 }

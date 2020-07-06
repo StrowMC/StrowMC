@@ -13,6 +13,7 @@ import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.game.factions.FactionManager;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
+import fr.strow.api.service.MessageService;
 import fr.strow.core.module.faction.commands.conditions.SenderIsInFactionRequirement;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
@@ -24,9 +25,10 @@ public class FactionLeaveCommand extends EvolvedCommand {
     private final CommandsManager commandsManager;
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+    private final MessageService messageService;
 
     @Inject
-    public FactionLeaveCommand(CommandsManager commandsManager, PlayerManager playerManager, FactionManager factionManager) {
+    public FactionLeaveCommand(CommandsManager commandsManager, PlayerManager playerManager, FactionManager factionManager, MessageService messageService) {
         super(CommandDescription.builder()
                 .withName("leave")
                 .withDescription("Quitter une faction")
@@ -35,6 +37,7 @@ public class FactionLeaveCommand extends EvolvedCommand {
         this.commandsManager = commandsManager;
         this.playerManager = playerManager;
         this.factionManager = factionManager;
+        this.messageService = messageService;
     }
 
     @Override
@@ -52,7 +55,7 @@ public class FactionLeaveCommand extends EvolvedCommand {
             text.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/faction disband"));
             text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Cliquez ici pour dissoudre votre faction").create()));
 
-            strowSender.sendMessage(text);
+            messageService.sendMessage(strowSender.getUniqueId(), text);
         } else {
             factionManager.leaveFaction(strowSender);
         }*/

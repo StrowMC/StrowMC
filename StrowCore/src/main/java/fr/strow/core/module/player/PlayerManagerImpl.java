@@ -11,8 +11,10 @@ package fr.strow.core.module.player;
 import com.google.inject.Inject;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
-import fr.strow.api.properties.*;
-import fr.strow.api.services.ServicesHandler;
+import fr.strow.api.properties.ImplicitInitialisedProperty;
+import fr.strow.api.properties.OptionalPersistentProperty;
+import fr.strow.api.properties.PropertiesHandler;
+import fr.strow.api.properties.Property;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,12 +26,10 @@ public class PlayerManagerImpl implements PlayerManager {
     private static final Map<UUID, StrowPlayer> players = new HashMap<>();
 
     private final PropertiesHandler propertiesHandler;
-    private final ServicesHandler servicesHandler;
 
     @Inject
-    public PlayerManagerImpl(PropertiesHandler propertiesHandler, ServicesHandler servicesHandler) {
+    public PlayerManagerImpl(PropertiesHandler propertiesHandler) {
         this.propertiesHandler = propertiesHandler;
-        this.servicesHandler = servicesHandler;
     }
 
     @Override

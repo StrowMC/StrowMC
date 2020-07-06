@@ -9,8 +9,11 @@
 package fr.strow.api.game.players;
 
 import fr.strow.api.properties.PropertiesOwner;
-import fr.strow.api.services.ServicesOwner;
 
-public interface StrowPlayer extends PropertiesOwner, ServicesOwner {
+import java.util.UUID;
+
+public interface StrowPlayer extends PropertiesOwner {
+
+    UUID getUniqueId();
 
 }

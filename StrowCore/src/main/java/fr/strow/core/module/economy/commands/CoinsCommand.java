@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
+import fr.strow.api.service.MessageService;
 import fr.strow.core.utils.commands.conditions.SenderIsPlayerRequirement;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
@@ -22,9 +23,10 @@ public class CoinsCommand extends EvolvedCommand {
 
     private final CommandsManager commandsManager;
     private final PlayerManager playerManager;
+    private final MessageService messageService;
 
     @Inject
-    public CoinsCommand(CommandsManager commandsManager, PlayerManager playerManager) {
+    public CoinsCommand(CommandsManager commandsManager, PlayerManager playerManager, MessageService messageService) {
         super(CommandDescription.builder()
                 .withName("balance")
                 .withAliases("coins")
@@ -32,6 +34,7 @@ public class CoinsCommand extends EvolvedCommand {
 
         this.commandsManager = commandsManager;
         this.playerManager = playerManager;
+        this.messageService = messageService;
 
         define();
     }
@@ -45,6 +48,6 @@ public class CoinsCommand extends EvolvedCommand {
     protected void execute(CommandSender sender) {
         StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
         //TODO
-        //strowSender.sendMessage("Vous possédez %s$ sur votre compte", strowSender.get(Economy.class));
+        messageService.sendMessage(strowSender.getUniqueId(), "Vous possédez %s$ sur votre compte"/*, strowSender.get(Economy.class)*/);
     }
 }
