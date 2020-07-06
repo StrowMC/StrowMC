@@ -15,7 +15,10 @@ import fr.strow.persistence.beans.PlayerBean;
 import fr.strow.persistence.data.redis.RedisAccess;
 import redis.clients.jedis.Jedis;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class EconomyDao {
 
@@ -49,5 +52,22 @@ public class EconomyDao {
 
             jedis.hset(Tables.PLAYERS, uuid.toString(), gson.toJson(playerBean));
         }
+    }
+
+    public List<PlayerBean> getRichestPlayers(int n) {
+        List<PlayerBean> beans;
+
+        try (Jedis jedis = redisAccess.getResource()) {
+            beans = jedis.hgetAll(Tables.PLAYERS).values()
+                    .stream()
+                    .map(s -> gson.fromJson(s, PlayerBean.class))
+                    .collect(Collectors.toList());
+        }
+
+        return beans
+                .stream()
+                .sorted(Comparator.comparingInt(PlayerBean::getCoins))
+                .limit(n)
+                .collect(Collectors.toList());
     }
 }

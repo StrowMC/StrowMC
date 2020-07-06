@@ -9,52 +9,46 @@
 package fr.strow.core.module.economy;
 
 import com.google.inject.Injector;
-import fr.strow.api.configuration.AbstractConfiguration;
+import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.modules.StrowModule;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PersistentProperty;
+import fr.strow.api.properties.PropertiesCollection;
+import fr.strow.api.properties.PropertiesHandler;
+import fr.strow.api.properties.Property;
+import fr.strow.core.module.economy.commands.BalTopCommand;
+import fr.strow.core.module.economy.commands.CoinsCommand;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.utils.Tuple;
-import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class EconomyModule extends StrowModule {
 
+    private final Injector injector;
+
     public EconomyModule(Injector injector) {
-        super(injector);
-    }
+        super(
+                injector.getInstance(JavaPlugin.class),
+                injector.getInstance(CommandsManager.class),
+                injector.getInstance(PropertiesHandler.class)
+        );
 
-    @Override
-    public void onEnable() {
-
-    }
-
-    @Override
-    public void onDisable() {
-
-    }
-
-    @Override
-    public List<Listener> getListeners() {
-        return new ArrayList<>();
+        this.injector = injector;
     }
 
     @Override
     public List<Tuple<String, EvolvedCommand>> getCommands() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<AbstractConfiguration> getConfigurations() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<AbstractProperty> getProperties() {
         return Arrays.asList(
-                injector.getInstance(EconomyProperty.class)
+                Tuple.of("baltop", injector.getInstance(BalTopCommand.class)),
+                Tuple.of("coins", injector.getInstance(CoinsCommand.class))
+        );
+    }
+
+    @Override
+    public List<Class<? extends Property>> getProperties() {
+        return Collections.singletonList(
+                EconomyProperty.class
         );
     }
 }

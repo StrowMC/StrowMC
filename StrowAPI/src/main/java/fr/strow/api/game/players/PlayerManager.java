@@ -8,6 +8,7 @@
 
 package fr.strow.api.game.players;
 
+import java.util.Collection;
 import java.util.UUID;
 
 public interface PlayerManager {
@@ -15,4 +16,8 @@ public interface PlayerManager {
     void loadPlayer(UUID uuid);
 
     void unloadPlayer(UUID uuid);
+
+    StrowPlayer getPlayer(UUID uuid);
+
+    Collection<StrowPlayer> getPlayers();
 }

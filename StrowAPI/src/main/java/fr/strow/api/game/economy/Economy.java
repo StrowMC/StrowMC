@@ -8,9 +8,9 @@
 
 package fr.strow.api.game.economy;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.game.AbstractProperty;
 
-public interface Economy extends Property {
+public interface Economy extends AbstractProperty {
 
     int getCoins();
 

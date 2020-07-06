@@ -7,21 +7,18 @@
  */
 
 package fr.strow.core;
- 
+
+import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Module;
-import fr.strow.api.StrowAPI;
 import fr.strow.api.StrowPlugin;
-import fr.strow.api.modules.ModuleHandler;
-import fr.strow.persistence.DataService;
+import fr.strow.api.modules.ModulesHandler;
 
 import java.io.File;
 
-public class StrowCore extends StrowPlugin implements StrowAPI {
+public class StrowCore extends StrowPlugin {
 
     private DataService dataService;
-    private Injector injector;
-    private ModuleHandler moduleHandler;
+    private ModulesHandler modulesHandler;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
@@ -32,24 +29,19 @@ public class StrowCore extends StrowPlugin implements StrowAPI {
             dataFolder.mkdir();
         }
 
-        dataService = new DataService(dataFolder.toPath());
+        Injector injector = Guice.createInjector(new SampleBindModule(this));
+
+        dataService = injector.getInstance(DataService.class);
         dataService.start();
 
-        injector = dataService.createChildInjector(new SampleBindModule(this));
-
-        moduleHandler = new StrowModuleHandler(injector);
-        moduleHandler.enableAllModules();
+        modulesHandler = new SampleModulesHandler(injector);
+        modulesHandler.enableModules();
     }
 
     @Override
     public void onDisable() {
         dataService.shutdown();
 
-        moduleHandler.disableAllModules();
-    }
-
-    @Override
-    public Injector createInjector(Module... modules) {
-        return injector.createChildInjector(modules);
+        modulesHandler.disableModules();
     }
 }
