@@ -1,6 +1,6 @@
 package fr.strow.core.utils;
 
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -22,5 +22,11 @@ public class Utils {
         }else{
             runnable.run();
         }
+    }
+    public static <K, V> Map<K, List<V>> updateMapList(K key, V newValue, Map<K, List<V>> map){
+        List<V> list = map.getOrDefault(key, new ArrayList<>());
+        list.add(newValue);
+        map.put(key, list);
+        return map;
     }
 }
