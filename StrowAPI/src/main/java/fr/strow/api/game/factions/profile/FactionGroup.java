@@ -8,9 +8,9 @@
 
 package fr.strow.api.game.factions.profile;
 
-import fr.strow.api.game.AbstractProperty;
+import fr.strow.api.properties.Property;
 
-public interface FactionGroup extends AbstractProperty {
+public interface FactionGroup extends Property {
 
     FactionRole getRole();
 

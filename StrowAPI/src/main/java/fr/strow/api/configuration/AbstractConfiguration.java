@@ -26,7 +26,7 @@ public abstract class AbstractConfiguration {
             boolean oldAccessible = field.isAccessible();
             field.setAccessible(true);
             try {
-                field.set(field, config.get(path + "." + annotation.path()));
+                field.set(field, config.get(path + "." + annotation.value()));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -39,8 +39,8 @@ public abstract class AbstractConfiguration {
             boolean oldAccessible = field.isAccessible();
             field.setAccessible(true);
             try {
-                config.set(path + "." + annotation.path(), field.get(field));
-                field.set(field, config.get(path + "." + annotation.path()));
+                config.set(path + "." + annotation.value(), field.get(field));
+                field.set(field, config.get(path + "." + annotation.value()));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
