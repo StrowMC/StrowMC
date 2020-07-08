@@ -49,4 +49,12 @@ public class PunishmentProperty implements ImplicitInitialisedProperty, Optional
         if (punishments.size() == 0) return Optional.empty();
         return Optional.of(punishments.get(punishments.size() - 1));
     }
+
+    public List<Punishment> getOrderedByDecreasingDate() {
+        return punishments.stream().sorted((o1, o2) -> {
+            if (o1.getEnd().before(o2.getEnd())) return 1;
+            if (o1.getEnd().equals(o2.getEnd())) return 0;
+            return -1;
+        }).collect(Collectors.toList());
+    }
 }

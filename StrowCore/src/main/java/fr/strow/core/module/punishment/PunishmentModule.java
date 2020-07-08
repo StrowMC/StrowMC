@@ -54,7 +54,7 @@ public class PunishmentModule extends StrowModule {
         return Arrays.asList(
                 Tuple.of("ban", injector.getInstance(BanCommand.class)),
                 Tuple.of("listsanction", injector.getInstance(ListSanctionCommand.class)),
-                Tuple.of("mute", injector.getInstance(MuteCommand.class)),
+                Tuple.of("kick", injector.getInstance(KickCommand.class)),
                 Tuple.of("tempban", injector.getInstance(TempBanCommand.class)),
                 Tuple.of("tempmute", injector.getInstance(TempMuteCommand.class))
         );

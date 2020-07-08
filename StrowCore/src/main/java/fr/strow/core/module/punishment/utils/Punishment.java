@@ -60,7 +60,7 @@ public class Punishment {
     }
 
     public boolean isActive() {
-        return Instant.now().isAfter(end.toInstant());
+        return end == null || Instant.now().isAfter(end.toInstant());
     }
 
     public String getModeratorName() {
@@ -68,6 +68,6 @@ public class Punishment {
     }
 
     public enum Type {
-        BAN, MUTE
+        BAN, MUTE, KICK
     }
 }
