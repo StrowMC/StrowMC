@@ -24,7 +24,7 @@ public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent e) {
-        playerManager.getPlayer(e.getPlayer().getUniqueId()).getOptionalProperty(PunishmentProperty.class).flatMap(punishmentProperty -> punishmentProperty.getMostRecentActivePunishementByType(Punishment.Type.MUTE)).ifPresent(punishment -> {
+        playerManager.getPlayer(e.getPlayer().getUniqueId()).getOptionalProperty(PunishmentProperty.class).flatMap(punishmentProperty -> punishmentProperty.getMostRecentActivePunishmentByType(Punishment.Type.MUTE)).ifPresent(punishment -> {
             e.setCancelled(true);
             LocalDateTime end = punishment.getEnd().toLocalDateTime();
             e.getPlayer().sendMessage("&cTu ne peux pas parler car tu es mute. Fin le : " + end.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " à " + end.format(DateTimeFormatter.ofPattern("hh:mm:ss")));

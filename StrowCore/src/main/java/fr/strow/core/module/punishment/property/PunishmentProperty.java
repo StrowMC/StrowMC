@@ -1,9 +1,7 @@
 package fr.strow.core.module.punishment.property;
 
-import fr.strow.api.game.AbstractProperty;
 import fr.strow.api.properties.ImplicitInitialisedProperty;
 import fr.strow.api.properties.OptionalPersistentProperty;
-import fr.strow.api.properties.Property;
 import fr.strow.core.module.punishment.utils.Punishment;
 
 import java.util.ArrayList;
@@ -15,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Hokkaydo on 07-07-2020.
  */
-public class PunishmentProperty implements ImplicitInitialisedProperty, OptionalPersistentProperty, Property, AbstractProperty {
+public class PunishmentProperty implements ImplicitInitialisedProperty, OptionalPersistentProperty {
 
     private final List<Punishment> punishments = new ArrayList<>();
 
@@ -42,7 +40,7 @@ public class PunishmentProperty implements ImplicitInitialisedProperty, Optional
         punishments.add(punishment);
     }
 
-    public Optional<Punishment> getMostRecentActivePunishementByType(Punishment.Type type) {
+    public Optional<Punishment> getMostRecentActivePunishmentByType(Punishment.Type type) {
         List<Punishment> punishments = getByType(type).stream().filter(Punishment::isActive).sorted((o1, o2) -> {
             if (o1.getEnd().before(o2.getEnd())) return -1;
             if (o1.getEnd().equals(o2.getEnd())) return 0;

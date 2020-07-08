@@ -21,7 +21,7 @@ public class ConnectionPunishmentManager {
         Optional<PunishmentProperty> punishmentProperty = playerManager.getPlayer(player).getOptionalProperty(PunishmentProperty.class);
         if (!punishmentProperty.isPresent()) return;
 
-        punishmentProperty.get().getMostRecentActivePunishementByType(Punishment.Type.BAN).ifPresent(punishment -> {
+        punishmentProperty.get().getMostRecentActivePunishmentByType(Punishment.Type.BAN).ifPresent(punishment -> {
             StrowPlayer moderator = playerManager.getPlayer(punishment.getModeratorId());
             StringBuilder stringBuilder = new StringBuilder();
 
