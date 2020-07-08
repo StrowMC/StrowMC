@@ -1,14 +1,20 @@
 package fr.strow.core.module.spawner;
 
 import com.google.inject.Injector;
-import fr.strow.api.configuration.AbstractConfiguration;
+import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.modules.StrowModule;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PropertiesHandler;
+import fr.strow.api.properties.Property;
+import fr.strow.core.module.spawner.command.SpawnerCommand;
+import fr.strow.core.module.spawner.command.SpawnerGiveCommand;
+import fr.strow.core.module.spawner.listener.InventoryClickListener;
 import fr.strow.core.module.spawner.property.SpawnerProperty;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.utils.Tuple;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,37 +23,32 @@ import java.util.List;
  */
 public class SpawnerModule extends StrowModule {
 
+    private final Injector injector;
+
     public SpawnerModule(Injector injector) {
-        super(injector);
-    }
-
-    @Override
-    public void onEnable() {
-
-    }
-
-    @Override
-    public void onDisable() {
-
+        super(
+                injector.getInstance(JavaPlugin.class),
+                injector.getInstance(CommandsManager.class),
+                injector.getInstance(PropertiesHandler.class)
+        );
+        this.injector = injector;
     }
 
     @Override
     public List<Listener> getListeners() {
-        return null;
+        return Collections.singletonList(injector.getInstance(InventoryClickListener.class));
     }
 
     @Override
     public List<Tuple<String, EvolvedCommand>> getCommands() {
-        return null;
+        return Arrays.asList(
+                Tuple.of("spawnergive", injector.getInstance(SpawnerGiveCommand.class)),
+                Tuple.of("spawner", injector.getInstance(SpawnerCommand.class))
+        );
     }
 
     @Override
-    public List<AbstractConfiguration> getConfigurations() {
-        return null;
-    }
-
-    @Override
-    public List<AbstractProperty> getProperties() {
-        return Collections.singletonList(injector.getInstance(SpawnerProperty.class));
+    public List<Class<? extends Property>> getProperties() {
+        return Collections.singletonList(SpawnerProperty.class);
     }
 }
