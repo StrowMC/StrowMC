@@ -1,16 +1,15 @@
 package fr.strow.core.module.mine;
 
 import com.google.inject.Injector;
-import fr.strow.api.configuration.AbstractConfiguration;
+import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.modules.StrowModule;
-import fr.strow.api.properties.AbstractProperty;
+import fr.strow.api.properties.PropertiesHandler;
 import fr.strow.core.StrowCore;
 import fr.strow.core.module.mine.command.MineCommand;
 import fr.strow.core.module.mine.util.Mine;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.utils.Tuple;
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -27,7 +26,11 @@ public class MineModule extends StrowModule {
     private static final List<Mine> mines = new ArrayList<>();
 
     public MineModule(Injector injector) {
-        super(injector);
+        super(
+                injector.getInstance(JavaPlugin.class),
+                injector.getInstance(CommandsManager.class),
+                injector.getInstance(PropertiesHandler.class)
+        );
     }
 
     @Override
@@ -53,23 +56,8 @@ public class MineModule extends StrowModule {
     }
 
     @Override
-    public List<Listener> getListeners() {
-        return null;
-    }
-
-    @Override
     public List<Tuple<String, EvolvedCommand>> getCommands() {
         return Collections.singletonList(Tuple.of("mine", new MineCommand()));
-    }
-
-    @Override
-    public List<AbstractConfiguration> getConfigurations() {
-        return null;
-    }
-
-    @Override
-    public List<AbstractProperty> getProperties() {
-        return null;
     }
 
     public static void registerMine(Mine mine){

@@ -1,9 +1,11 @@
 package fr.strow.core.module.mine.command.parameter;
 
+import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
 import org.bukkit.Material;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,16 +16,6 @@ public class MineBlocksParameter extends Parameter<String> {
 
     public MineBlocksParameter() {
         super("time");
-    }
-
-    @Override
-    public Optional<String> check(String s) {
-        return match(s) ? Optional.of(s) : Optional.empty();
-    }
-
-    @Override
-    public String getMessage(String s) {
-        return "§cArgument non reconnu. Veuillez donner la configurations sous la forme number%id | number%name";
     }
 
     private boolean match(String s){
@@ -39,11 +31,34 @@ public class MineBlocksParameter extends Parameter<String> {
         return true;
     }
 
-    private boolean isInteger(String s){
-        try{
+    private boolean isInteger(String s) {
+        try {
             Integer.parseInt(s);
             return true;
-        }catch (NumberFormatException ignored){}
+        } catch (NumberFormatException ignored) {
+        }
         return false;
+    }
+
+    @Override
+    public List<Condition<String>> getConditions() {
+        return Collections.singletonList(
+                new Condition<String>() {
+                    @Override
+                    public boolean check(String o) {
+                        return match(o);
+                    }
+
+                    @Override
+                    public String getMessage(String s) {
+                        return "§cArgument non reconnu. Veuillez donner la configurations sous la forme number%id | number%name";
+                    }
+                }
+        );
+    }
+
+    @Override
+    public String get(String arg) {
+        return arg;
     }
 }

@@ -1,8 +1,11 @@
 package fr.strow.core.module.mine.command.parameter;
 
+import fr.strow.core.utils.Utils;
+import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Hokkaydo on 17-06-2020.
@@ -13,22 +16,26 @@ public class MineTimeParameter extends Parameter<Integer> {
         super("time");
     }
 
-
     @Override
-    public Optional<Integer> check(String s) {
-        return isInteger(s) ? Optional.ofNullable(Integer.parseInt(s)) : Optional.empty();
+    public List<Condition<String>> getConditions() {
+        return Collections.singletonList(
+                new Condition<String>() {
+                    @Override
+                    public boolean check(String o) {
+                        return Utils.isInteger(o);
+                    }
+
+                    @Override
+                    public String getMessage(String s) {
+                        return "§cArgument invalide. Veuillez entrer un argument sous forme de nombre";
+                    }
+
+                }
+        );
     }
 
     @Override
-    public String getMessage(String s) {
-        return "§cArgument invalide. Veuillez entrer un argument sous forme de nombre";
-    }
-
-    private boolean isInteger(String s){
-        try{
-            Integer.parseInt(s);
-            return true;
-        }catch (NumberFormatException ignored){}
-        return false;
+    public Integer get(String arg) {
+        return Integer.parseInt(arg);
     }
 }

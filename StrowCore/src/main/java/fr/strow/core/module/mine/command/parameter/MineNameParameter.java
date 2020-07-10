@@ -1,8 +1,9 @@
 package fr.strow.core.module.mine.command.parameter;
 
+import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  * Created by Hokkaydo on 17-06-2020.
@@ -14,12 +15,12 @@ public class MineNameParameter extends Parameter<String> {
     }
 
     @Override
-    public Optional<String> check(String s) {
-        return Optional.ofNullable(s);
+    public List<Condition<String>> getConditions() {
+        return null;
     }
 
     @Override
-    public String getMessage(String s) {
-        return "";
+    public String get(String arg) {
+        return arg;
     }
 }
