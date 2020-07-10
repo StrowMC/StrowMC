@@ -1,5 +1,17 @@
 CREATE DATABASE IF NOT EXISTS Strow;
 
+DROP TABLE IF EXISTS banned_players;
+CREATE TABLE banned_players
+(
+    uuid               VARCHAR(36),
+    reason             VARCHAR(255),
+    sanctioner_uuid    VARCHAR(36),
+    starting_timestamp TIMESTAMP NULL,
+    ending_timestamp   TIMESTAMP NULL,
+
+    PRIMARY KEY (uuid)
+);
+
 DROP TABLE IF EXISTS ctf_stats;
 CREATE TABLE ctf_stats
 (
@@ -11,7 +23,7 @@ CREATE TABLE ctf_stats
 DROP TABLE IF EXISTS faction_claims;
 CREATE TABLE faction_claims
 (
-    faction_uuid VARCHAR(255),
+    faction_uuid VARCHAR(36),
     location_id  INT,
 
     PRIMARY KEY (faction_uuid)
@@ -22,6 +34,15 @@ CREATE TABLE faction_homes
 (
     faction_uuid VARCHAR(255),
     location_id  INT,
+
+    PRIMARY KEY (faction_uuid)
+);
+
+DROP TABLE IF EXISTS faction_inventories;
+CREATE TABLE faction_inventories
+(
+    faction_uuid VARCHAR(36),
+    content      TEXT,
 
     PRIMARY KEY (faction_uuid)
 );
@@ -51,20 +72,6 @@ CREATE TABLE faction_profiles
 
     PRIMARY KEY (uuid)
 );
-
-DROP TABLE IF EXISTS faction_roles;
-CREATE TABLE faction_roles
-(
-    id   SMALLINT,
-    name VARCHAR(255),
-
-    PRIMARY KEY (id)
-);
-
-INSERT INTO faction_roles(id, name)
-VALUES (1, 'member'),
-       (2, 'officer'),
-       (3, 'leader');
 
 DROP TABLE IF EXISTS faction_warps;
 CREATE TABLE faction_warps
@@ -114,6 +121,18 @@ CREATE TABLE locations
     PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS muted_players;
+CREATE TABLE muted_players
+(
+    uuid               VARCHAR(36),
+    reason             VARCHAR(255),
+    sanctioner_uuid    VARCHAR(36),
+    starting_timestamp TIMESTAMP NULL,
+    ending_timestamp   TIMESTAMP NULL,
+
+    PRIMARY KEY (uuid)
+);
+
 DROP TABLE IF EXISTS proxy_permissions;
 CREATE TABLE proxy_permissions
 (
@@ -137,23 +156,15 @@ CREATE TABLE players
     PRIMARY KEY (uuid)
 );
 
-DROP TABLE IF EXISTS `roles`;
-CREATE TABLE `roles`
+DROP TABLE IF EXISTS quest_progresses;
+CREATE TABLE quest_progresses
 (
-    id   SMALLINT,
-    name VARCHAR(255),
+    uuid     VARCHAR(36),
+    id       INT,
+    progress INT,
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (uuid)
 );
-
-INSERT INTO `roles`(id, name)
-VALUES (1, 'player'),
-       (2, 'vip'),
-       (3, 'vip_plus'),
-       (4, 'builder'),
-       (5, 'developer'),
-       (6, 'moderator'),
-       (7, 'administrator');
 
 DROP TABLE IF EXISTS totem_stats;
 CREATE TABLE totem_stats

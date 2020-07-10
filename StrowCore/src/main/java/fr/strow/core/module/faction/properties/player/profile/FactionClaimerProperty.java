@@ -14,8 +14,8 @@ import fr.strow.api.properties.ExplicitInitialisedProperty;
 import fr.strow.api.properties.ImplicitInitialisedProperty;
 import fr.strow.api.properties.PersistentProperty;
 import fr.strow.api.properties.PropertyFactory;
-import fr.strow.persistence.beans.factions.players.FactionClaimerBean;
-import fr.strow.persistence.dao.factions.players.FactionClaimerDao;
+import fr.strow.persistence.beans.factions.profile.FactionClaimerBean;
+import fr.strow.persistence.dao.factions.profile.FactionClaimerDao;
 
 import java.util.UUID;
 

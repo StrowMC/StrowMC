@@ -34,7 +34,7 @@ public class StrowCore extends StrowPlugin {
         dataService = injector.getInstance(DataService.class);
         dataService.start();
 
-        modulesHandler = new SampleModulesHandler(injector);
+        modulesHandler = injector.getInstance(ModulesHandler.class);
         modulesHandler.enableModules();
     }
 

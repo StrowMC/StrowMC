@@ -76,17 +76,17 @@ public class PlayersBridge extends AbstractBridge {
         }
 
         try (Connection connection = sqlAccess.getConnection()) {
-            final String SQL = "UPDATE " + Tables.PLAYERS + " SET uuid = ?, name = ?, role_id = ?, coins = ? WHERE uuid = ?";
+            final String SQL = "UPDATE " + Tables.PLAYERS + " SET name = ?, role_id = ?, coins = ? WHERE uuid = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(SQL)) {
                 for (Map.Entry<UUID, PlayerBean> player : players.entrySet()) {
                     UUID uuid = player.getKey();
                     PlayerBean bean = player.getValue();
 
-                    statement.setString(1, uuid.toString());
-                    statement.setString(2, bean.getName());
-                    statement.setInt(3, bean.getRoleId());
-                    statement.setInt(4, bean.getCoins());
+                    statement.setString(1, bean.getName());
+                    statement.setInt(2, bean.getRoleId());
+                    statement.setInt(3, bean.getCoins());
+                    statement.setString(4, uuid.toString());
 
                     if (statement.executeUpdate() == 0) {
                         insertPlayer(connection, bean);

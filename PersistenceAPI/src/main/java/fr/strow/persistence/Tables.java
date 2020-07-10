@@ -10,10 +10,13 @@ package fr.strow.persistence;
 
 public class Tables {
 
+    public static final String BANNED_PLAYERS = "banned_players";
+    public static final String FACTION_INVENTORIES = "faction_inventories";
     public static final String FACTION_PERMISSIONS = "faction_permissions";
     public static final String FACTION_PROFILES = "faction_profiles";
     public static final String FACTIONS = "factions";
-    public static final String PERMISSIONS = "permissions";
+    public static final String QUESTS_PROGRESSES = "quest_progresses";
+    public static final String MUTED_PLAYERS = "muted_players";
     public static final String PLAYERS = "players";
     public static final String PROXY_PERMISSIONS = "proxy_permissions";
 }

@@ -11,30 +11,30 @@ package fr.strow.persistence.bridges;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import fr.strow.persistence.Tables;
-import fr.strow.persistence.beans.permissions.PermissionsBean;
 import fr.strow.persistence.beans.permissions.ProxyPermissionsBean;
-import fr.strow.persistence.dao.sql.permissions.ProxyPermissionsDao;
+import fr.strow.persistence.bridges.sql.permissions.ProxyPermissionsSQLDao;
 import fr.strow.persistence.data.redis.RedisAccess;
-import fr.strow.persistence.data.sql.SQLAccess;
 import redis.clients.jedis.Jedis;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class PermissionsBridge extends AbstractBridge {
+public class PermissionsBridge {
 
-    private final ProxyPermissionsDao proxyPermissionsDao;
+    private final ProxyPermissionsSQLDao proxyPermissionsSQLDao;
+
+    private final RedisAccess redisAccess;
+    private final Gson gson;
 
     @Inject
-    public PermissionsBridge(SQLAccess sqlAccess, RedisAccess redisAccess, Gson gson, ProxyPermissionsDao proxyPermissionsDao) {
-        super(sqlAccess, redisAccess, gson);
-        this.proxyPermissionsDao = proxyPermissionsDao;
+    public PermissionsBridge(RedisAccess redisAccess, Gson gson, ProxyPermissionsSQLDao proxyPermissionsSQLDao) {
+        this.redisAccess = redisAccess;
+        this.gson = gson;
+
+        this.proxyPermissionsSQLDao = proxyPermissionsSQLDao;
     }
 
     public void loadPermissions() {
-        Map<Integer, PermissionsBean> permissions = new HashMap<>();
-
-        Map<Integer, ProxyPermissionsBean> proxyPermissionsBeans = proxyPermissionsDao.loadPermissions();
+        Map<Integer, ProxyPermissionsBean> proxyPermissionsBeans = proxyPermissionsSQLDao.loadPermissions();
 
         try (Jedis jedis = redisAccess.getResource()) {
             for (Map.Entry<Integer, ProxyPermissionsBean> bean : proxyPermissionsBeans.entrySet()) {

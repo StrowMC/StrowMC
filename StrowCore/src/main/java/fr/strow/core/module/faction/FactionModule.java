@@ -8,6 +8,7 @@
 
 package fr.strow.core.module.faction;
 
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.modules.StrowModule;
@@ -28,6 +29,7 @@ public class FactionModule extends StrowModule {
 
     private final Injector injector;
 
+    @Inject
     public FactionModule(Injector injector) {
         super(
                 injector.getInstance(JavaPlugin.class),

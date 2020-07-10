@@ -15,10 +15,10 @@ import fr.strow.api.properties.ExplicitInitialisedProperty;
 import fr.strow.api.properties.ImplicitInitialisedProperty;
 import fr.strow.api.properties.PersistentProperty;
 import fr.strow.api.properties.PropertyFactory;
-import fr.strow.persistence.beans.factions.players.FactionPermissionsBean;
-import fr.strow.persistence.beans.factions.players.FactionRoleBean;
-import fr.strow.persistence.dao.factions.players.FactionPermissionsDao;
-import fr.strow.persistence.dao.factions.players.FactionRoleDao;
+import fr.strow.persistence.beans.factions.profile.FactionPermissionsBean;
+import fr.strow.persistence.beans.factions.profile.FactionRoleBean;
+import fr.strow.persistence.dao.factions.profile.FactionPermissionsDao;
+import fr.strow.persistence.dao.factions.profile.FactionRoleDao;
 
 import java.util.List;
 import java.util.UUID;

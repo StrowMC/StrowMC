@@ -64,10 +64,6 @@ public abstract class StrowModule {
         for (Tuple<String, EvolvedCommand> command : getCommands()) {
             commandsManager.unregisterCommand(command.getValue());
         }
-
-        for (Class<? extends Property> property : getProperties()) {
-            propertiesHandler.registerProperty(property);
-        }
     }
 
     public List<Listener> getListeners() {
