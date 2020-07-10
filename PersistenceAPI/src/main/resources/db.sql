@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS Strow;
 
-DROP TABLE IF EXISTS banned_players;
-CREATE TABLE banned_players
+DROP TABLE IF EXISTS bans;
+CREATE TABLE bans
 (
     uuid               VARCHAR(36),
     reason             VARCHAR(255),
@@ -121,8 +121,8 @@ CREATE TABLE locations
     PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS muted_players;
-CREATE TABLE muted_players
+DROP TABLE IF EXISTS mutes;
+CREATE TABLE mutes
 (
     uuid               VARCHAR(36),
     reason             VARCHAR(255),

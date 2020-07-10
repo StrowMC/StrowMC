@@ -1,6 +1,8 @@
 package fr.strow.api.game.factions;
 
-public interface FactionPoints {
+import fr.strow.api.game.Property;
+
+public interface FactionPoints extends Property {
 
     /**
      * Get the faction points

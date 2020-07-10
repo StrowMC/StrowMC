@@ -11,7 +11,6 @@ package fr.strow.core.module.permissions;
 import com.google.inject.Inject;
 import fr.strow.api.game.permissions.Group;
 import fr.strow.api.game.permissions.Role;
-import fr.strow.api.properties.PersistentProperty;
 import fr.strow.persistence.beans.RoleBean;
 import fr.strow.persistence.dao.PermissionsDao;
 import fr.strow.persistence.dao.RoleDao;
@@ -19,7 +18,7 @@ import fr.strow.persistence.dao.RoleDao;
 import java.util.List;
 import java.util.UUID;
 
-public class GroupProperty implements PersistentProperty, Group {
+public class GroupImplementationProperty implements PersistentImplementationProperty, Group {
 
     private final RoleDao rolesDao;
     private final PermissionsDao permissionsDao;
@@ -28,7 +27,7 @@ public class GroupProperty implements PersistentProperty, Group {
     private List<String> permissions;
 
     @Inject
-    public GroupProperty(RoleDao rolesDao, PermissionsDao permissionsDao) {
+    public GroupImplementationProperty(RoleDao rolesDao, PermissionsDao permissionsDao) {
         this.rolesDao = rolesDao;
         this.permissionsDao = permissionsDao;
     }

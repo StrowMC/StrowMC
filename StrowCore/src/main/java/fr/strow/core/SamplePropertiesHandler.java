@@ -3,14 +3,14 @@ package fr.strow.core;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import fr.strow.api.properties.PropertiesHandler;
-import fr.strow.api.properties.Property;
+import fr.strow.api.properties.ImplementationProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SamplePropertiesHandler implements PropertiesHandler {
 
-    private static final List<Class<? extends Property>> definitions = new ArrayList<>();
+    private static final List<Class<? extends ImplementationProperty>> definitions = new ArrayList<>();
 
     private final Injector injector;
 
@@ -20,20 +20,20 @@ public class SamplePropertiesHandler implements PropertiesHandler {
     }
 
     @Override
-    public void registerProperty(Class<? extends Property> property) {
+    public void registerProperty(Class<? extends ImplementationProperty> property) {
         definitions.add(property);
     }
 
     @Override
-    public <T extends Property> T getProperty(Class<T> property) {
+    public <T extends ImplementationProperty> T getProperty(Class<T> property) {
         return injector.getInstance(property);
     }
 
     @Override
-    public List<Property> getProperties() {
-        List<Property> properties = new ArrayList<>();
+    public List<ImplementationProperty> getProperties() {
+        List<ImplementationProperty> properties = new ArrayList<>();
 
-        for (Class<? extends Property> definition : definitions) {
+        for (Class<? extends ImplementationProperty> definition : definitions) {
             properties.add(getProperty(definition));
         }
 

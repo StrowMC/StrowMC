@@ -7,7 +7,6 @@ import fr.strow.api.game.players.StrowPlayer;
 import fr.strow.api.service.GameUtilsService;
 import fr.strow.api.service.MessageService;
 import fr.strow.core.module.player.StrowPlayerImpl;
-import fr.strow.core.module.punishment.command.parameter.PlayerParameter;
 import fr.strow.core.module.punishment.command.parameter.ReasonParameter;
 import fr.strow.core.module.punishment.command.parameter.TimeParameter;
 import fr.strow.core.module.punishment.property.PunishmentProperty;

@@ -4,7 +4,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.InvocationTargetException;
 
-public interface ExplicitInitialisedProperty<T extends PropertyFactory> extends Property {
+public interface FactoringImplementationProperty<T extends PropertyFactory> {
 
     @SuppressWarnings("unchecked")
     default T factory() {

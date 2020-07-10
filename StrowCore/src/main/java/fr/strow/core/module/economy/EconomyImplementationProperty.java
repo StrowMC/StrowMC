@@ -10,13 +10,13 @@ package fr.strow.core.module.economy;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.economy.Economy;
-import fr.strow.api.properties.PersistentProperty;
+import fr.strow.api.properties.ImplementationProperty;
 import fr.strow.persistence.beans.EconomyBean;
 import fr.strow.persistence.dao.EconomyDao;
 
 import java.util.UUID;
 
-public class EconomyProperty implements PersistentProperty, Economy {
+public class EconomyImplementationProperty extends ImplementationProperty<Economy> implements Economy {
 
     private final EconomyDao economyDao;
 
@@ -24,18 +24,19 @@ public class EconomyProperty implements PersistentProperty, Economy {
     private int coins;
 
     @Inject
-    public EconomyProperty(EconomyDao economyDao) {
+    public EconomyImplementationProperty(EconomyDao economyDao) {
         this.economyDao = economyDao;
     }
 
-    //TODO
-    /*@Override
-    public void load(UUID uuid) {
+    @Override
+    public boolean load(UUID uuid) {
         this.uuid = uuid;
 
         EconomyBean bean = economyDao.loadEconomy(uuid);
         coins = bean.getCoins();
-    }*/
+
+        return true;
+    }
 
     @Override
     public void save(UUID uuid) {

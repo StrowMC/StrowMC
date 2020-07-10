@@ -9,9 +9,9 @@
 package fr.strow.core.module.faction.properties.player.profile;
 
 import fr.strow.api.game.factions.profile.FactionAutoClaiming;
-import fr.strow.api.properties.Property;
+import fr.strow.api.properties.ImplementationProperty;
 
-public class FactionAutoClaimingProperty implements Property, FactionAutoClaiming {
+public class FactionAutoClaimingImplementationProperty implements ImplementationProperty, FactionAutoClaiming {
 
     private boolean autoClaim = false;
 

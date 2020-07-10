@@ -1,4 +1,4 @@
-package fr.strow.persistence.beans.sanctions;
+package fr.strow.persistence.beans.moderation;
 
 import java.sql.Timestamp;
 import java.util.UUID;

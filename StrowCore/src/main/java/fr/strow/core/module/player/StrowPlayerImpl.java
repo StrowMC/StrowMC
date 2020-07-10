@@ -8,8 +8,10 @@
 
 package fr.strow.core.module.player;
 
+import fr.strow.api.game.Property;
 import fr.strow.api.game.players.StrowPlayer;
-import fr.strow.api.properties.Property;
+import fr.strow.api.properties.ImplementationProperty;
+import fr.strow.core.module.punishment.utils.BiKeyedMap;
 
 import java.util.Collection;
 import java.util.Map;
@@ -19,52 +21,44 @@ import java.util.stream.Collectors;
 
 public class StrowPlayerImpl implements StrowPlayer {
 
-    private final Map<Class<? extends Property>, Property> properties;
-    private final Map<Class<? extends Property>, Property> abstractProperties;
-
     private final UUID uuid;
 
-    public StrowPlayerImpl(UUID uuid, Map<Class<? extends Property>, Property> properties) {
-        this.properties = properties;
-        this.abstractProperties = properties.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        entry -> (Class<? extends Property>) entry.getKey(),
-                        entry -> (Property) entry.getValue()
-                ));
+    private final BiKeyedMap<Class<? extends ImplementationProperty<?>>, Class<? extends Property>, ImplementationProperty<?>> properties;
+
+    public StrowPlayerImpl(UUID uuid,
+                           BiKeyedMap<Class<? extends ImplementationProperty<?>>, Class<? extends Property>, ImplementationProperty<?>> properties) {
         this.uuid = uuid;
-    }
-    //TODO
-    //@Override
-    public <T extends Property> void registerProperty(T property) {
-        properties.put(property.getClass(), property);
-    }
-
-    //@Override
-    public <T extends Property> void unregisterProperty(Class<T> property) {
-        properties.remove(property);
-    }
-
-    //@Override
-    public Collection<Property> getProperties() {
-        return properties.values();
+        this.properties = properties;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Property> T getProperty(Class<T> property) {
-        properties.get(property);
-        return (T) abstractProperties.get(property);
+        return (T) properties.get(property);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Property> Optional<T> getOptionalProperty(Class<T> property) {
-        return Optional.ofNullable((T) abstractProperties.get(property));
+        return Optional.ofNullable((T) properties.get(property));
     }
 
     @Override
     public UUID getUniqueId() {
         return uuid;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void registerProperty(ImplementationProperty<?> property) {
+        properties.bind((Class<? extends ImplementationProperty<?>>) property.getClass(), property.getImplementedProperty(), property);
+    }
+
+
+    public <T extends ImplementationProperty<?>> void unregisterProperty(Class<T> property) {
+        properties.remove(property);
+    }
+
+    public Collection<ImplementationProperty<?>> getProperties() {
+        return properties.values();
     }
 }

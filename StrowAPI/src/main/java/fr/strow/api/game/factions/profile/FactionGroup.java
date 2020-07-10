@@ -8,7 +8,7 @@
 
 package fr.strow.api.game.factions.profile;
 
-import fr.strow.api.properties.Property;
+import fr.strow.api.game.Property;
 
 public interface FactionGroup extends Property {
 

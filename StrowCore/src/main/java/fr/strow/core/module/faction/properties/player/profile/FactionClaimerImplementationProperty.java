@@ -10,30 +10,30 @@ package fr.strow.core.module.faction.properties.player.profile;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.factions.profile.FactionClaimer;
-import fr.strow.api.properties.ExplicitInitialisedProperty;
-import fr.strow.api.properties.ImplicitInitialisedProperty;
-import fr.strow.api.properties.PersistentProperty;
+import fr.strow.api.properties.FactoringImplementationProperty;
 import fr.strow.api.properties.PropertyFactory;
 import fr.strow.persistence.beans.factions.profile.FactionClaimerBean;
 import fr.strow.persistence.dao.factions.profile.FactionClaimerDao;
 
 import java.util.UUID;
 
-public class FactionClaimerProperty implements PersistentProperty, ExplicitInitialisedProperty<FactionClaimerProperty.Factory>, ImplicitInitialisedProperty, FactionClaimer {
+public class FactionClaimerImplementationProperty implements FactoringImplementationProperty<FactionClaimerImplementationProperty.Factory>, PersistentImplementationProperty, FactionClaimer {
 
     private final FactionClaimerDao factionClaimerDao;
 
     private boolean claimer;
 
     @Inject
-    public FactionClaimerProperty(FactionClaimerDao factionClaimerDao) {
+    public FactionClaimerImplementationProperty(FactionClaimerDao factionClaimerDao) {
         this.factionClaimerDao = factionClaimerDao;
     }
 
     @Override
-    public void load(UUID uuid) {
+    public boolean load(UUID uuid) {
         FactionClaimerBean bean = factionClaimerDao.loadClaimer(uuid);
         claimer = bean.isClaimer();
+
+        return true;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class FactionClaimerProperty implements PersistentProperty, ExplicitIniti
     public class Factory extends PropertyFactory {
 
         public void load(boolean claimer) {
-           FactionClaimerProperty.this.claimer = claimer;
+           FactionClaimerImplementationProperty.this.claimer = claimer;
         }
     }
 }

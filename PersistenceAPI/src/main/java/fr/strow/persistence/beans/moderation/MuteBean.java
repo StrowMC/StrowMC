@@ -6,7 +6,7 @@
  * Written by Choukas <juan.vlroo@gmail.com>, 03/07/2020 14:48
  */
 
-package fr.strow.persistence.beans.sanctions;
+package fr.strow.persistence.beans.moderation;
 
 import java.sql.Timestamp;
 import java.util.UUID;

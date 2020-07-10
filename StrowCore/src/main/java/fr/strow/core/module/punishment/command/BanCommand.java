@@ -1,18 +1,18 @@
 package fr.strow.core.module.punishment.command;
 
 import com.google.inject.Inject;
-import fr.strow.api.game.players.PlayerManager;
+import fr.strow.api.commands.ParametersCollection;
+import fr.strow.api.game.players.Pseudo;
 import fr.strow.api.game.players.StrowPlayer;
+import fr.strow.api.properties.PropertiesHandler;
 import fr.strow.api.service.MessageService;
 import fr.strow.core.module.player.StrowPlayerImpl;
-import fr.strow.core.module.punishment.command.parameter.PlayerParameter;
 import fr.strow.core.module.punishment.command.parameter.ReasonParameter;
-import fr.strow.core.module.punishment.property.PunishmentProperty;
-import fr.strow.core.module.punishment.utils.Punishment;
+import fr.strow.core.module.punishment.property.BanImplementationProperty;
 import fr.strow.core.utils.Utils;
+import fr.strow.core.utils.commands.parameters.PlayerParameter;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
-import me.choukas.commands.api.Parameter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,72 +24,67 @@ import java.time.Instant;
  */
 public class BanCommand extends EvolvedCommand {
 
-    private static final Parameter<Player> PLAYER_PARAMETER = new PlayerParameter();
-    private static final Parameter<String> REASON_PARAMETER = new ReasonParameter();
-
-    private final PlayerManager playerManager;
+    private final ParametersCollection parameters;
+    private final PropertiesHandler propertiesHandler;
     private final MessageService messageService;
 
     @Inject
-    public BanCommand(PlayerManager playerManager, MessageService messageService) {
+    public BanCommand(ParametersCollection parameters, PropertiesHandler propertiesHandler, MessageService messageService) {
         super(CommandDescription.builder()
                 .withPermission("strow.ban")
                 .withName("ban")
                 .withDescription("Permet de bannir un joueur")
                 .build()
         );
-        this.playerManager = playerManager;
+
+        this.parameters = parameters;
+        this.propertiesHandler = propertiesHandler;
         this.messageService = messageService;
+
+        define();
     }
 
     @Override
     protected void define() {
-        addParam(PLAYER_PARAMETER, true);
-        addParam(REASON_PARAMETER, true);
+        addParam(parameters.getParameter(PlayerParameter.class), true);
+        addParam(parameters.getParameter(ReasonParameter.class), true);
     }
 
     @Override
     protected void execute(CommandSender sender) {
-        Player player = readArg();
-        StrowPlayer strowPlayer = playerManager.getPlayer(player.getUniqueId());
+        StrowPlayer player = readArg();
         String reason = readArg();
 
         Utils.ifPresentOrElse(
-                strowPlayer.getOptionalProperty(PunishmentProperty.class),
-                property -> property.addPunishment(
-                        new Punishment(
-                                Punishment.Type.BAN,
-                                Timestamp.from(Instant.now()),
-                                null,
-                                true,
+                player.getOptionalProperty(BanImplementationProperty.class),
+                property -> property.add(
+                        new BanImplementationProperty.Ban(
+                                reason,
                                 ((Player) sender).getUniqueId(),
-                                sender.getName(),
-                                reason
+                                Timestamp.from(Instant.now()),
+                                Timestamp.from(Instant.MAX)
                         )
                 ),
                 () -> {
-                    ((StrowPlayerImpl) strowPlayer).registerProperty(new PunishmentProperty());
-                    strowPlayer.getOptionalProperty(PunishmentProperty.class).ifPresent(property ->
-                            property.addPunishment(
-                                    new Punishment(
-                                            Punishment.Type.BAN,
-                                            Timestamp.from(Instant.now()),
-                                            null,
-                                            true,
-                                            ((Player) sender).getUniqueId(),
-                                            sender.getName(),
-                                            reason
-                                    )
+                    ((StrowPlayerImpl) player).registerProperty(propertiesHandler.getProperty(BanImplementationProperty.class));
+                    player.getProperty(BanImplementationProperty.class).add(
+                            new BanImplementationProperty.Ban(
+                                    reason,
+                                    ((Player) sender).getUniqueId(),
+                                    Timestamp.from(Instant.now()),
+                                    Timestamp.from(Instant.MAX)
                             )
                     );
                 });
+
         String stringBuilder =
                 "§7────────────────────────────" +
-                        "§7(§3Punisher§7) §c" + player.getName() + " §e a été §6banni définitivement §epar §d" + sender.getName() + " §e!\n" +
+                        "§7(§3Punisher§7) §c" + player.getProperty(Pseudo.class) + " §e a été §6banni définitivement §epar §d" + sender.getName() + " §e!\n" +
                         "\n" +
                         " §c• §eRaison§7: §d" + reason + "\n" +
                         " §c• §eDurée§7: §aDéfinitif" + "\n" +
                         "§7────────────────────────────";
+
         messageService.broadcastMessage(stringBuilder, uuid -> {
             return true; //TODO rankCheck
         });

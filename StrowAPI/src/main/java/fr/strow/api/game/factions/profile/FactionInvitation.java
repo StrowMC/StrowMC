@@ -8,10 +8,11 @@
 
 package fr.strow.api.game.factions.profile;
 
+import fr.strow.api.game.Property;
 import fr.strow.api.game.factions.Faction;
 import fr.strow.api.game.players.StrowPlayer;
 
-public interface FactionInvitation {
+public interface FactionInvitation extends Property {
 
     StrowPlayer getSender();
 

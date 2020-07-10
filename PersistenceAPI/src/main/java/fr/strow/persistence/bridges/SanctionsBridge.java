@@ -11,16 +11,14 @@ package fr.strow.persistence.bridges;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import fr.strow.persistence.Tables;
-import fr.strow.persistence.beans.sanctions.BanBean;
-import fr.strow.persistence.beans.sanctions.MuteBean;
+import fr.strow.persistence.beans.moderation.BanBean;
+import fr.strow.persistence.beans.moderation.MuteBean;
 import fr.strow.persistence.data.redis.RedisAccess;
 import fr.strow.persistence.data.sql.SQLAccess;
 import redis.clients.jedis.Jedis;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SanctionsBridge extends AbstractBridge {
@@ -36,10 +34,10 @@ public class SanctionsBridge extends AbstractBridge {
     }
 
     private void loadBans() {
-        Map<UUID, BanBean> bans = new HashMap<>();
+        Map<UUID, List<BanBean>> bans = new HashMap<>();
 
         try (Connection connection = sqlAccess.getConnection()) {
-            final String SQL = "SELECT * FROM " + Tables.BANNED_PLAYERS;
+            final String SQL = "SELECT * FROM " + Tables.BANS;
 
             try (PreparedStatement statement = connection.prepareStatement(SQL)) {
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -51,7 +49,12 @@ public class SanctionsBridge extends AbstractBridge {
                         Timestamp endingTimestamp = resultSet.getTimestamp("ending_timestamp");
 
                         BanBean ban = new BanBean(uuid, reason, sanctionerUuid, startingTimestamp, endingTimestamp);
-                        bans.put(uuid, ban);
+
+                        if (!bans.containsKey(uuid)) {
+                            bans.put(uuid, new ArrayList<>());
+                        }
+
+                        bans.get(uuid).add(ban);
                     }
                 }
             }
@@ -60,17 +63,17 @@ public class SanctionsBridge extends AbstractBridge {
         }
 
         try (Jedis jedis = redisAccess.getResource()) {
-            for (Map.Entry<UUID, BanBean> ban : bans.entrySet()) {
-                jedis.hset(Tables.BANNED_PLAYERS, ban.getKey().toString(), gson.toJson(ban.getValue()));
+            for (Map.Entry<UUID, List<BanBean>> ban : bans.entrySet()) {
+                jedis.hset(Tables.BANS, ban.getKey().toString(), gson.toJson(ban.getValue()));
             }
         }
     }
 
     private void loadMutes() {
-        Map<UUID, MuteBean> mutes = new HashMap<>();
+        Map<UUID, List<MuteBean>> mutes = new HashMap<>();
 
         try (Connection connection = sqlAccess.getConnection()) {
-            final String SQL = "SELECT * FROM " + Tables.MUTED_PLAYERS;
+            final String SQL = "SELECT * FROM " + Tables.MUTES;
 
             try (PreparedStatement statement = connection.prepareStatement(SQL)) {
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -82,7 +85,12 @@ public class SanctionsBridge extends AbstractBridge {
                         UUID sanctionerUuid = UUID.fromString(resultSet.getString("sanctioner_uuid"));
 
                         MuteBean mute = new MuteBean(uuid, reason, sanctionerUuid, startingTimestamp, endingTimestamp);
-                        mutes.put(uuid, mute);
+
+                        if (!mutes.containsKey(uuid)) {
+                            mutes.put(uuid, new ArrayList<>());
+                        }
+
+                        mutes.get(uuid).add(mute);
                     }
                 }
             }
@@ -91,8 +99,8 @@ public class SanctionsBridge extends AbstractBridge {
         }
 
         try (Jedis jedis = redisAccess.getResource()) {
-            for (Map.Entry<UUID, MuteBean> mute : mutes.entrySet()) {
-                jedis.hset(Tables.MUTED_PLAYERS, mute.getKey().toString(), gson.toJson(mute.getValue()));
+            for (Map.Entry<UUID, List<MuteBean>> mute : mutes.entrySet()) {
+                jedis.hset(Tables.MUTES, mute.getKey().toString(), gson.toJson(mute.getValue()));
             }
         }
     }
@@ -106,7 +114,7 @@ public class SanctionsBridge extends AbstractBridge {
         Map<UUID, BanBean> bans;
 
         try (Jedis jedis = redisAccess.getResource()) {
-            bans = jedis.hgetAll(Tables.BANNED_PLAYERS)
+            bans = jedis.hgetAll(Tables.BANS)
                     .entrySet()
                     .stream()
                     .collect(Collectors.toMap(
@@ -118,7 +126,7 @@ public class SanctionsBridge extends AbstractBridge {
         }
 
         try (Connection connection = sqlAccess.getConnection()) {
-            final String SQL = "UPDATE " + Tables.BANNED_PLAYERS + " SET reason = ?, starting_timestamp = ?, ending_timestamp = ?, sanctioner_uuid = ? WHERE uuid = ?";
+            final String SQL = "UPDATE " + Tables.BANS + " SET reason = ?, starting_timestamp = ?, ending_timestamp = ?, sanctioner_uuid = ? WHERE uuid = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(SQL)) {
                 for (Map.Entry<UUID, BanBean> ban : bans.entrySet()) {
@@ -142,7 +150,7 @@ public class SanctionsBridge extends AbstractBridge {
     }
 
     private void insertBan(Connection connection, BanBean bean) throws SQLException {
-        final String SQL = "INSERT INTO banned_players (uuid, reason, sanctioner_uuid, starting_timestamp, ending_timestamp) VALUES (?, ?, ?, ?, ?)";
+        final String SQL = "INSERT INTO " + Tables.BANS + " (uuid, reason, sanctioner_uuid, starting_timestamp, ending_timestamp) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(SQL)) {
             statement.setString(1, bean.getUuid().toString());
@@ -157,7 +165,7 @@ public class SanctionsBridge extends AbstractBridge {
         Map<UUID, MuteBean> mutes;
 
         try (Jedis jedis = redisAccess.getResource()) {
-            mutes = jedis.hgetAll(Tables.MUTED_PLAYERS)
+            mutes = jedis.hgetAll(Tables.MUTES)
                     .entrySet()
                     .stream()
                     .collect(Collectors.toMap(
@@ -169,7 +177,7 @@ public class SanctionsBridge extends AbstractBridge {
         }
 
         try (Connection connection = sqlAccess.getConnection()) {
-            final String SQL = "UPDATE " + Tables.MUTED_PLAYERS + " SET reason = ?, starting_timestamp = ?, ending_timestamp = ?, sanctioner_uuid = ? WHERE uuid = ?";
+            final String SQL = "UPDATE " + Tables.MUTES + " SET reason = ?, starting_timestamp = ?, ending_timestamp = ?, sanctioner_uuid = ? WHERE uuid = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(SQL)) {
                 for (Map.Entry<UUID, MuteBean> mute : mutes.entrySet()) {
@@ -195,7 +203,7 @@ public class SanctionsBridge extends AbstractBridge {
     }
 
     private void insertMute(Connection connection, MuteBean bean) throws SQLException {
-        final String SQL = "INSERT INTO muted_players (uuid, reason, sanctioner_uuid, starting_timestamp, ending_timestamp) VALUES (?, ?, ?, ?, ?)";
+        final String SQL = "INSERT INTO " + Tables.MUTES +" (uuid, reason, sanctioner_uuid, starting_timestamp, ending_timestamp) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(SQL)) {
             statement.setString(1, bean.getUuid().toString());

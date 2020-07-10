@@ -4,9 +4,9 @@ import java.util.Collection;
 
 public interface PropertiesHandler {
 
-    void registerProperty(Class<? extends Property> property);
+    void registerProperty(Class<? extends ImplementationProperty<?>> property);
 
-    <T extends Property> T getProperty(Class<T> property);
+    <T extends ImplementationProperty<?>> T getProperty(Class<T> property);
 
-    Collection<Property> getProperties();
+    Collection<ImplementationProperty<?>> getProperties();
 }

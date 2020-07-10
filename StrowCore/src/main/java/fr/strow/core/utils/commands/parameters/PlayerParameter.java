@@ -1,9 +1,11 @@
-package fr.strow.core.module.punishment.command.parameter;
+package fr.strow.core.utils.commands.parameters;
 
+import com.google.inject.Inject;
+import fr.strow.api.game.players.PlayerManager;
+import fr.strow.api.game.players.StrowPlayer;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,10 +13,15 @@ import java.util.List;
 /**
  * Created by Hokkaydo on 27-06-2020.
  */
-public class PlayerParameter extends Parameter<Player> {
+public class PlayerParameter extends Parameter<StrowPlayer> {
 
-    public PlayerParameter() {
+    private final PlayerManager playerManager;
+
+    @Inject
+    public PlayerParameter(PlayerManager playerManager) {
         super("player");
+
+        this.playerManager = playerManager;
     }
 
     @Override
@@ -27,13 +34,13 @@ public class PlayerParameter extends Parameter<Player> {
 
             @Override
             public String getMessage(String s) {
-                return "§cJoueur introuvable";
+                return "Joueur introuvable";
             }
         });
     }
 
     @Override
-    public Player get(String arg) {
-        return Bukkit.getPlayer(arg);
+    public StrowPlayer get(String arg) {
+        return playerManager.getPlayer(Bukkit.getPlayer(arg).getUniqueId());
     }
 }

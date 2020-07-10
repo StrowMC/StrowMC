@@ -1,7 +1,5 @@
 package fr.strow.core.module.punishment.property;
 
-import fr.strow.api.properties.ImplicitInitialisedProperty;
-import fr.strow.api.properties.OptionalPersistentProperty;
 import fr.strow.core.module.punishment.utils.Punishment;
 
 import java.util.ArrayList;
@@ -15,15 +13,17 @@ import java.util.stream.Collectors;
  */
 public class PunishmentProperty implements ImplicitInitialisedProperty, OptionalPersistentProperty {
 
+    private final BanDa
+
     private final List<Punishment> punishments = new ArrayList<>();
 
     @Override
-    public void save(UUID uuid) {
+    public void load(UUID uuid) {
 
     }
 
     @Override
-    public void load(UUID uuid) {
+    public void save(UUID uuid) {
 
     }
 

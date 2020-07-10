@@ -3,7 +3,6 @@ package fr.strow.core.module.punishment.command;
 
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
-import fr.strow.core.module.punishment.command.parameter.PlayerParameter;
 import fr.strow.core.module.punishment.property.PunishmentProperty;
 import fr.strow.core.module.punishment.utils.Punishment;
 import me.choukas.commands.EvolvedCommand;

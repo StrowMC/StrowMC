@@ -13,10 +13,10 @@ import com.google.inject.Injector;
 import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.modules.StrowModule;
 import fr.strow.api.properties.PropertiesHandler;
-import fr.strow.api.properties.Property;
+import fr.strow.api.properties.ImplementationProperty;
 import fr.strow.core.module.faction.commands.FactionCommand;
 import fr.strow.core.module.faction.commands.FactionCreateCommand;
-import fr.strow.core.module.faction.properties.player.profile.FactionProfileProperty;
+import fr.strow.core.module.faction.properties.player.profile.FactionProfileImplementationProperty;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.utils.Tuple;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,9 +49,9 @@ public class FactionModule extends StrowModule {
     }
 
     @Override
-    public List<Class<? extends Property>> getProperties() {
+    public List<Class<? extends ImplementationProperty>> getProperties() {
         return Collections.singletonList(
-                FactionProfileProperty.class
+                FactionProfileImplementationProperty.class
         );
     }
 }

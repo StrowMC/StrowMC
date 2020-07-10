@@ -1,6 +1,8 @@
 package fr.strow.api.game.factions;
 
-public interface FactionName {
+import fr.strow.api.game.Property;
+
+public interface FactionName extends Property {
 
     /**
      * Get the faction name

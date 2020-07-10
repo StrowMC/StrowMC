@@ -5,7 +5,7 @@ import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.modules.StrowModule;
 import fr.strow.api.properties.PropertiesHandler;
-import fr.strow.api.properties.Property;
+import fr.strow.api.properties.ImplementationProperty;
 import fr.strow.core.module.punishment.command.*;
 import fr.strow.core.module.punishment.listener.ChatListener;
 import fr.strow.core.module.punishment.property.PunishmentProperty;
@@ -45,7 +45,7 @@ public class PunishmentModule extends StrowModule {
     }
 
     @Override
-    public List<Class<? extends Property>> getProperties() {
+    public List<Class<? extends ImplementationProperty>> getProperties() {
         return Collections.singletonList(PunishmentProperty.class);
     }
 

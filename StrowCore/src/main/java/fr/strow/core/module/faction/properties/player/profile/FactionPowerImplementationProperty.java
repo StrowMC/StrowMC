@@ -10,30 +10,30 @@ package fr.strow.core.module.faction.properties.player.profile;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.factions.profile.FactionPower;
-import fr.strow.api.properties.ExplicitInitialisedProperty;
-import fr.strow.api.properties.ImplicitInitialisedProperty;
-import fr.strow.api.properties.PersistentProperty;
+import fr.strow.api.properties.FactoringImplementationProperty;
 import fr.strow.api.properties.PropertyFactory;
 import fr.strow.persistence.beans.factions.profile.FactionPowerBean;
 import fr.strow.persistence.dao.factions.profile.FactionPowerDao;
 
 import java.util.UUID;
 
-public class FactionPowerProperty implements PersistentProperty, ImplicitInitialisedProperty, ExplicitInitialisedProperty<FactionPowerProperty.Factory>, FactionPower {
+public class FactionPowerImplementationProperty implements FactoringImplementationProperty<FactionPowerImplementationProperty.Factory>, PersistentImplementationProperty, FactionPower {
 
     private final FactionPowerDao factionPowerDao;
 
     private int power;
 
     @Inject
-    public FactionPowerProperty(FactionPowerDao factionPowerDao) {
+    public FactionPowerImplementationProperty(FactionPowerDao factionPowerDao) {
         this.factionPowerDao = factionPowerDao;
     }
 
     @Override
-    public void load(UUID uuid) {
+    public boolean load(UUID uuid) {
         FactionPowerBean bean = factionPowerDao.loadPower(uuid);
         power = bean.getPower();
+
+        return true;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class FactionPowerProperty implements PersistentProperty, ImplicitInitial
     public class Factory extends PropertyFactory {
 
         public void load(int power) {
-            FactionPowerProperty.this.power = power;
+            FactionPowerImplementationProperty.this.power = power;
         }
     }
 }

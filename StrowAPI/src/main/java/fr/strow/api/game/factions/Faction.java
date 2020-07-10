@@ -9,6 +9,7 @@
 package fr.strow.api.game.factions;
 
 import fr.strow.api.game.factions.profile.FactionProfile;
+import fr.strow.api.properties.PropertiesOwner;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -16,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public interface Faction {
+public interface Faction extends PropertiesOwner {
 
     /**
      * Get the faction chest

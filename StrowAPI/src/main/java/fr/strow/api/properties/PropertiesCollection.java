@@ -13,13 +13,13 @@ import java.util.List;
 
 public class PropertiesCollection {
 
-    private static final List<PersistentProperty> properties = new ArrayList<>();
+    private static final List<PersistentImplementationProperty> properties = new ArrayList<>();
 
-    public void registerProperty(PersistentProperty property) {
+    public void registerProperty(PersistentImplementationProperty property) {
         properties.add(property);
     }
 
-    public List<PersistentProperty> getProperties() {
+    public List<PersistentImplementationProperty> getProperties() {
         return properties;
     }
 }

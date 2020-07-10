@@ -1,5 +1,7 @@
 package fr.strow.api.properties;
 
+import fr.strow.api.game.Property;
+
 import java.util.Optional;
 
 public interface PropertiesOwner {

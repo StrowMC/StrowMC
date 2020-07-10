@@ -9,12 +9,12 @@
 package fr.strow.core.module.player;
 
 import com.google.inject.Inject;
+import fr.strow.api.game.Property;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
-import fr.strow.api.properties.ImplicitInitialisedProperty;
-import fr.strow.api.properties.OptionalPersistentProperty;
 import fr.strow.api.properties.PropertiesHandler;
-import fr.strow.api.properties.Property;
+import fr.strow.api.properties.ImplementationProperty;
+import fr.strow.core.module.punishment.utils.BiKeyedMap;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,30 +32,28 @@ public class PlayerManagerImpl implements PlayerManager {
         this.propertiesHandler = propertiesHandler;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void loadPlayer(UUID uuid) {
-        Map<Class<? extends Property>, Property> properties = new HashMap<>();
+        BiKeyedMap<Class<? extends ImplementationProperty<?>>, Class<? extends Property>, ImplementationProperty<?>> properties = new BiKeyedMap<>();
 
-        for (Property property : this.propertiesHandler.getProperties()) {
-            if (property instanceof ImplicitInitialisedProperty && (!(property instanceof OptionalPersistentProperty) || ((OptionalPersistentProperty) property).has(uuid))) {
-                ((ImplicitInitialisedProperty) property).load(uuid);
-                properties.put(property.getClass(), property);
+        for (ImplementationProperty<?> implementationProperty : propertiesHandler.getProperties()) {
+            if (implementationProperty.load(uuid)) {
+                properties.bind((Class<? extends ImplementationProperty<?>>) implementationProperty.getClass(), implementationProperty.getImplementedProperty(), implementationProperty);
             }
         }
-        //TODO
-        /*StrowPlayerImpl player = new StrowPlayerImpl(properties, services);
-        players.put(uuid, player);*/
+
+        StrowPlayerImpl player = new StrowPlayerImpl(uuid, properties);
+        players.put(uuid, player);
     }
 
     @Override
     public void unloadPlayer(UUID uuid) {
         StrowPlayer player = players.get(uuid);
-        //TODO
-        /*for (Property property : player.getProperties()) {
-            if (property instanceof PersistentProperty) {
-                ((PersistentProperty) property).save(uuid);
-            }
-        }*/
+
+        for (ImplementationProperty<?> property : ((StrowPlayerImpl) player).getProperties()) {
+            property.save(uuid);
+        }
 
         players.remove(uuid);
     }

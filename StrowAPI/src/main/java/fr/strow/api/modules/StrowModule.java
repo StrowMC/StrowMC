@@ -11,7 +11,7 @@ package fr.strow.api.modules;
 import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.configuration.AbstractConfiguration;
 import fr.strow.api.properties.PropertiesHandler;
-import fr.strow.api.properties.Property;
+import fr.strow.api.properties.ImplementationProperty;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.Parameter;
 import me.choukas.commands.api.Requirement;
@@ -54,7 +54,7 @@ public abstract class StrowModule {
             commandsManager.registerCondition(requirement);
         }
 
-        for (Class<? extends Property> property : getProperties()) {
+        for (Class<? extends ImplementationProperty> property : getProperties()) {
             propertiesHandler.registerProperty(property);
         }
     }
@@ -92,7 +92,7 @@ public abstract class StrowModule {
         return Collections.emptyList();
     }
 
-    public List<Class<? extends Property>> getProperties() {
+    public List<Class<? extends ImplementationProperty>> getProperties() {
         return Collections.emptyList();
     }
 }

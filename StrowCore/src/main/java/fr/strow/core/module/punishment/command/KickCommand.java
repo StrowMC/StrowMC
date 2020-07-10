@@ -5,8 +5,8 @@ import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.game.players.StrowPlayer;
 import fr.strow.api.service.MessageService;
 import fr.strow.core.module.player.StrowPlayerImpl;
-import fr.strow.core.module.punishment.command.parameter.PlayerParameter;
 import fr.strow.core.module.punishment.command.parameter.ReasonParameter;
+import fr.strow.core.module.punishment.property.KickProperty;
 import fr.strow.core.module.punishment.property.PunishmentProperty;
 import fr.strow.core.module.punishment.utils.Punishment;
 import fr.strow.core.utils.Utils;
@@ -57,7 +57,7 @@ public class KickCommand extends EvolvedCommand {
         StrowPlayer strowPlayer = playerManager.getPlayer(target.getUniqueId());
 
         Utils.ifPresentOrElse(
-                strowPlayer.getOptionalProperty(PunishmentProperty.class),
+                strowPlayer.getOptionalProperty(KickProperty.class),
                 property -> property.addPunishment(
                         new Punishment(
                                 Punishment.Type.KICK,

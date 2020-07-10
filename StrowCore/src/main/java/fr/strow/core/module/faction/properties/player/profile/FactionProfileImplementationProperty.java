@@ -11,23 +11,29 @@ package fr.strow.core.module.faction.properties.player.profile;
 import com.google.inject.Inject;
 import fr.strow.api.game.factions.profile.*;
 import fr.strow.api.properties.*;
+import fr.strow.persistence.dao.factions.profile.FactionProfileDao;
 
 import java.util.UUID;
 
-public class FactionProfileProperty implements OptionalPersistentProperty, ImplicitInitialisedProperty, ExplicitInitialisedProperty<FactionProfileProperty.Factory>, FactionProfile {
+public class FactionProfileImplementationProperty implements FactoringImplementationProperty<FactionProfileImplementationProperty.Factory>, PersistentImplementationProperty, FactionProfile {
 
-    private final FactionUUIDProperty factionUUID;
-    private final FactionGroupProperty factionGroup;
-    private final FactionPowerProperty factionPower;
-    private final FactionClaimerProperty factionClaimer;
-    private final FactionAutoClaimingProperty factionAutoClaiming;
+    private final FactionProfileDao factionProfileDao;
+
+    private final FactionUUIDImplementationProperty factionUUID;
+    private final FactionGroupImplementationProperty factionGroup;
+    private final FactionPowerImplementationProperty factionPower;
+    private final FactionClaimerImplementationProperty factionClaimer;
+    private final FactionAutoClaimingImplementationProperty factionAutoClaiming;
 
     @Inject
-    public FactionProfileProperty(FactionUUIDProperty factionUUID,
-                                  FactionGroupProperty factionGroup,
-                                  FactionPowerProperty factionPower,
-                                  FactionClaimerProperty factionClaimer,
-                                  FactionAutoClaimingProperty factionAutoClaiming) {
+    public FactionProfileImplementationProperty(FactionProfileDao factionProfileDao,
+                                                FactionUUIDImplementationProperty factionUUID,
+                                                FactionGroupImplementationProperty factionGroup,
+                                                FactionPowerImplementationProperty factionPower,
+                                                FactionClaimerImplementationProperty factionClaimer,
+                                                FactionAutoClaimingImplementationProperty factionAutoClaiming) {
+        this.factionProfileDao = factionProfileDao;
+
         this.factionUUID = factionUUID;
         this.factionGroup = factionGroup;
         this.factionPower = factionPower;
@@ -36,16 +42,17 @@ public class FactionProfileProperty implements OptionalPersistentProperty, Impli
     }
 
     @Override
-    public boolean has(UUID uuid) {
-        return false;
-    }
+    public boolean load(UUID uuid) {
+        if (factionProfileDao.hasProfile(uuid)) {
+            factionUUID.load(uuid);
+            factionGroup.load(uuid);
+            factionPower.load(uuid);
+            factionClaimer.load(uuid);
 
-    @Override
-    public void load(UUID uuid) {
-        factionUUID.load(uuid);
-        factionGroup.load(uuid);
-        factionPower.load(uuid);
-        factionClaimer.load(uuid);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -84,7 +91,7 @@ public class FactionProfileProperty implements OptionalPersistentProperty, Impli
     public class Factory extends PropertyFactory {
 
         public void load(UUID factionUUID, FactionRole role, int power, boolean claimer) {
-            FactionProfileProperty property = FactionProfileProperty.this;
+            FactionProfileImplementationProperty property = FactionProfileImplementationProperty.this;
 
             property.factionUUID.factory().load(factionUUID);
             property.factionGroup.factory().load(role);

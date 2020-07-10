@@ -1,8 +1,10 @@
 package fr.strow.api.game.factions;
 
+import fr.strow.api.game.Property;
+
 import java.util.UUID;
 
-public interface FactionLeader {
+public interface FactionLeader extends Property {
 
     /**
      * Get the faction leader
