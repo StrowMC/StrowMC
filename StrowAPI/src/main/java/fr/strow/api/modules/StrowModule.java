@@ -13,8 +13,8 @@ import fr.strow.api.configuration.AbstractConfiguration;
 import fr.strow.api.properties.PropertiesHandler;
 import fr.strow.api.properties.Property;
 import me.choukas.commands.EvolvedCommand;
-import me.choukas.commands.api.Requirement;
 import me.choukas.commands.api.Parameter;
+import me.choukas.commands.api.Requirement;
 import me.choukas.commands.utils.Tuple;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -39,6 +39,9 @@ public abstract class StrowModule {
     public void onEnable() {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
 
+        for (AbstractConfiguration configuration : getConfigurations()) {
+            configuration.loadConfig();
+        }
         for (Listener listener : getListeners()) {
             pluginManager.registerEvents(listener, plugin);
         }
@@ -63,6 +66,9 @@ public abstract class StrowModule {
 
         for (Tuple<String, EvolvedCommand> command : getCommands()) {
             commandsManager.unregisterCommand(command.getValue());
+        }
+        for (AbstractConfiguration configuration : getConfigurations()) {
+            configuration.saveConfig();
         }
     }
 

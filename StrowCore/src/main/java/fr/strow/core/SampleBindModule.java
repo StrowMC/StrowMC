@@ -16,8 +16,12 @@ import fr.strow.api.game.factions.FactionManager;
 import fr.strow.api.game.players.PlayerManager;
 import fr.strow.api.modules.ModulesHandler;
 import fr.strow.api.properties.PropertiesHandler;
+import fr.strow.api.service.GameUtilsService;
+import fr.strow.api.service.MessageService;
 import fr.strow.api.utils.Scheduler;
 import fr.strow.core.api.commands.CommandsManagerImpl;
+import fr.strow.core.api.service.GameUtilsServiceImpl;
+import fr.strow.core.api.service.MessageServiceImpl;
 import fr.strow.core.api.utils.SchedulerImpl;
 import fr.strow.core.module.faction.FactionManagerImpl;
 import fr.strow.core.module.player.PlayerManagerImpl;
@@ -94,5 +98,8 @@ public class SampleBindModule extends AbstractModule {
         bind(FactionManager.class).to(FactionManagerImpl.class);
         bind(PlayerManager.class).to(PlayerManagerImpl.class);
         bind(Scheduler.class).to(SchedulerImpl.class);
+
+        bind(MessageService.class).to(MessageServiceImpl.class);
+        bind(GameUtilsService.class).to(GameUtilsServiceImpl.class);
     }
 }
