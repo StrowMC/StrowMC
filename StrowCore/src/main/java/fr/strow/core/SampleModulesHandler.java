@@ -6,6 +6,9 @@ import fr.strow.api.modules.ModulesHandler;
 import fr.strow.api.modules.StrowModule;
 import fr.strow.core.module.economy.EconomyModule;
 import fr.strow.core.module.faction.FactionModule;
+import fr.strow.core.module.moderation.ModerationModule;
+import fr.strow.core.module.player.PlayerModule;
+import fr.strow.core.module.punishment.PunishmentModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +21,11 @@ public class SampleModulesHandler implements ModulesHandler {
     private static final List<Class<? extends StrowModule>> definitions = new ArrayList<>();
 
     static {
+        definitions.add(PlayerModule.class);
         definitions.add(EconomyModule.class);
         definitions.add(FactionModule.class);
+        definitions.add(PunishmentModule.class);
+        definitions.add(ModerationModule.class);
     }
 
     private final Injector injector;

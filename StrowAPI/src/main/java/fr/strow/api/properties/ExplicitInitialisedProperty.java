@@ -4,12 +4,13 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.InvocationTargetException;
 
-public interface ExplicitInitialisedProperty<T extends PropertyFactory> {
+public interface ExplicitInitialisedProperty<T extends PropertyFactory> extends Property {
 
     @SuppressWarnings("unchecked")
     default T factory() {
         T factory = null;
-        TypeToken<T> type = new TypeToken<T>() {};
+        TypeToken<T> type = new TypeToken<T>() {
+        };
 
         try {
             factory = (T) type.getType().getClass().getConstructor().newInstance();

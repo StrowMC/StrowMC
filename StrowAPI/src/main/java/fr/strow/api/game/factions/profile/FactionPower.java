@@ -8,9 +8,9 @@
 
 package fr.strow.api.game.factions.profile;
 
-import fr.strow.api.game.AbstractProperty;
+import fr.strow.api.properties.Property;
 
-public interface FactionPower extends AbstractProperty {
+public interface FactionPower extends Property {
 
     int getPower();
 

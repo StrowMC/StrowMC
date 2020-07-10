@@ -9,6 +9,7 @@
 package fr.strow.core.module.player.listeners;
 
 import fr.strow.api.game.players.PlayerManager;
+import fr.strow.core.module.punishment.listener.ConnectionPunishmentManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -28,5 +29,7 @@ public class PlayerJoinListener implements Listener {
         UUID player = event.getPlayer().getUniqueId();
 
         playerManager.loadPlayer(player);
+
+        ConnectionPunishmentManager.checkPunishment(playerManager, player);
     }
 }
