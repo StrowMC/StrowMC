@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import fr.strow.api.modules.ModulesHandler;
 import fr.strow.api.modules.StrowModule;
+import fr.strow.core.module.duel.DuelModule;
 import fr.strow.core.module.economy.EconomyModule;
 import fr.strow.core.module.faction.FactionModule;
 import fr.strow.core.module.player.PlayerModule;
@@ -22,6 +23,7 @@ public class SampleModulesHandler implements ModulesHandler {
         definitions.add(PlayerModule.class);
         definitions.add(EconomyModule.class);
         definitions.add(FactionModule.class);
+        definitions.add(DuelModule.class);
     }
 
     private final Injector injector;
