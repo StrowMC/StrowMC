@@ -1,6 +1,5 @@
 package fr.strow.core.quest.property;
 
-import fr.strow.api.game.AbstractProperty;
 import fr.strow.api.properties.OptionalPersistentProperty;
 
 import java.util.UUID;
@@ -8,7 +7,7 @@ import java.util.UUID;
 /**
  * Created by Hokkaydo on 06-07-2020.
  */
-public class QuestProperty implements OptionalPersistentProperty, AbstractProperty {
+public class QuestProperty implements OptionalPersistentProperty {
 
     private final UUID uuid;
     private int current = 0;
