@@ -8,6 +8,7 @@ import fr.strow.core.module.economy.EconomyModule;
 import fr.strow.core.module.faction.FactionModule;
 import fr.strow.core.module.miscelaneous.MiscelaneousModule;
 import fr.strow.core.module.player.PlayerModule;
+import fr.strow.core.utils.module.UtilModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class SampleModulesHandler implements ModulesHandler {
         definitions.add(PlayerModule.class);
         definitions.add(EconomyModule.class);
         definitions.add(FactionModule.class);
+        definitions.add(UtilModule.class);
         definitions.add(MiscelaneousModule.class);
     }
 
