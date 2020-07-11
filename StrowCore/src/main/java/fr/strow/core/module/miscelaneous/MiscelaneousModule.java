@@ -4,14 +4,16 @@ import com.google.inject.Injector;
 import fr.strow.api.commands.CommandsManager;
 import fr.strow.api.modules.StrowModule;
 import fr.strow.api.properties.PropertiesHandler;
+import fr.strow.core.module.miscelaneous.command.ArmorGiveCommand;
 import fr.strow.core.module.miscelaneous.command.ManageExplosionsCommand;
+import fr.strow.core.module.miscelaneous.listener.ArmorEquipListener;
 import fr.strow.core.module.miscelaneous.listener.ExplosionListener;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.utils.Tuple;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,11 +34,17 @@ public class MiscelaneousModule extends StrowModule {
 
     @Override
     public List<Tuple<String, EvolvedCommand>> getCommands() {
-        return Collections.singletonList(Tuple.of("explosions", injector.getInstance(ManageExplosionsCommand.class)));
+        return Arrays.asList(
+                Tuple.of("explosions", injector.getInstance(ManageExplosionsCommand.class)),
+                Tuple.of("armorgive", injector.getInstance(ArmorGiveCommand.class))
+        );
     }
 
     @Override
     public List<Listener> getListeners() {
-        return Collections.singletonList(injector.getInstance(ExplosionListener.class));
+        return Arrays.asList(
+                injector.getInstance(ExplosionListener.class),
+                injector.getInstance(ArmorEquipListener.class)
+        );
     }
 }
