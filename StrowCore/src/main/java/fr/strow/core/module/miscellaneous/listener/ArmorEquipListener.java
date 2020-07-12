@@ -1,7 +1,7 @@
-package fr.strow.core.module.miscelaneous.listener;
+package fr.strow.core.module.miscellaneous.listener;
 
 import fr.strow.api.StrowPlugin;
-import fr.strow.core.module.miscelaneous.command.ArmorGiveCommand;
+import fr.strow.core.module.miscellaneous.command.ArmorGiveCommand;
 import fr.strow.core.utils.event.armorequipevent.ArmorEquipEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

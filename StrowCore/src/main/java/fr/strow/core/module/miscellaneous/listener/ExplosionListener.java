@@ -1,4 +1,4 @@
-package fr.strow.core.module.miscelaneous.listener;
+package fr.strow.core.module.miscellaneous.listener;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

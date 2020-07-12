@@ -1,4 +1,4 @@
-package fr.strow.core.module.miscelaneous.command.parameter;
+package fr.strow.core.module.miscellaneous.command.parameter;
 
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;

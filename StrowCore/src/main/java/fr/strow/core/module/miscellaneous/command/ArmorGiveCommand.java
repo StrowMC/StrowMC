@@ -1,7 +1,7 @@
-package fr.strow.core.module.miscelaneous.command;
+package fr.strow.core.module.miscellaneous.command;
 
 import com.google.inject.Inject;
-import fr.strow.core.module.miscelaneous.command.parameter.PlayerParameter;
+import fr.strow.core.module.miscellaneous.command.parameter.PlayerParameter;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
 import me.choukas.commands.api.Parameter;

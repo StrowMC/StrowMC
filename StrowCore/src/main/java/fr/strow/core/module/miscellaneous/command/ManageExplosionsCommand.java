@@ -1,8 +1,8 @@
-package fr.strow.core.module.miscelaneous.command;
+package fr.strow.core.module.miscellaneous.command;
 
 import fr.strow.api.service.MessageService;
-import fr.strow.core.module.miscelaneous.command.parameter.EnableParameter;
-import fr.strow.core.module.miscelaneous.listener.ExplosionListener;
+import fr.strow.core.module.miscellaneous.command.parameter.EnableParameter;
+import fr.strow.core.module.miscellaneous.listener.ExplosionListener;
 import fr.strow.core.utils.Utils;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
