@@ -8,9 +8,13 @@ import fr.strow.api.modules.StrowModule;
 import fr.strow.api.properties.PropertiesHandler;
 import fr.strow.api.properties.Property;
 import fr.strow.api.service.MessageService;
+import fr.strow.core.quest.command.QuestCommand;
 import fr.strow.core.quest.configuration.QuestConfiguration;
 import fr.strow.core.quest.listener.QuestListener;
 import fr.strow.core.quest.property.QuestProperty;
+import fr.strow.core.utils.Utils;
+import me.choukas.commands.EvolvedCommand;
+import me.choukas.commands.utils.Tuple;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,6 +31,8 @@ public class QuestModule extends StrowModule {
     private final PlayerManager playerManager;
     private final MessageService messageService;
 
+    private final Injector injector;
+
     public QuestModule(Injector injector) {
         super(
                 injector.getInstance(JavaPlugin.class),
@@ -35,6 +41,11 @@ public class QuestModule extends StrowModule {
         );
         this.playerManager = injector.getInstance(PlayerManager.class);
         this.messageService = injector.getInstance(MessageService.class);
+        this.injector = injector;
+
+        for (QuestRepository value : QuestRepository.values()) {
+            Utils.updateMapList(value.getRelativeEventClass(), value, quests);
+        }
     }
 
     @Override
@@ -49,7 +60,14 @@ public class QuestModule extends StrowModule {
 
     @Override
     public List<AbstractConfiguration> getConfigurations() {
-        return Collections.singletonList(new QuestConfiguration());
+        return Collections.singletonList(injector.getInstance(QuestConfiguration.class));
+    }
+
+    @Override
+    public List<Tuple<String, EvolvedCommand>> getCommands() {
+        return Collections.singletonList(
+                Tuple.of("quest", injector.getInstance(QuestCommand.class))
+        );
     }
 
     @Override

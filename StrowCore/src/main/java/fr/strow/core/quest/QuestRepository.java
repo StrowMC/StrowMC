@@ -2,6 +2,7 @@ package fr.strow.core.quest;
 
 import fr.strow.core.utils.Utils;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -11,7 +12,7 @@ import java.util.function.Predicate;
  */
 public enum QuestRepository {
 
-    ;
+    QUEST_1(1, "Écrire un message dans le chat public", 1, AsyncPlayerChatEvent.class, e -> true);
 
     public static final Map<Class<? extends Event>, List<QuestRepository>> quests = new HashMap<>();
 
