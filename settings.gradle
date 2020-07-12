@@ -3,5 +3,3 @@ include 'StrowCore'
 include 'StrowAPI'
 include 'PersistenceAPI'
 include 'EvolvedCommands'
-include 'StrowProxy'
-
