@@ -2,6 +2,7 @@ package fr.strow.core.module.miscellaneous.util;
 
 import fr.strow.core.module.miscellaneous.command.ArmorGiveCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 
@@ -28,6 +29,11 @@ public class ArmorRecipeRegister {
                     shapedRecipe.shape("   ", "d e", "f l");
                     break;
             }
+            shapedRecipe.setIngredient('l', Material.LEATHER);
+            shapedRecipe.setIngredient('f', Material.FEATHER);
+            shapedRecipe.setIngredient('d', Material.DIAMOND_BLOCK);
+            shapedRecipe.setIngredient('e', Material.EMERALD_BLOCK);
+
             Bukkit.addRecipe(shapedRecipe);
         }
     }
