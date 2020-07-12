@@ -1,7 +1,7 @@
 package fr.strow.core.module.miscellaneous.listener;
 
 import fr.strow.api.StrowPlugin;
-import fr.strow.core.module.miscellaneous.command.ArmorGiveCommand;
+import fr.strow.core.module.miscellaneous.command.FarmArmorGiveCommand;
 import fr.strow.core.utils.event.armorequipevent.ArmorEquipEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,7 +40,7 @@ public class ArmorEquipListener implements Listener {
     private boolean hasFarmArmorEquiped(Player player) {
         int equals = 0;
         for (ItemStack itemStack : player.getInventory().getArmorContents()) {
-            for (ItemStack armor : ArmorGiveCommand.FARM_ARMOR) {
+            for (ItemStack armor : FarmArmorGiveCommand.FARM_ARMOR) {
                 if (itemStack.equals(armor)) equals++;
             }
         }

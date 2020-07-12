@@ -2,6 +2,7 @@ package fr.strow.core.module.miscellaneous.command;
 
 import com.google.inject.Inject;
 import fr.strow.core.module.miscellaneous.command.parameter.PlayerParameter;
+import fr.strow.core.module.miscellaneous.configuration.MiscellaneousConfiguration;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
 import me.choukas.commands.api.Parameter;
@@ -21,7 +22,7 @@ import java.util.Optional;
 /**
  * Created by Hokkaydo on 11-07-2020.
  */
-public class ArmorGiveCommand extends EvolvedCommand {
+public class FarmArmorGiveCommand extends EvolvedCommand {
 
     private static final Parameter<Player> playerParameter = new PlayerParameter();
 
@@ -38,32 +39,32 @@ public class ArmorGiveCommand extends EvolvedCommand {
 
     static {
         ItemMeta helmetMeta = HELMET.getItemMeta();
-        helmetMeta.setDisplayName("§6FarmHelmet");
+        helmetMeta.setDisplayName(MiscellaneousConfiguration.FARMHELMET_NAME);
         helmetMeta.addEnchant(Enchantment.ARROW_FIRE, 50, true);
         helmetMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         HELMET.setItemMeta(helmetMeta);
 
         ItemMeta chestplateMeta = CHEST_PLATE.getItemMeta();
-        chestplateMeta.setDisplayName("§6FarmChestplate");
+        chestplateMeta.setDisplayName(MiscellaneousConfiguration.FARMCHESTPLATE_NAME);
         chestplateMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         chestplateMeta.addEnchant(Enchantment.ARROW_FIRE, 50, true);
         CHEST_PLATE.setItemMeta(chestplateMeta);
 
         ItemMeta leggingsMeta = LEGGINGS.getItemMeta();
-        leggingsMeta.setDisplayName("§7FarmLeggings");
+        leggingsMeta.setDisplayName(MiscellaneousConfiguration.FARMLEGGINGS_NAME);
         leggingsMeta.addEnchant(Enchantment.ARROW_FIRE, 50, true);
         leggingsMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         LEGGINGS.setItemMeta(leggingsMeta);
 
         ItemMeta bootsMeta = BOOTS.getItemMeta();
-        bootsMeta.setDisplayName("§6FarmBoots");
+        bootsMeta.setDisplayName(MiscellaneousConfiguration.FARMBOOTS_NAME);
         bootsMeta.addEnchant(Enchantment.ARROW_FIRE, 50, true);
         bootsMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         BOOTS.setItemMeta(bootsMeta);
     }
 
     @Inject
-    public ArmorGiveCommand() {
+    public FarmArmorGiveCommand() {
         super(
                 CommandDescription
                         .builder()

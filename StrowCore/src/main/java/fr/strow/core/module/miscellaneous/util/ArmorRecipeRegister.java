@@ -1,6 +1,6 @@
 package fr.strow.core.module.miscellaneous.util;
 
-import fr.strow.core.module.miscellaneous.command.ArmorGiveCommand;
+import fr.strow.core.module.miscellaneous.command.FarmArmorGiveCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +12,7 @@ import org.bukkit.inventory.ShapedRecipe;
 public class ArmorRecipeRegister {
 
     public static void register() {
-        for (ItemStack itemStack : ArmorGiveCommand.FARM_ARMOR) {
+        for (ItemStack itemStack : FarmArmorGiveCommand.FARM_ARMOR) {
             ShapedRecipe shapedRecipe = new ShapedRecipe(itemStack);
 
             switch (itemStack.getType()) {
