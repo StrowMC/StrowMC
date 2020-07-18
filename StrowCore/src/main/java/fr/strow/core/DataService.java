@@ -27,6 +27,7 @@ public class DataService {
 
         injector.getInstance(FactionProfilesBridge.class).loadFactionProfiles();
         injector.getInstance(FactionsBridge.class).loadFactions();
+        injector.getInstance(LocationsBridge.class).loadLocations();
         injector.getInstance(PermissionsBridge.class).loadPermissions();
         injector.getInstance(PlayersBridge.class).loadPlayers();
         injector.getInstance(QuestsBridge.class).loadQuests();
@@ -37,6 +38,7 @@ public class DataService {
     public void shutdown() {
         injector.getInstance(FactionProfilesBridge.class).unloadFactionProfiles();
         injector.getInstance(FactionsBridge.class).unloadFactions();
+        injector.getInstance(LocationsBridge.class).unloadLocations();
         injector.getInstance(PlayersBridge.class).unloadPlayers();
         injector.getInstance(QuestsBridge.class).unloadQuests();
         injector.getInstance(SanctionsBridge.class).unloadSanctions();

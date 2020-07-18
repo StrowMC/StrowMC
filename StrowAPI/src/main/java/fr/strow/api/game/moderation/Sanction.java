@@ -1,8 +1,10 @@
 package fr.strow.api.game.moderation;
 
+import fr.strow.api.game.Property;
+
 import java.util.List;
 
-public interface Sanction<T> {
+public interface Sanction<T extends DatedSanction> extends Property {
 
     void add(T sanction);
 

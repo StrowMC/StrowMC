@@ -1,5 +1,7 @@
 package fr.strow.api.game;
 
-public interface Property {
+import fr.strow.api.property.PropertiesOwner;
+
+public interface Property<T extends PropertiesOwner> {
 
 }

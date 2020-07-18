@@ -40,7 +40,7 @@ public class ProxyPermissionsSQLDao extends AbstractSQLDao {
                         int roleId = resultSet.getInt("role_id");
                         boolean proxyJoin = resultSet.getBoolean("proxy_join");
 
-                        ProxyPermissionsBean bean = new ProxyPermissionsBean(roleId, proxyJoin);
+                        ProxyPermissionsBean bean = new ProxyPermissionsBean(proxyJoin);
                         beans.put(roleId, bean);
                     }
                 }

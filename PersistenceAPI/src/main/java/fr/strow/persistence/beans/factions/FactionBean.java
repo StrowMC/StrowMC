@@ -6,15 +6,17 @@ public class FactionBean {
 
     private UUID uuid;
     private String name;
-    private String description;
+    private String prefix;
     private UUID leaderUuid;
+    private String description;
     private int points;
 
-    public FactionBean(UUID uuid, String name, String description, UUID leaderUuid, int points) {
+    public FactionBean(UUID uuid, String name, String prefix, UUID leaderUuid, String description, int points) {
         this.uuid = uuid;
         this.name = name;
-        this.description = description;
+        this.prefix = prefix;
         this.leaderUuid = leaderUuid;
+        this.description = description;
         this.points = points;
     }
 
@@ -34,12 +36,12 @@ public class FactionBean {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getPrefix() {
+        return prefix;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     public UUID getLeaderUuid() {
@@ -48,6 +50,14 @@ public class FactionBean {
 
     public void setLeaderUuid(UUID leaderUuid) {
         this.leaderUuid = leaderUuid;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getPoints() {

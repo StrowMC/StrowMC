@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.inject.Inject;
 import fr.strow.persistence.Tables;
 import fr.strow.persistence.beans.FactionProfileBean;
+import fr.strow.persistence.beans.factions.FactionMemberBean;
 import fr.strow.persistence.data.redis.RedisAccess;
 import fr.strow.persistence.data.sql.SQLAccess;
 import redis.clients.jedis.Jedis;
@@ -20,9 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FactionProfilesBridge extends AbstractBridge {
@@ -34,6 +33,7 @@ public class FactionProfilesBridge extends AbstractBridge {
 
     public void loadFactionProfiles() {
         Map<UUID, FactionProfileBean> profiles = new HashMap<>();
+        Map<UUID, List<FactionMemberBean>> members = new HashMap<>();
 
         try (Connection connection = sqlAccess.getConnection()) {
             final String SQL = "SELECT * FROM " + Tables.FACTION_PROFILES;
@@ -47,6 +47,13 @@ public class FactionProfilesBridge extends AbstractBridge {
                         int power = resultSet.getInt("power");
                         boolean claimer = resultSet.getBoolean("claimer");
 
+                        if (!members.containsKey(factionUuid)) {
+                            members.put(factionUuid, new ArrayList<>());
+                        }
+
+                        FactionMemberBean member = new FactionMemberBean(uuid, factionUuid);
+                        members.get(factionUuid).add(member);
+
                         FactionProfileBean profile = new FactionProfileBean(uuid, factionUuid, roleId, power, claimer);
                         profiles.put(uuid, profile);
                     }
@@ -58,7 +65,14 @@ public class FactionProfilesBridge extends AbstractBridge {
 
         try (Jedis jedis = redisAccess.getResource()) {
             for (Map.Entry<UUID, FactionProfileBean> profile : profiles.entrySet()) {
-                jedis.hset(Tables.FACTION_PROFILES, profile.getKey().toString(), gson.toJson(profile.getValue()));
+                UUID uuid = profile.getKey();
+
+                jedis.hset(Tables.FACTION_PROFILES, uuid.toString(), gson.toJson(profile.getValue()));
+            }
+
+            for (Map.Entry<UUID, List<FactionMemberBean>> member : members.entrySet()) {
+                UUID factionUuid = member.getKey();
+                jedis.hset(Tables.FACTION_MEMBERS, factionUuid.toString(), gson.toJson(member.getValue()));
             }
         }
     }

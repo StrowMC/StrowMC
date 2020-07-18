@@ -18,14 +18,22 @@ public class FactionDescriptionDao extends AbstractDao {
         super(redisAccess, gson);
     }
 
-    public FactionDescriptionBean loadFactionDescription(UUID uuid) {
+    public boolean hasDescription(UUID factionUuid) {
+        try (Jedis jedis = redisAccess.getResource()) {
+            FactionDescriptionBean bean = loadFactionDescription(factionUuid);
+
+            return bean.getDescription() != null;
+        }
+    }
+
+    public FactionDescriptionBean loadFactionDescription(UUID factionUuid) {
         FactionDescriptionBean bean;
 
         try (Jedis jedis = redisAccess.getResource()) {
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, uuid.toString()), FactionBean.class);
+            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
 
-            String description = factionBean.getName();
-            bean = new FactionDescriptionBean(uuid, description);
+            String description = factionBean.getDescription();
+            bean = new FactionDescriptionBean(factionUuid, description);
         }
 
         return bean;
@@ -33,12 +41,12 @@ public class FactionDescriptionDao extends AbstractDao {
 
     public void saveFactionDescription(FactionDescriptionBean bean) {
         try (Jedis jedis = redisAccess.getResource()) {
-            UUID uuid = bean.getUuid();
+            UUID factionUuid = bean.getUuid();
 
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, uuid.toString()), FactionBean.class);
+            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
             factionBean.setDescription(bean.getDescription());
 
-            jedis.hset(Tables.FACTIONS, uuid.toString(), gson.toJson(factionBean));
+            jedis.hset(Tables.FACTIONS, factionUuid.toString(), gson.toJson(factionBean));
         }
     }
 }

@@ -8,9 +8,14 @@
 
 package fr.strow.api.game.permissions;
 
-public interface Group {
+import fr.strow.api.game.Property;
+import fr.strow.api.game.player.StrowPlayer;
+
+public interface Group extends Property<StrowPlayer> {
 
     Role getRole();
+
+    void setRole(Role role);
 
     boolean hasPermission(String permission);
 }

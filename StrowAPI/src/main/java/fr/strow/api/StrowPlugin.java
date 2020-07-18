@@ -8,8 +8,8 @@
 
 package fr.strow.api;
 
-import fr.strow.api.commands.CommandsManager;
-import fr.strow.api.modules.StrowModule;
+import fr.strow.api.commands.CommandService;
+import fr.strow.api.module.StrowModule;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.utils.Tuple;
 import org.bukkit.event.Listener;
@@ -37,8 +37,8 @@ public abstract class StrowPlugin extends JavaPlugin {
         }
     }
 
-    @SafeVarargs
-    protected final void registerCommands(CommandsManager commandManager, Tuple<String, EvolvedCommand>... tuples) {
+    /*@SafeVarargs
+    protected final void registerCommands(CommandService commandManager, Tuple<String, EvolvedCommand>... tuples) {
         for (Tuple<String, EvolvedCommand> tuple : tuples) {
             commandManager.registerCommand(tuple);
         }
@@ -48,5 +48,5 @@ public abstract class StrowPlugin extends JavaPlugin {
         for (Listener listener : listeners) {
             getServer().getPluginManager().registerEvents(listener, this);
         }
-    }
+    }*/
 }

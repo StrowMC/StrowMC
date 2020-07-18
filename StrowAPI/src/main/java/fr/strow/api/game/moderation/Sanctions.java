@@ -1,6 +1,12 @@
 package fr.strow.api.game.moderation;
 
-public interface Sanctions {
+import fr.strow.api.game.Property;
 
-    <T extends Sanction<T>> T get(Class<T> sanction);
+import java.util.List;
+
+public interface Sanctions extends Property {
+
+    <T extends Sanction<?>> T get(Class<T> sanction);
+
+    List<DatedSanction> getOrderedByDecreasingDate();
 }

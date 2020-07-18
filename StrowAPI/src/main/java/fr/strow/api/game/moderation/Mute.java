@@ -1,15 +1,16 @@
 package fr.strow.api.game.moderation;
 
 import java.sql.Timestamp;
-import java.util.UUID;
 
-public interface Mute {
+public class Mute implements DatedSanction {
 
-    String getReason();
+    @Override
+    public Timestamp getDate() {
+        return null;
+    }
 
-    UUID getSanctionerUuid();
-
-    Timestamp getStartingTimestamp();
-
-    Timestamp getEndingTimestamp();
+    @Override
+    public boolean isActive() {
+        return false;
+    }
 }

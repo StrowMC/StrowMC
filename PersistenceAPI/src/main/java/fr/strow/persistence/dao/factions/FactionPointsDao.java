@@ -18,14 +18,14 @@ public class FactionPointsDao extends AbstractDao {
         super(redisAccess, gson);
     }
 
-    public FactionPointsBean loadFactionPoints(UUID uuid) {
+    public FactionPointsBean loadFactionPoints(UUID factionUuid) {
         FactionPointsBean bean;
 
         try (Jedis jedis = redisAccess.getResource()) {
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, uuid.toString()), FactionBean.class);
+            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
 
             int points = factionBean.getPoints();
-            bean = new FactionPointsBean(uuid, points);
+            bean = new FactionPointsBean(factionUuid, points);
         }
 
         return bean;
@@ -33,12 +33,12 @@ public class FactionPointsDao extends AbstractDao {
 
     public void saveFactionPoints(FactionPointsBean bean) {
         try (Jedis jedis = redisAccess.getResource()) {
-            UUID uuid = bean.getUuid();
+            UUID factionUuid = bean.getUuid();
 
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, uuid.toString()), FactionBean.class);
+            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
             factionBean.setPoints(bean.getPoints());
 
-            jedis.hset(Tables.FACTIONS, uuid.toString(), gson.toJson(factionBean));
+            jedis.hset(Tables.FACTIONS, factionUuid.toString(), gson.toJson(factionBean));
         }
     }
 }

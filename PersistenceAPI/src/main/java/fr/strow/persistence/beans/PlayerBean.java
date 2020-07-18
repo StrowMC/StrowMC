@@ -13,13 +13,13 @@ import java.util.UUID;
 public class PlayerBean {
 
     private UUID uuid;
-    private String name;
+    private String pseudo;
     private int roleId;
     private int coins;
 
-    public PlayerBean(UUID uuid, String name, int roleId, int coins) {
+    public PlayerBean(UUID uuid, String pseudo, int roleId, int coins) {
         this.uuid = uuid;
-        this.name = name;
+        this.pseudo = pseudo;
         this.roleId = roleId;
         this.coins = coins;
     }
@@ -32,12 +32,12 @@ public class PlayerBean {
         this.uuid = uuid;
     }
 
-    public String getName() {
-        return name;
+    public String getPseudo() {
+        return pseudo;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
     }
 
     public int getRoleId() {

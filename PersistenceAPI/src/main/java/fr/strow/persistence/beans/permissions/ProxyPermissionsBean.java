@@ -15,13 +15,10 @@ import java.util.List;
 
 public class ProxyPermissionsBean {
 
-    private final int roleId;
-
     @Permission("perm")
     private final boolean perm;
 
-    public ProxyPermissionsBean(int roleId, boolean perm) {
-        this.roleId = roleId;
+    public ProxyPermissionsBean(boolean perm) {
         this.perm = perm;
     }
 

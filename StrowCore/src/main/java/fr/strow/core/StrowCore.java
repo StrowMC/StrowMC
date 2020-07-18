@@ -11,10 +11,11 @@ package fr.strow.core;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import fr.strow.api.StrowPlugin;
-import fr.strow.api.modules.ModulesHandler;
+import fr.strow.api.module.ModulesHandler;
 
 import java.io.File;
 
+@SuppressWarnings("unused")
 public class StrowCore extends StrowPlugin {
 
     private DataService dataService;
@@ -29,7 +30,7 @@ public class StrowCore extends StrowPlugin {
             dataFolder.mkdir();
         }
 
-        Injector injector = Guice.createInjector(new SampleBindModule(this));
+        Injector injector = Guice.createInjector(new CoreBindModule(this));
 
         dataService = injector.getInstance(DataService.class);
         dataService.start();

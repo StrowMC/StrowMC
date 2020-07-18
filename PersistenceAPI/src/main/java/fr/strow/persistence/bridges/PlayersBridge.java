@@ -40,11 +40,11 @@ public class PlayersBridge extends AbstractBridge {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
                         UUID uuid = UUID.fromString(resultSet.getString("uuid"));
-                        String name = resultSet.getString("name");
+                        String pseudo = resultSet.getString("pseudo");
                         int roleId = resultSet.getInt("role_id");
                         int coins = resultSet.getInt("coins");
 
-                        PlayerBean player = new PlayerBean(uuid, name, roleId, coins);
+                        PlayerBean player = new PlayerBean(uuid, pseudo, roleId, coins);
                         players.put(uuid, player);
                     }
                 }
@@ -76,14 +76,14 @@ public class PlayersBridge extends AbstractBridge {
         }
 
         try (Connection connection = sqlAccess.getConnection()) {
-            final String SQL = "UPDATE " + Tables.PLAYERS + " SET name = ?, role_id = ?, coins = ? WHERE uuid = ?";
+            final String SQL = "UPDATE " + Tables.PLAYERS + " SET pseudo = ?, role_id = ?, coins = ? WHERE uuid = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(SQL)) {
                 for (Map.Entry<UUID, PlayerBean> player : players.entrySet()) {
                     UUID uuid = player.getKey();
                     PlayerBean bean = player.getValue();
 
-                    statement.setString(1, bean.getName());
+                    statement.setString(1, bean.getPseudo());
                     statement.setInt(2, bean.getRoleId());
                     statement.setInt(3, bean.getCoins());
                     statement.setString(4, uuid.toString());
@@ -99,11 +99,11 @@ public class PlayersBridge extends AbstractBridge {
     }
 
     private void insertPlayer(Connection connection, PlayerBean bean) throws SQLException {
-        final String SQL = "INSERT INTO " + Tables.PLAYERS + " (uuid, name, role_id, coins) VALUES (?, ?, ?, ?)";
+        final String SQL = "INSERT INTO " + Tables.PLAYERS + " (uuid, pseudo, role_id, coins) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(SQL)) {
             statement.setString(1, bean.getUuid().toString());
-            statement.setString(2, bean.getName());
+            statement.setString(2, bean.getPseudo());
             statement.setInt(3, bean.getRoleId());
             statement.setInt(4, bean.getCoins());
 
