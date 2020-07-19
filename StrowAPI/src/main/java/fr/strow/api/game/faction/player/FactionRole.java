@@ -27,6 +27,19 @@ public enum FactionRole {
         this.symbol = symbol;
     }
 
+    public static FactionRole getLowestRole() {
+        //noinspection OptionalGetWithoutIsPresent
+        return FactionRole.getRoleById(0).get();
+    }
+
+    public static Optional<FactionRole> getRoleUnder(FactionRole role) {
+        return getRoleById(role.getId() - 1);
+    }
+
+    public static Optional<FactionRole> getRoleAbove(FactionRole role) {
+        return getRoleById(role.getId() + 1);
+    }
+
     public static Optional<FactionRole> getRoleById(int id) {
         return Arrays.stream(values())
                 .filter(factionRole -> factionRole.id == id)

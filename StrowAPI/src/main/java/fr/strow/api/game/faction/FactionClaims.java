@@ -1,13 +1,14 @@
 package fr.strow.api.game.faction;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.property.EmptyPropertyFactory;
+import fr.strow.api.property.RegistrableProperty;
 import org.bukkit.Chunk;
 
-import java.util.List;
+public interface FactionClaims extends RegistrableProperty<Faction, EmptyPropertyFactory> {
 
-public interface FactionClaims extends Property<Faction> {
+    void addClaim(Chunk claim);
 
-    List<Chunk> getClaims();
+    void removeClaim(Chunk claim);
 
-    boolean contains(Chunk chunk);
+    boolean containsClaim(Chunk claim);
 }

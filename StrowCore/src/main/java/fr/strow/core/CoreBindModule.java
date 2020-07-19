@@ -14,10 +14,10 @@ import com.google.inject.AbstractModule;
 import fr.strow.api.StrowPlugin;
 import fr.strow.api.commands.CommandService;
 import fr.strow.api.game.faction.FactionManager;
+import fr.strow.api.game.permissions.PermissionsManager;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.module.ModulesHandler;
 import fr.strow.api.property.PropertiesHandler;
-import fr.strow.api.services.EconomyService;
 import fr.strow.api.services.GameUtilsService;
 import fr.strow.api.services.Messaging;
 import fr.strow.api.services.Scheduler;
@@ -25,11 +25,9 @@ import fr.strow.core.api.commands.CommandServiceImpl;
 import fr.strow.core.api.services.GameUtilsServiceImpl;
 import fr.strow.core.api.services.MessagingImpl;
 import fr.strow.core.api.utils.SchedulerImpl;
-import fr.strow.core.modules.economy.services.EconomyServiceImpl;
 import fr.strow.core.modules.faction.managers.FactionManagerImpl;
+import fr.strow.core.modules.permissions.managers.PermissionsManagerImpl;
 import fr.strow.core.modules.player.managers.PlayerManagerImpl;
-import fr.strow.persistence.data.redis.RedisAccess;
-import fr.strow.persistence.data.redis.RedisCredentials;
 import fr.strow.persistence.data.sql.SQLAccess;
 import fr.strow.persistence.data.sql.SQLCredentials;
 import org.bukkit.plugin.PluginManager;
@@ -77,7 +75,7 @@ public class CoreBindModule extends AbstractModule {
 
             bind(SQLAccess.class).toInstance(sqlAccess);
 
-            String redisHost = (String) config.get("redis-host");
+            /*String redisHost = (String) config.get("redis-host");
             int redisPort = (Integer) config.get("redis-port");
             int redisTimeout = (Integer) config.get("redis-timeout");
             String redisPassword = (String) config.get("redis-password");
@@ -91,7 +89,7 @@ public class CoreBindModule extends AbstractModule {
 
             RedisAccess redisAccess = new RedisAccess(redisCredentials);
 
-            bind(RedisAccess.class).toInstance(redisAccess);
+            bind(RedisAccess.class).toInstance(redisAccess);*/
 
             bind(Gson.class).toInstance(
                     new GsonBuilder()
@@ -105,14 +103,14 @@ public class CoreBindModule extends AbstractModule {
             bind(ModulesHandler.class).to(CoreModulesHandler.class);
             bind(PropertiesHandler.class).to(CorePropertiesHandler.class);
 
-            bind(CommandService.class).to(CommandServiceImpl.class);
             bind(FactionManager.class).to(FactionManagerImpl.class);
+            bind(PermissionsManager.class).to(PermissionsManagerImpl.class);
             bind(PlayerManager.class).to(PlayerManagerImpl.class);
-            bind(Scheduler.class).to(SchedulerImpl.class);
 
-            bind(EconomyService.class).to(EconomyServiceImpl.class);
+            bind(CommandService.class).to(CommandServiceImpl.class);
             bind(Messaging.class).to(MessagingImpl.class);
             bind(GameUtilsService.class).to(GameUtilsServiceImpl.class);
+            bind(Scheduler.class).to(SchedulerImpl.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

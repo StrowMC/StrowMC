@@ -10,6 +10,8 @@ package fr.strow.api.game.faction;
 
 import fr.strow.api.game.Messenger;
 import fr.strow.api.property.PropertiesOwner;
+import fr.strow.api.property.Registerer;
 
-public interface Faction extends PropertiesOwner<Faction>, Messenger {
+public interface Faction extends PropertiesOwner<Faction>, Registerer<Faction>, Messenger {
+
 }

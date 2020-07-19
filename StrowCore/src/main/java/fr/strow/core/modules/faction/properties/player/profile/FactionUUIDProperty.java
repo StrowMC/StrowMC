@@ -12,11 +12,11 @@ import com.google.inject.Inject;
 import fr.strow.api.game.faction.player.FactionUUID;
 import fr.strow.api.property.ImplementationProperty;
 import fr.strow.persistence.beans.factions.profile.FactionUUIDBean;
-import fr.strow.persistence.dao.factions.profile.FactionUUIDDao;
+import fr.strow.persistence.dao.factions.player.FactionUUIDDao;
 
 import java.util.UUID;
 
-public class FactionUUIDProperty extends ImplementationProperty implements FactionUUID {
+public class FactionUUIDProperty implements FactionUUID, ImplementationProperty<FactionUUID> {
 
     private final FactionUUIDDao factionUUIDDao;
 
@@ -29,7 +29,7 @@ public class FactionUUIDProperty extends ImplementationProperty implements Facti
 
     @Override
     public boolean load(UUID uuid) {
-        FactionUUIDBean bean = factionUUIDDao.loadUuid(uuid);
+        FactionUUIDBean bean = factionUUIDDao.loadFactionUuid(uuid);
         factionUUID = bean.getFactionUuid();
 
         return true;
@@ -38,7 +38,7 @@ public class FactionUUIDProperty extends ImplementationProperty implements Facti
     @Override
     public void save(UUID uuid) {
         FactionUUIDBean bean = new FactionUUIDBean(uuid, factionUUID);
-        factionUUIDDao.saveUuid(bean);
+        factionUUIDDao.saveFactionUuid(bean);
     }
 
     @Override
@@ -49,14 +49,5 @@ public class FactionUUIDProperty extends ImplementationProperty implements Facti
     @Override
     public void setFactionUuid(UUID factionUuid) {
         this.factionUUID = factionUuid;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof FactionUUIDProperty) {
-            return ((FactionUUIDProperty) obj).getFactionUuid().equals(factionUUID);
-        } else {
-            return false;
-        }
     }
 }

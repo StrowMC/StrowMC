@@ -1,44 +1,60 @@
 package fr.strow.persistence.dao.factions;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
-import fr.strow.persistence.Tables;
-import fr.strow.persistence.beans.factions.FactionBean;
 import fr.strow.persistence.beans.factions.FactionLeaderBean;
-import fr.strow.persistence.dao.AbstractDao;
-import fr.strow.persistence.data.redis.RedisAccess;
-import redis.clients.jedis.Jedis;
+import fr.strow.persistence.data.sql.SQLAccess;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
-public class FactionLeaderDao extends AbstractDao {
+public class FactionLeaderDao {
+
+    private final SQLAccess sqlAccess;
 
     @Inject
-    public FactionLeaderDao(RedisAccess redisAccess, Gson gson) {
-        super(redisAccess, gson);
+    public FactionLeaderDao(SQLAccess sqlAccess) {
+        this.sqlAccess = sqlAccess;
     }
 
-    public FactionLeaderBean loadFactionLeaderUuid(UUID factionUuid) {
-        FactionLeaderBean bean;
+    public FactionLeaderBean loadFactionLeader(UUID uuid) {
+        FactionLeaderBean bean = null;
 
-        try (Jedis jedis = redisAccess.getResource()) {
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT leader_uuid FROM factions WHERE uuid = ?";
 
-            UUID leaderUuid = factionBean.getLeaderUuid();
-            bean = new FactionLeaderBean(factionUuid, leaderUuid);
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, uuid.toString());
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        UUID leaderUuid = UUID.fromString(resultSet.getString("leader_uuid"));
+
+                        bean = new FactionLeaderBean(uuid, leaderUuid);
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
 
         return bean;
     }
 
-    public void saveFactionLeaderUuid(FactionLeaderBean bean) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            UUID factionUuid = bean.getUuid();
+    public void saveFactionLeader(FactionLeaderBean bean) {
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "UPDATE factions SET leader_uuid = ? WHERE uuid = ?";
 
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
-            factionBean.setLeaderUuid(bean.getLeaderUuid());
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, bean.getLeaderUuid().toString());
+                statement.setString(2, bean.getUuid().toString());
 
-            jedis.hset(Tables.FACTIONS, factionUuid.toString(), gson.toJson(factionBean));
+                statement.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
     }
 }

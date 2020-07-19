@@ -1,22 +1,19 @@
 package fr.strow.api.property;
 
-import fr.strow.api.game.Property;
-
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public interface PropertiesHandler {
 
-    <T extends PropertiesOwner<T>> void bindProperty(Class<T> owner, Class<? extends Property<T>> property, Class<? extends ImplementationProperty> implementation);
+    <O extends PropertiesOwner<O>, P extends Property<O>> void bindProperty(Class<O> owner, Class<P> property, Class<? extends ImplementationProperty<P>> implementation);
 
-    <T extends PropertiesOwner<T>> void unbindProperty(Class<T> owner, Class<? extends Property<T>> property);
+    <O extends PropertiesOwner<O>> void unbindProperty(Class<O> owner, Class<? extends Property<O>> property);
 
-    <T extends PropertiesOwner<T>> void unbindProperties(Class<T> owner);
+    <O extends PropertiesOwner<O>> void unbindProperties(Class<O> owner);
 
-    <T extends PropertiesOwner<T>> ImplementationProperty getProperty(Class<T> owner, Class<? extends Property<T>> property);
+    <O extends PropertiesOwner<O>, P extends Property<O>> ImplementationProperty<P> getProperty(Class<O> owner, Class<? extends P> property);
 
-    <T extends PropertiesOwner<T>> Map<Class<? extends Property<T>>, ImplementationProperty> getProperties(Class<T> owner, UUID uuid);
+    <O extends PropertiesOwner<O>, P extends Property<O>> Map<Class<? extends P>, ImplementationProperty<? extends P>> getProperties(Class<O> owner, UUID uuid);
 
-   // <T extends PropertiesOwner<T>> List<Class<? extends Property<T>>> getProperties(Class<T> owner);
+   // <O extends PropertiesOwner<O>> List<Class<? extends Property<O>>> getProperties(Class<O> owner);
 }

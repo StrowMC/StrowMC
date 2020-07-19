@@ -10,13 +10,14 @@ package fr.strow.core.modules.faction.properties.player.profile;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.faction.player.*;
+import fr.strow.api.property.ImplementationProperty;
 import fr.strow.api.property.PropertiesGrouping;
 import fr.strow.api.property.PropertiesHandler;
-import fr.strow.persistence.dao.factions.profile.FactionProfileDao;
+import fr.strow.persistence.dao.factions.player.FactionProfileDao;
 
 import java.util.UUID;
 
-public class FactionProfileProperty extends PropertiesGrouping<FactionProfile> implements FactionProfile {
+public class FactionProfileProperty extends PropertiesGrouping<FactionProfile> implements ImplementationProperty<FactionProfile>, FactionProfile {
 
     private final FactionProfileDao factionProfileDao;
 
@@ -30,6 +31,8 @@ public class FactionProfileProperty extends PropertiesGrouping<FactionProfile> i
 
     @Override
     public boolean load(UUID uuid) {
+        this.uuid = uuid;
+
         if (factionProfileDao.hasProfile(uuid)) {
             return super.load(uuid);
         } else {
@@ -37,19 +40,15 @@ public class FactionProfileProperty extends PropertiesGrouping<FactionProfile> i
         }
     }
 
-    /*@Override
-    public void buildLeaderProfile(UUID factionUuid) {
-        getProperty(FactionUUID.class).setFactionUuid(factionUuid);
-        getProperty(FactionGroup.class).setRole(FactionRole.LEADER);
-        getProperty(FactionPower.class).setPower(10);
-        getProperty(FactionClaimer.class).setClaimer(true);
+    @Override
+    public void onRegister(UUID uuid, Factory factory) {
+        factionProfileDao.createProfile(uuid, factory.getFactionUuid(), factory.getRole().getId(), factory.getPower(), factory.isClaimer());
+
+        load(uuid);
     }
 
     @Override
-    public void buildMemberProfile(UUID factionUuid) {
-        getProperty(FactionUUID.class).setFactionUuid(factionUuid);
-        getProperty(FactionGroup.class).setRole(FactionRole.MEMBER);
-        getProperty(FactionPower.class).setPower(0);
-        getProperty(FactionClaimer.class).setClaimer(false);
-    }*/
+    public void onUnregister(UUID uuid) {
+        factionProfileDao.deleteProfile(this.uuid);
+    }
 }

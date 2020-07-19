@@ -1,21 +1,8 @@
 package fr.strow.persistence.dao.moderation;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.inject.Inject;
-import fr.strow.persistence.Tables;
-import fr.strow.persistence.beans.moderation.MuteBean;
-import fr.strow.persistence.dao.AbstractDao;
-import fr.strow.persistence.data.redis.RedisAccess;
-import redis.clients.jedis.Jedis;
+public class MuteDao {
 
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.UUID;
-
-public class MuteDao extends AbstractDao {
-
-    @Inject
+    /*@Inject
     public MuteDao(RedisAccess redisAccess, Gson gson) {
         super(redisAccess, gson);
     }
@@ -41,5 +28,5 @@ public class MuteDao extends AbstractDao {
         try (Jedis jedis = redisAccess.getResource()) {
             jedis.hset(Tables.MUTES, uuid.toString(), gson.toJson(beans));
         }
-    }
+    }*/
 }

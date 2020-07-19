@@ -1,44 +1,60 @@
 package fr.strow.persistence.dao.factions;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
-import fr.strow.persistence.Tables;
-import fr.strow.persistence.beans.factions.FactionBean;
 import fr.strow.persistence.beans.factions.FactionPrefixBean;
-import fr.strow.persistence.dao.AbstractDao;
-import fr.strow.persistence.data.redis.RedisAccess;
-import redis.clients.jedis.Jedis;
+import fr.strow.persistence.data.sql.SQLAccess;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
-public class FactionPrefixDao extends AbstractDao {
+public class FactionPrefixDao {
+
+    private final SQLAccess sqlAccess;
 
     @Inject
-    public FactionPrefixDao(RedisAccess redisAccess, Gson gson) {
-        super(redisAccess, gson);
+    public FactionPrefixDao(SQLAccess sqlAccess) {
+        this.sqlAccess = sqlAccess;
     }
 
-    public FactionPrefixBean loadFactionPrefix(UUID factionUuid) {
-        FactionPrefixBean bean;
+    public FactionPrefixBean loadFactionPrefix(UUID uuid) {
+        FactionPrefixBean bean = null;
 
-        try (Jedis jedis = redisAccess.getResource()) {
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT prefix FROM factions WHERE uuid = ?";
 
-            String prefix = factionBean.getPrefix();
-            bean = new FactionPrefixBean(factionUuid, prefix);
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, uuid.toString());
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        String prefix = resultSet.getString("prefix");
+
+                        bean = new FactionPrefixBean(uuid, prefix);
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
 
         return bean;
     }
 
     public void saveFactionPrefix(FactionPrefixBean bean) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            UUID factionUuid = bean.getUuid();
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "UPDATE factions SET prefix = ? WHERE uuid = ?";
 
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
-            factionBean.setPrefix(bean.getPrefix());
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, bean.getPrefix());
+                statement.setString(2, bean.getUuid().toString());
 
-            jedis.hset(Tables.FACTIONS, factionUuid.toString(), gson.toJson(factionBean));
+                statement.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
     }
 }

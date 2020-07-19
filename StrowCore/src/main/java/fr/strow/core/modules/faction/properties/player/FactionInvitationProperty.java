@@ -6,7 +6,7 @@ import fr.strow.api.property.ImplementationProperty;
 
 import java.util.UUID;
 
-public class FactionInvitationProperty extends ImplementationProperty implements FactionInvitation {
+public class FactionInvitationProperty implements FactionInvitation, ImplementationProperty<FactionInvitation> {
 
     private UUID sender;
     private UUID faction;
@@ -26,8 +26,8 @@ public class FactionInvitationProperty extends ImplementationProperty implements
     }
 
     @Override
-    public void build(UUID sender, UUID faction) {
-        this.sender = sender;
-        this.faction = faction;
+    public void onRegister(UUID uuid, Factory factory) {
+        sender = factory.getSender();
+        faction = factory.getFaction();
     }
 }

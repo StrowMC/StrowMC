@@ -12,13 +12,14 @@ import org.bukkit.Location;
 
 import java.util.UUID;
 
-public class FactionHomeProperty extends ImplementationProperty implements FactionHome {
+public class FactionHomeProperty implements FactionHome, ImplementationProperty<FactionHome> {
 
     private final FactionHomeDao factionHomeDao;
     private final LocationDao locationDao;
 
+    private UUID factionUuid;
     private Location home;
-    private int index;
+    private int locationId;
 
     @Inject
     public FactionHomeProperty(FactionHomeDao factionHomeDao, LocationDao locationDao) {
@@ -28,7 +29,9 @@ public class FactionHomeProperty extends ImplementationProperty implements Facti
 
     @Override
     public boolean load(UUID factionUuid) {
-        if (factionHomeDao.hasHome(factionUuid)) {
+        this.factionUuid = factionUuid;
+
+        if (factionHomeDao.hasFactionHome(factionUuid)) {
             FactionHomeBean bean = factionHomeDao.loadFactionHome(factionUuid);
 
             int locationId = bean.getLocationId();
@@ -36,7 +39,7 @@ public class FactionHomeProperty extends ImplementationProperty implements Facti
 
             home = LocationUtils.getBukkitLocation(locationBean);
 
-            index = locationId;
+            this.locationId = locationId;
 
             return true;
         } else {
@@ -46,11 +49,8 @@ public class FactionHomeProperty extends ImplementationProperty implements Facti
 
     @Override
     public void save(UUID factionUuid) {
-        LocationBean locationBean = LocationUtils.getBeanLocation(index, home);
-        int locationId = locationDao.saveLocation(locationBean);
-
-        FactionHomeBean bean = new FactionHomeBean(factionUuid, locationId);
-        factionHomeDao.saveFactionHome(bean);
+        LocationBean locationBean = LocationUtils.getBeanLocation(locationId, home);
+        locationDao.saveLocation(locationBean);
     }
 
     @Override
@@ -60,6 +60,27 @@ public class FactionHomeProperty extends ImplementationProperty implements Facti
 
     @Override
     public void setHome(Location home) {
-        this.home = home;
+        if (this.home != home) {
+            if (this.home == null) {
+                // Insert home
+                LocationBean locationBean = LocationUtils.getBeanLocation(home);
+                locationId = locationDao.insertLocation(locationBean);
+
+                FactionHomeBean bean = new FactionHomeBean(factionUuid, locationId);
+                factionHomeDao.insertFactionHome(bean);
+
+                this.home = home;
+            } else {
+                this.home = home;
+
+                save(factionUuid);
+            }
+        }
+    }
+
+    @Override
+    public void onUnregister(UUID uuid) {
+        factionHomeDao.deleteFactionHome(uuid);
+        locationDao.deleteLocation(locationId);
     }
 }

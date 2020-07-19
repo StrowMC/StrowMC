@@ -8,10 +8,11 @@ import fr.strow.persistence.dao.factions.FactionNameDao;
 
 import java.util.UUID;
 
-public class FactionNameProperty extends ImplementationProperty implements FactionName {
+public class FactionNameProperty implements FactionName, ImplementationProperty<FactionName> {
 
     private final FactionNameDao factionNameDao;
 
+    private UUID uuid;
     private String name;
 
     @Inject
@@ -20,16 +21,18 @@ public class FactionNameProperty extends ImplementationProperty implements Facti
     }
 
     @Override
-    public boolean load(UUID factionUuid) {
-        FactionNameBean bean = factionNameDao.loadFactionName(factionUuid);
+    public boolean load(UUID uuid) {
+        this.uuid = uuid;
+
+        FactionNameBean bean = factionNameDao.loadFactionName(uuid);
         name = bean.getName();
 
         return true;
     }
 
     @Override
-    public void save(UUID factionUuid) {
-        FactionNameBean bean = new FactionNameBean(factionUuid, name);
+    public void save(UUID uuid) {
+        FactionNameBean bean = new FactionNameBean(uuid, name);
         factionNameDao.saveFactionName(bean);
     }
 
@@ -40,6 +43,10 @@ public class FactionNameProperty extends ImplementationProperty implements Facti
 
     @Override
     public void setName(String name) {
-        this.name = name;
+        if (!this.name.equals(name)) {
+            this.name = name;
+
+            save(uuid);
+        }
     }
 }

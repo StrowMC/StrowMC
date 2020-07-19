@@ -16,22 +16,15 @@ import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.faction.player.FactionRole;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
-import fr.strow.api.property.PropertiesEntity;
-import fr.strow.api.property.PropertiesGrouping;
 import fr.strow.core.modules.faction.commands.parameters.FactionDescriptionParameter;
 import fr.strow.core.modules.faction.commands.parameters.FactionNameParameter;
 import fr.strow.core.modules.faction.commands.requirements.SenderIsNotInFactionRequirement;
-import fr.strow.persistence.beans.FactionProfileBean;
-import fr.strow.persistence.beans.factions.FactionBean;
 import fr.strow.persistence.dao.factions.FactionDao;
-import fr.strow.persistence.dao.factions.profile.FactionProfileDao;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class FactionCreateCommand extends EvolvedCommand {
@@ -40,21 +33,20 @@ public class FactionCreateCommand extends EvolvedCommand {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final JavaPlugin plugin;
-    private final FactionProfileDao factionProfileDao;
     private final FactionDao factionDao;
 
     @Inject
-    public FactionCreateCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager, JavaPlugin plugin, FactionProfileDao factionProfileDao, FactionDao factionDao) {
+    public FactionCreateCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager, JavaPlugin plugin, FactionDao factionDao) {
         super(CommandDescription.builder()
                 .withName("create")
                 .withAliases("c")
+                .withDescription("Créer une faction")
                 .build());
 
         this.commandService = commandService;
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.plugin = plugin;
-        this.factionProfileDao = factionProfileDao;
         this.factionDao = factionDao;
 
         define();
@@ -70,7 +62,7 @@ public class FactionCreateCommand extends EvolvedCommand {
 
     @Override
     protected void execute(CommandSender sender) {
-        StrowPlayer leader = playerManager.getPlayer(((Player) sender).getUniqueId());
+        StrowPlayer leader = playerManager.getPlayer(sender);
         UUID leaderUuid = leader.getUniqueId();
 
         String name = readArg();
@@ -79,26 +71,22 @@ public class FactionCreateCommand extends EvolvedCommand {
         plugin.getServer().getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            UUID uuid;
+            UUID factionUuid;
             do {
-                uuid = UUID.randomUUID();
-            } while (factionManager.getFactions().withUniqueId(uuid).findAny());
+                factionUuid = UUID.randomUUID();
+            } while (factionManager.factionExists(factionUuid));
 
-            // Set the player faction profile
-            FactionProfileBean profileBean = new FactionProfileBean(leaderUuid, uuid, FactionRole.LEADER.getId(), 100, true);
-            factionProfileDao.createProfile(profileBean);
-
-            ((PropertiesEntity<StrowPlayer>) leader).registerProperty(FactionProfile.class);
-            ((PropertiesGrouping<FactionProfile>) leader.getProperty(FactionProfile.class)).load(leaderUuid);
+            // Register property
+            leader.registerProperty(FactionProfile.class, new FactionProfile.Factory(factionUuid, FactionRole.LEADER, 100, true));
 
             String prefix = name.substring(0, 3);
-            Optional<String> optionalDescription = readOptionalArg();
+            String description = readOptionalArg(String.class).orElse(null);
 
-            FactionBean factionBean = new FactionBean(uuid, name, prefix, leaderUuid, optionalDescription.orElse(null), 0);
-            factionDao.createFaction(factionBean);
+            // Insert faction in SQL
+            factionDao.createFaction(factionUuid, name, prefix, leaderUuid, description, 0);
 
-            // Load faction
-            factionManager.loadFaction(uuid);
+            /*// Load faction
+            factionManager.loadFaction(factionUuid);*/
         }
     }
 }

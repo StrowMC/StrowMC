@@ -8,21 +8,29 @@
 
 package fr.strow.api.game.player;
 
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.Map;
 import java.util.UUID;
 
 public interface PlayerManager {
 
-    boolean playerExists(UUID uuid);
-
     boolean playerExists(String name);
 
-    StrowPlayer loadPlayer(UUID uuid);
+    StrowPlayer loadPlayer(String name);
 
-    void unloadPlayer(UUID uuid);
+    void unloadPlayer(String name);
+
+    boolean isConnected(UUID uuid);
 
     StrowPlayer getPlayer(UUID uuid);
 
-    StrowPlayer getPlayer(String pseudo);
+    StrowPlayer getPlayer(CommandSender sender);
 
-    PlayersCollection getPlayers();
+    StrowPlayer getPlayer(Player player);
+
+    StrowPlayer getPlayer(String nickname);
+
+    Map<UUID, StrowPlayer> getPlayers();
 }

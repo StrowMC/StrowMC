@@ -22,6 +22,7 @@ public class FactionCommand extends EvolvedCommand {
         super(CommandDescription.builder()
                 .withName("faction")
                 .withAliases("f")
+                .withDescription("Commandes relatives aux factions")
                 .build());
 
         this.commandService = commandService;
@@ -35,7 +36,16 @@ public class FactionCommand extends EvolvedCommand {
         addSubCommand(commandService.getCommand(FactionDemoteCommand.class));
         addSubCommand(commandService.getCommand(FactionDescriptionCommand.class));
         addSubCommand(commandService.getCommand(FactionDisbandCommand.class));
+        addSubCommand(commandService.getCommand(FactionHomeCommand.class));
         addSubCommand(commandService.getCommand(FactionInviteCommand.class));
         addSubCommand(commandService.getCommand(FactionJoinCommand.class));
+        addSubCommand(commandService.getCommand(FactionKickCommand.class));
+        addSubCommand(commandService.getCommand(FactionLeadCommand.class));
+        addSubCommand(commandService.getCommand(FactionPromoteCommand.class));
+        addSubCommand(commandService.getCommand(FactionSetHomeCommand.class));
+        addSubCommand(commandService.getCommand(FactionShowCommand.class));
+        addSubCommand(commandService.getCommand(FactionTopCommand.class));
+        addSubCommand(commandService.getCommand(FactionUnClaimAllCommand.class));
+        addSubCommand(commandService.getCommand(FactionUnClaimCommand.class));
     }
 }

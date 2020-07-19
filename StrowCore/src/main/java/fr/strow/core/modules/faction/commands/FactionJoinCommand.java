@@ -17,23 +17,22 @@ import fr.strow.api.game.faction.FactionName;
 import fr.strow.api.game.faction.player.FactionInvitation;
 import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.faction.player.FactionRole;
+import fr.strow.api.game.permissions.PermissionsManager;
+import fr.strow.api.game.player.Name;
+import fr.strow.api.game.player.Nickname;
 import fr.strow.api.game.player.PlayerManager;
-import fr.strow.api.game.player.Pseudo;
 import fr.strow.api.game.player.StrowPlayer;
-import fr.strow.api.property.PropertiesEntity;
-import fr.strow.api.property.PropertiesGrouping;
 import fr.strow.api.services.Messaging;
 import fr.strow.core.modules.faction.commands.requirements.SenderIsNotInFactionRequirement;
 import fr.strow.core.utils.commands.requirements.SenderIsPlayerRequirement;
-import fr.strow.persistence.beans.FactionProfileBean;
-import fr.strow.persistence.dao.factions.profile.FactionProfileDao;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Requirement;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,20 +41,21 @@ public class FactionJoinCommand extends EvolvedCommand {
     private final CommandService commandService;
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+    private final PermissionsManager permissionsManager;
     private final Messaging messaging;
-    private final FactionProfileDao factionProfileDao;
 
     @Inject
-    public FactionJoinCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager, Messaging messaging, FactionProfileDao factionProfileDao) {
+    public FactionJoinCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager, PermissionsManager permissionsManager, Messaging messaging) {
         super(CommandDescription.builder()
                 .withName("join")
+                .withDescription("Rejoindre une faction à laquelle vous êtes invité")
                 .build());
 
         this.commandService = commandService;
         this.playerManager = playerManager;
         this.factionManager = factionManager;
+        this.permissionsManager = permissionsManager;
         this.messaging = messaging;
-        this.factionProfileDao = factionProfileDao;
 
         define();
     }
@@ -68,7 +68,7 @@ public class FactionJoinCommand extends EvolvedCommand {
 
     @Override
     protected void execute(CommandSender sender) {
-        StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
+        StrowPlayer strowSender = playerManager.getPlayer(sender);
 
         FactionInvitation factionInvitation = strowSender.getProperty(FactionInvitation.class);
 
@@ -79,17 +79,15 @@ public class FactionJoinCommand extends EvolvedCommand {
         Faction faction = factionManager.getFaction(factionUuid);
         UUID uuid = player.getUniqueId();
 
-        // Set the player faction profile
-        FactionProfileBean profileBean = new FactionProfileBean(uuid, factionUuid, FactionRole.MEMBER.getId(), 0, false);
-        factionProfileDao.createProfile(profileBean);
+        // Register property
+        player.registerProperty(FactionProfile.class, new FactionProfile.Factory(factionUuid, FactionRole.MEMBER, 0, false));
 
-        ((PropertiesEntity<StrowPlayer>) player).registerProperty(FactionProfile.class);
-        ((PropertiesGrouping<FactionProfile>) player.getProperty(FactionProfile.class)).load(uuid);
-
-        messaging.sendMessage(faction, "%s a rejoint la faction !", player.getProperty(Pseudo.class).getPseudo());
+        messaging.sendMessage(faction, "%s a rejoint la faction !", player.getProperty(Nickname.class).getNickname());
 
         // Add the member to the faction members list
         faction.getProperty(FactionMembers.class).addMember(uuid);
+
+        permissionsManager.reloadPermissions(player);
 
         messaging.sendMessage(player, "Vous faites maintenant parti de %s !", faction.getProperty(FactionName.class).getName());
     }
@@ -98,29 +96,31 @@ public class FactionJoinCommand extends EvolvedCommand {
 
         private final SenderIsPlayerRequirement senderIsPlayerRequirement;
         private final PlayerManager playerManager;
+        private final Messaging messaging;
 
         @Inject
-        public SenderHasInvitationRequirement(SenderIsPlayerRequirement senderIsPlayerRequirement, PlayerManager playerManager) {
+        public SenderHasInvitationRequirement(SenderIsPlayerRequirement senderIsPlayerRequirement, PlayerManager playerManager, Messaging messaging) {
             this.senderIsPlayerRequirement = senderIsPlayerRequirement;
             this.playerManager = playerManager;
+            this.messaging = messaging;
         }
 
         @Override
         public List<Condition<CommandSender>> getConditions() {
-            List<Condition<CommandSender>> conditions = senderIsPlayerRequirement.getConditions();
+            List<Condition<CommandSender>> conditions = new ArrayList<>(senderIsPlayerRequirement.getConditions());
 
             conditions.add(
                     new Condition<CommandSender>() {
                         @Override
                         public boolean check(CommandSender sender) {
-                            StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
+                            StrowPlayer strowSender = playerManager.getPlayer(sender);
 
                             return strowSender.getOptionalProperty(FactionInvitation.class).isPresent();
                         }
 
                         @Override
-                        public String getMessage(CommandSender sender) {
-                            return "Vous n'avez pas reçu d'invitation à rejoindre une faction";
+                        public BaseComponent getMessage(CommandSender sender) {
+                            return messaging.errorMessage("Vous n'avez pas reçu d'invitation à rejoindre une faction");
                         }
                     }
             );

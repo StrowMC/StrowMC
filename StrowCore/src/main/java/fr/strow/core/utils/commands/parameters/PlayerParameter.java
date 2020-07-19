@@ -5,6 +5,7 @@ import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -25,18 +26,12 @@ public class PlayerParameter extends Parameter<StrowPlayer> {
     public List<Condition<String>> getConditions(CommandSender sender) {
         return Collections.singletonList(new Condition<String>() {
             @Override
-            public boolean check(String o) {
-                try {
-                    playerManager.getPlayer(o);
-                } catch (IllegalArgumentException e) {
-                    return true;
-                }
-
-                return false;
+            public boolean check(String arg) {
+                return playerManager.playerExists(arg);
             }
 
             @Override
-            public String getMessage(String s) {
+            public BaseComponent getMessage(String s) {
                 return "Ce joueur n'existe pas";
             }
         });

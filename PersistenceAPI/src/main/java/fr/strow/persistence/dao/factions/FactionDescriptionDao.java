@@ -1,52 +1,76 @@
 package fr.strow.persistence.dao.factions;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
-import fr.strow.persistence.Tables;
-import fr.strow.persistence.beans.factions.FactionBean;
 import fr.strow.persistence.beans.factions.FactionDescriptionBean;
-import fr.strow.persistence.dao.AbstractDao;
-import fr.strow.persistence.data.redis.RedisAccess;
-import redis.clients.jedis.Jedis;
+import fr.strow.persistence.data.sql.SQLAccess;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
-public class FactionDescriptionDao extends AbstractDao {
+public class FactionDescriptionDao {
+
+    private final SQLAccess sqlAccess;
 
     @Inject
-    public FactionDescriptionDao(RedisAccess redisAccess, Gson gson) {
-        super(redisAccess, gson);
+    public FactionDescriptionDao(SQLAccess sqlAccess) {
+        this.sqlAccess = sqlAccess;
     }
 
-    public boolean hasDescription(UUID factionUuid) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            FactionDescriptionBean bean = loadFactionDescription(factionUuid);
+    public boolean hasFactionDescription(UUID uuid) {
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT 1 FROM factions WHERE uuid = ? IS NULL";
 
-            return bean.getDescription() != null;
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, uuid.toString());
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
+
+        return false;
     }
 
-    public FactionDescriptionBean loadFactionDescription(UUID factionUuid) {
-        FactionDescriptionBean bean;
+    public FactionDescriptionBean loadFactionDescription(UUID uuid) {
+        FactionDescriptionBean bean = null;
 
-        try (Jedis jedis = redisAccess.getResource()) {
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT description FROM factions WHERE uuid = ?";
 
-            String description = factionBean.getDescription();
-            bean = new FactionDescriptionBean(factionUuid, description);
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, uuid.toString());
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    String description = resultSet.getString("description");
+
+                    bean = new FactionDescriptionBean(uuid, description);
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
 
         return bean;
     }
 
     public void saveFactionDescription(FactionDescriptionBean bean) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            UUID factionUuid = bean.getUuid();
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "UPDATE factions SET description = ? WHERE uuid = ?";
 
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
-            factionBean.setDescription(bean.getDescription());
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, bean.getDescription());
+                statement.setString(2, bean.getUuid().toString());
 
-            jedis.hset(Tables.FACTIONS, factionUuid.toString(), gson.toJson(factionBean));
+                statement.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
     }
 }

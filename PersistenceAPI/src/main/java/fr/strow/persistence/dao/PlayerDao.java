@@ -1,62 +1,118 @@
 package fr.strow.persistence.dao;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
-import fr.strow.persistence.Tables;
-import fr.strow.persistence.beans.PlayerBean;
-import fr.strow.persistence.data.redis.RedisAccess;
-import redis.clients.jedis.Jedis;
+import fr.strow.persistence.data.sql.SQLAccess;
 
-import java.util.List;
-import java.util.Optional;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-public class PlayerDao extends AbstractDao {
+public class PlayerDao {
+
+    private final SQLAccess sqlAccess;
 
     @Inject
-    public PlayerDao(RedisAccess redisAccess, Gson gson) {
-        super(redisAccess, gson);
+    public PlayerDao(SQLAccess sqlAccess) {
+        this.sqlAccess = sqlAccess;
     }
 
-    public boolean playerExists(UUID uuid) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            return jedis.hexists(Tables.PLAYERS, uuid.toString());
-        }
-    }
+    public boolean playerExists(String name) {
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT 1 FROM players WHERE name = ?";
 
-    public UUID getUUIDFromPseudo(String pseudo) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            Optional<PlayerBean> optionalPlayer = jedis.hgetAll(Tables.PLAYERS)
-                    .values()
-                    .stream()
-                    .map(player ->
-                            gson.fromJson(player, PlayerBean.class))
-                    .filter(player ->
-                            player.getPseudo().equals(pseudo))
-                    .findAny();
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, name);
 
-            if (optionalPlayer.isPresent()) {
-                return optionalPlayer.get().getUuid();
-            } else {
-                throw new IllegalArgumentException();
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
             }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
+
+        return false;
     }
 
-    public void createPlayer(PlayerBean bean) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            jedis.hset(Tables.PLAYERS, bean.getUuid().toString(), gson.toJson(bean));
+    public boolean playerNameExists(UUID uuid) {
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT 1 FROM players WHERE uuid = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, uuid.toString());
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
+
+        return false;
     }
 
-    public List<UUID> getPlayers() {
-        try (Jedis jedis = redisAccess.getResource()) {
-            return jedis.hgetAll(Tables.PLAYERS)
-                    .keySet()
-                    .stream()
-                    .map(UUID::fromString)
-                    .collect(Collectors.toList());
+    public UUID getUUIDFromName(String name) {
+        UUID uuid = null;
+
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT uuid FROM players WHERE name = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, name);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        uuid = UUID.fromString(resultSet.getString("uuid"));
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
+
+        return uuid;
+    }
+
+    public UUID getUUIDFromNickname(String nickname) {
+        UUID uuid = null;
+
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT uuid FROM players WHERE nickname = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, nickname);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        uuid = UUID.fromString(resultSet.getString("uuid"));
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return uuid;
+    }
+
+    public void createPlayer(String name, UUID uuid, String nickname, int roleId, int coins) {
+       try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "INSERT INTO players (name, uuid, nickname, role_id, coins) VALUES (?, ?, ?, ?, ?)";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, name);
+                statement.setString(2, uuid.toString());
+                statement.setString(3, nickname);
+                statement.setInt(4, roleId);
+                statement.setInt(5, coins);
+
+                statement.executeUpdate();
+            }
+       } catch (SQLException exception) {
+           exception.printStackTrace();
+       }
     }
 }

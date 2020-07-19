@@ -12,11 +12,11 @@ import com.google.inject.Inject;
 import fr.strow.api.game.faction.player.FactionPower;
 import fr.strow.api.property.ImplementationProperty;
 import fr.strow.persistence.beans.factions.profile.FactionPowerBean;
-import fr.strow.persistence.dao.factions.profile.FactionPowerDao;
+import fr.strow.persistence.dao.factions.player.FactionPowerDao;
 
 import java.util.UUID;
 
-public class FactionPowerProperty extends ImplementationProperty implements FactionPower {
+public class FactionPowerProperty implements FactionPower, ImplementationProperty<FactionPower> {
 
     private final FactionPowerDao factionPowerDao;
 
@@ -29,7 +29,7 @@ public class FactionPowerProperty extends ImplementationProperty implements Fact
 
     @Override
     public boolean load(UUID uuid) {
-        FactionPowerBean bean = factionPowerDao.loadPower(uuid);
+        FactionPowerBean bean = factionPowerDao.loadFactionPower(uuid);
         power = bean.getPower();
 
         return true;
@@ -38,7 +38,7 @@ public class FactionPowerProperty extends ImplementationProperty implements Fact
     @Override
     public void save(UUID uuid) {
         FactionPowerBean bean = new FactionPowerBean(uuid, power);
-        factionPowerDao.savePower(bean);
+        factionPowerDao.saveFactionPower(bean);
     }
 
     @Override

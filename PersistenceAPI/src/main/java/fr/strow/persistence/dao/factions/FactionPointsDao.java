@@ -1,44 +1,60 @@
 package fr.strow.persistence.dao.factions;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
-import fr.strow.persistence.Tables;
-import fr.strow.persistence.beans.factions.FactionBean;
 import fr.strow.persistence.beans.factions.FactionPointsBean;
-import fr.strow.persistence.dao.AbstractDao;
-import fr.strow.persistence.data.redis.RedisAccess;
-import redis.clients.jedis.Jedis;
+import fr.strow.persistence.data.sql.SQLAccess;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
-public class FactionPointsDao extends AbstractDao {
+public class FactionPointsDao {
+
+    private final SQLAccess sqlAccess;
 
     @Inject
-    public FactionPointsDao(RedisAccess redisAccess, Gson gson) {
-        super(redisAccess, gson);
+    public FactionPointsDao(SQLAccess sqlAccess) {
+        this.sqlAccess = sqlAccess;
     }
 
-    public FactionPointsBean loadFactionPoints(UUID factionUuid) {
-        FactionPointsBean bean;
+    public FactionPointsBean loadFactionPoints(UUID uuid) {
+        FactionPointsBean bean = null;
 
-        try (Jedis jedis = redisAccess.getResource()) {
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT points FROM factions WHERE uuid = ?";
 
-            int points = factionBean.getPoints();
-            bean = new FactionPointsBean(factionUuid, points);
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, uuid.toString());
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int points = resultSet.getInt("points");
+
+                        bean = new FactionPointsBean(uuid, points);
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
 
         return bean;
     }
 
     public void saveFactionPoints(FactionPointsBean bean) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            UUID factionUuid = bean.getUuid();
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "UPDATE factions SET points = ? WHERE uuid = ?";
 
-            FactionBean factionBean = gson.fromJson(jedis.hget(Tables.FACTIONS, factionUuid.toString()), FactionBean.class);
-            factionBean.setPoints(bean.getPoints());
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setInt(1, bean.getPoints());
+                statement.setString(2, bean.getUuid().toString());
 
-            jedis.hset(Tables.FACTIONS, factionUuid.toString(), gson.toJson(factionBean));
+                statement.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
     }
 }

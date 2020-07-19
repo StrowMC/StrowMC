@@ -8,7 +8,7 @@
 
 package fr.strow.api.game.economy;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.property.Property;
 import fr.strow.api.game.player.StrowPlayer;
 
 public interface Economy extends Property<StrowPlayer> {

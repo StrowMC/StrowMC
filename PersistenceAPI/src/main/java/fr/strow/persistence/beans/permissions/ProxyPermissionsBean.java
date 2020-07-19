@@ -12,6 +12,7 @@ import fr.strow.persistence.utils.Permission;
 import fr.strow.persistence.utils.PermissionsProvider;
 
 import java.util.List;
+import java.util.Map;
 
 public class ProxyPermissionsBean {
 
@@ -22,7 +23,7 @@ public class ProxyPermissionsBean {
         this.perm = perm;
     }
 
-    public List<String> getPermissions() {
+    public Map<String, Boolean> getPermissions() {
         return PermissionsProvider.getPermissions(this);
     }
 }

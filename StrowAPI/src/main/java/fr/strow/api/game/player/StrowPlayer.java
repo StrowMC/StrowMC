@@ -9,18 +9,10 @@
 package fr.strow.api.game.player;
 
 import fr.strow.api.game.Messenger;
-import fr.strow.api.game.permissions.Role;
 import fr.strow.api.property.PropertiesOwner;
+import fr.strow.api.property.Registerer;
 
 import java.util.UUID;
 
-public interface StrowPlayer extends PropertiesOwner<StrowPlayer>, Messenger {
-
-    void connect();
-
-    void disconnect();
-
-    boolean isConnected();
-
-    void build();
+public interface StrowPlayer extends PropertiesOwner<StrowPlayer>, Registerer<StrowPlayer>, Messenger {
 }

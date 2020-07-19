@@ -16,7 +16,7 @@ import fr.strow.persistence.dao.EconomyDao;
 
 import java.util.UUID;
 
-public class EconomyProperty extends ImplementationProperty implements Economy {
+public class EconomyProperty implements Economy, ImplementationProperty<Economy> {
 
     private final EconomyDao economyDao;
 
@@ -60,7 +60,11 @@ public class EconomyProperty extends ImplementationProperty implements Economy {
 
     @Override
     public void setCoins(int coins) {
-        this.coins = coins;
+        if (this.coins != coins) {
+            this.coins = coins;
+
+            save(uuid);
+        }
     }
 
     @Override

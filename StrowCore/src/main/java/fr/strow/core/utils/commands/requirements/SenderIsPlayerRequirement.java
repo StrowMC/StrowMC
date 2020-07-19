@@ -11,6 +11,7 @@ package fr.strow.core.utils.commands.requirements;
 import com.google.inject.Inject;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Requirement;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -32,7 +33,7 @@ public class SenderIsPlayerRequirement extends Requirement {
             }
 
             @Override
-            public String getMessage(CommandSender sender) {
+            public BaseComponent getMessage(CommandSender sender) {
                 return "Vous devez être un joueur pour exécuter cette commande";
             }
         });

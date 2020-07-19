@@ -2,8 +2,10 @@ package fr.strow.core.modules.faction.commands.parameters;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.faction.FactionManager;
+import fr.strow.api.services.Messaging;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
@@ -13,12 +15,14 @@ import java.util.regex.Pattern;
 public class FactionNameParameter extends Parameter<String> {
 
     private final FactionManager factionManager;
+    private final Messaging messaging;
 
     @Inject
-    public FactionNameParameter(FactionManager factionManager) {
+    public FactionNameParameter(FactionManager factionManager, Messaging messaging) {
         super("name");
 
         this.factionManager = factionManager;
+        this.messaging = messaging;
     }
 
     @Override
@@ -33,8 +37,8 @@ public class FactionNameParameter extends Parameter<String> {
                     }
 
                     @Override
-                    public String getMessage(String arg) {
-                        return "Le nom de la faction doit commencer par une lettre et doit comporter aumoins 3 caractères";
+                    public BaseComponent getMessage(String arg) {
+                        return messaging.errorMessage("Le nom de la faction doit commencer par une lettre et doit comporter aumoins 3 caractères");
                     }
                 },
                 new Condition<String>() {
@@ -44,8 +48,8 @@ public class FactionNameParameter extends Parameter<String> {
                     }
 
                     @Override
-                    public String getMessage(String arg) {
-                        return "Ce nom est déjà pris par une autre faction";
+                    public BaseComponent getMessage(String arg) {
+                        return messaging.errorMessage("Ce nom est déjà pris par une autre faction");
                     }
                 }
         );

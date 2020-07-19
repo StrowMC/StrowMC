@@ -10,13 +10,11 @@ package fr.strow.api.property;
 
 import java.util.UUID;
 
-public abstract class ImplementationProperty {
+public interface ImplementationProperty<P extends Property<?>> {
 
-    public boolean load(UUID uuid) {
+    default boolean load(UUID uuid) {
         return false;
     }
 
-    public void save(UUID uuid) {
-
-    }
+    default void save(UUID uuid) {}
 }

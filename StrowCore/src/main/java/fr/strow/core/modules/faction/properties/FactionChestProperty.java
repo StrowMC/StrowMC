@@ -2,6 +2,7 @@ package fr.strow.core.modules.faction.properties;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.faction.FactionChest;
+import fr.strow.api.property.EmptyPropertyFactory;
 import fr.strow.api.property.ImplementationProperty;
 import fr.strow.persistence.beans.factions.FactionChestBean;
 import fr.strow.persistence.dao.factions.FactionChestDao;
@@ -14,10 +15,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public class FactionChestProperty extends ImplementationProperty implements FactionChest {
+public class FactionChestProperty implements FactionChest, ImplementationProperty<FactionChest> {
 
     private final FactionChestDao factionChestDao;
 
+    private UUID factionUuid;
     private ItemStack[] chest;
 
     @Inject
@@ -27,7 +29,9 @@ public class FactionChestProperty extends ImplementationProperty implements Fact
 
     @Override
     public boolean load(UUID factionUuid) {
-        if (factionChestDao.hasChest(factionUuid)) {
+        this.factionUuid = factionUuid;
+
+        if (factionChestDao.hasFactionChest(factionUuid)) {
             FactionChestBean bean = factionChestDao.loadFactionChest(factionUuid);
 
             try (BukkitObjectInputStream data = new BukkitObjectInputStream(bean.getContent())) {
@@ -51,6 +55,37 @@ public class FactionChestProperty extends ImplementationProperty implements Fact
 
     @Override
     public void save(UUID factionUuid) {
+        FactionChestBean bean = createBean(this.chest);
+        factionChestDao.saveFactionChest(bean);
+    }
+
+    @Override
+    public ItemStack[] getChest() {
+        return chest;
+    }
+
+    @Override
+    public void setChest(ItemStack[] chest) {
+        if (this.chest != chest) {
+            if (this.chest == null) {
+                FactionChestBean bean = createBean(chest);
+                factionChestDao.insertFactionChest(bean);
+
+                this.chest = chest;
+            } else {
+                this.chest = chest;
+
+                save(factionUuid);
+            }
+        }
+    }
+
+    @Override
+    public void onUnregister(UUID factionUuid) {
+        factionChestDao.deleteFactionChest(factionUuid);
+    }
+
+    private FactionChestBean createBean(ItemStack[] chest) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try (BukkitObjectOutputStream data = new BukkitObjectOutputStream(out)) {
@@ -63,18 +98,6 @@ public class FactionChestProperty extends ImplementationProperty implements Fact
             e.printStackTrace();
         }
 
-        FactionChestBean bean = new FactionChestBean(factionUuid, new ByteArrayInputStream(out.toByteArray()));
-
-        factionChestDao.saveFactionChest(bean);
-    }
-
-    @Override
-    public ItemStack[] getChest() {
-        return chest;
-    }
-
-    @Override
-    public void setChest(ItemStack[] chest) {
-        this.chest = chest;
+        return new FactionChestBean(factionUuid, new ByteArrayInputStream(out.toByteArray()));
     }
 }

@@ -14,19 +14,19 @@ import fr.strow.api.game.faction.player.FactionRole;
 import fr.strow.api.property.ImplementationProperty;
 import fr.strow.persistence.beans.factions.profile.FactionPermissionsBean;
 import fr.strow.persistence.beans.factions.profile.FactionRoleBean;
-import fr.strow.persistence.dao.factions.profile.FactionPermissionsDao;
-import fr.strow.persistence.dao.factions.profile.FactionRoleDao;
+import fr.strow.persistence.dao.factions.player.FactionPermissionsDao;
+import fr.strow.persistence.dao.factions.player.FactionRoleDao;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-public class FactionGroupProperty extends ImplementationProperty implements FactionGroup {
+public class FactionGroupProperty implements FactionGroup, ImplementationProperty<FactionGroup> {
 
     private final FactionRoleDao factionRoleDao;
     private final FactionPermissionsDao factionPermissionsDao;
 
     private FactionRole role;
-    private List<String> permissions;
+    private Map<String, Boolean> permissions;
 
     @Inject
     public FactionGroupProperty(FactionRoleDao factionRoleDao, FactionPermissionsDao factionPermissionsDao) {
@@ -72,6 +72,11 @@ public class FactionGroupProperty extends ImplementationProperty implements Fact
 
     @Override
     public boolean hasPermission(String permission) {
-        return permissions.contains(permission);
+        return permissions.get(permission);
+    }
+
+    @Override
+    public Map<String, Boolean> getPermissions() {
+        return permissions;
     }
 }

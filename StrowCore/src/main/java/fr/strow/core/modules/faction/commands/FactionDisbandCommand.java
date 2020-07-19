@@ -15,19 +15,17 @@ import fr.strow.api.game.faction.FactionManager;
 import fr.strow.api.game.faction.FactionMembers;
 import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.faction.player.FactionUUID;
+import fr.strow.api.game.permissions.PermissionsManager;
+import fr.strow.api.game.player.Name;
+import fr.strow.api.game.player.Nickname;
 import fr.strow.api.game.player.PlayerManager;
-import fr.strow.api.game.player.Pseudo;
 import fr.strow.api.game.player.StrowPlayer;
-import fr.strow.api.property.PropertiesEntity;
 import fr.strow.api.services.Messaging;
 import fr.strow.core.modules.faction.commands.requirements.SenderIsInFactionRequirement;
 import fr.strow.persistence.dao.factions.FactionDao;
-import fr.strow.persistence.dao.factions.FactionMembersDao;
-import fr.strow.persistence.dao.factions.profile.FactionProfileDao;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -36,24 +34,24 @@ public class FactionDisbandCommand extends EvolvedCommand {
     private final CommandService commandService;
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+    private final PermissionsManager permissionsManager;
     private final Messaging messaging;
     private final FactionDao factionDao;
-    private final FactionProfileDao factionProfileDao;
-    private final FactionMembersDao factionMembersDao;
 
     @Inject
-    public FactionDisbandCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager, Messaging messaging, FactionDao factionDao, FactionProfileDao factionProfileDao, FactionMembersDao factionMembersDao) {
+    public FactionDisbandCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager, PermissionsManager permissionsManager, Messaging messaging, FactionDao factionDao) {
         super(CommandDescription.builder()
                 .withName("disband")
+                .withPermission("faction.disband")
+                .withDescription("Dissoudre votre faction")
                 .build());
 
         this.commandService = commandService;
         this.playerManager = playerManager;
         this.factionManager = factionManager;
+        this.permissionsManager = permissionsManager;
         this.messaging = messaging;
         this.factionDao = factionDao;
-        this.factionProfileDao = factionProfileDao;
-        this.factionMembersDao = factionMembersDao;
 
         define();
     }
@@ -65,28 +63,23 @@ public class FactionDisbandCommand extends EvolvedCommand {
 
     @Override
     protected void execute(CommandSender sender) {
-        StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
+        StrowPlayer strowSender = playerManager.getPlayer(sender);
 
         Faction faction = factionManager.getFaction(strowSender
                 .getProperty(FactionProfile.class)
                 .getProperty(FactionUUID.class)
                 .getFactionUuid());
 
-        messaging.sendMessage(faction, "La faction a été dissoue par %s",
-                strowSender
-                        .getProperty(Pseudo.class)
-                        .getPseudo());
+        messaging.sendMessage(faction, "La faction a été dissoue par %s", strowSender.getProperty(Nickname.class).getNickname());
 
         factionDao.deleteFaction(faction.getUniqueId());
-
-        factionMembersDao.deleteMembers(faction.getUniqueId());
 
         for (UUID uuid : faction.getProperty(FactionMembers.class).getMembers()) {
             StrowPlayer player = playerManager.getPlayer(uuid);
 
-            ((PropertiesEntity<StrowPlayer>) player).unregisterProperty(FactionProfile.class);
+            player.unregisterProperty(FactionProfile.class);
 
-            factionProfileDao.deleteProfile(uuid);
+            permissionsManager.reloadPermissions(player);
         }
     }
 }

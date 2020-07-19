@@ -10,40 +10,43 @@ package fr.strow.core.modules.player.listeners;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.permissions.Group;
+import fr.strow.api.game.permissions.PermissionsManager;
 import fr.strow.api.game.permissions.Role;
+import fr.strow.api.game.player.Nickname;
 import fr.strow.api.game.player.PlayerManager;
-import fr.strow.api.game.player.Pseudo;
+import fr.strow.api.game.player.Name;
 import fr.strow.api.game.player.StrowPlayer;
 import fr.strow.api.services.Messaging;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import java.util.UUID;
-
 public class PlayerJoinListener implements Listener {
 
     private final PlayerManager playerManager;
+    private final PermissionsManager permissionsManager;
     private final Messaging messaging;
 
     @Inject
-    public PlayerJoinListener(PlayerManager playerManager, Messaging messaging) {
+    public PlayerJoinListener(PlayerManager playerManager, PermissionsManager permissionsManager, Messaging messaging) {
         this.playerManager = playerManager;
+        this.permissionsManager = permissionsManager;
         this.messaging = messaging;
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        boolean newcomer = !playerManager.playerExists(uuid);
+        String name = event.getPlayer().getName();
+        boolean newcomer = !playerManager.playerExists(name);
 
-        StrowPlayer player = playerManager.loadPlayer(uuid);
+        StrowPlayer player = playerManager.loadPlayer(name);
+        permissionsManager.loadPermissions(name);
 
         String joinMessage = null;
 
         if (newcomer) {
-            joinMessage = String.format("%s a rejoint le serveur pour la première fois !", player.getProperty(Pseudo.class).getPseudo());
-            messaging.sendMessage(player, "Bienvenue %s !", player.getProperty(Pseudo.class).getPseudo());
+            joinMessage = String.format("%s a rejoint le serveur pour la première fois !", player.getProperty(Name.class).getName());
+            messaging.sendMessage(player, "Bienvenue %s !", player.getProperty(Name.class).getName());
         } else {
             Role role = player.getProperty(Group.class).getRole();
 
@@ -52,8 +55,8 @@ public class PlayerJoinListener implements Listener {
                         role.getColor(),
                         role.getPrefix(),
                         role.getColor(),
-                        player.getProperty(Pseudo.class)
-                                .getPseudo());
+                        player.getProperty(Nickname.class)
+                                .getNickname());
             }
         }
 

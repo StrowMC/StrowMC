@@ -16,7 +16,6 @@ import fr.strow.api.game.faction.player.*;
 import fr.strow.api.game.player.StrowPlayer;
 import fr.strow.api.module.StrowModule;
 import fr.strow.api.property.PropertiesHandler;
-import fr.strow.api.services.Scheduler;
 import fr.strow.core.modules.faction.commands.FactionCommand;
 import fr.strow.core.modules.faction.properties.*;
 import fr.strow.core.modules.faction.properties.player.FactionInvitationProperty;
@@ -26,7 +25,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class FactionModule extends StrowModule {
 
@@ -65,10 +63,6 @@ public class FactionModule extends StrowModule {
         bindProperty(Faction.class, FactionPoints.class, FactionPointsProperty.class);
         bindProperty(Faction.class, FactionPrefix.class, FactionPrefixProperty.class);
         bindProperty(Faction.class, FactionWarps.class, FactionWarpsProperty.class);
-
-        injector.getInstance(Scheduler.class).runRepeatingTask(() ->
-                        injector.getInstance(FactionManager.class).unloadFactions(),
-                0, 15, TimeUnit.MINUTES);
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FactionMembersProperty extends ImplementationProperty implements FactionMembers {
+public class FactionMembersProperty implements FactionMembers, ImplementationProperty<FactionMembers> {
 
     private final FactionMembersDao factionMembersDao;
 
@@ -33,7 +33,7 @@ public class FactionMembersProperty extends ImplementationProperty implements Fa
         return true;
     }
 
-    @Override
+    /*@Override
     public void save(UUID factionUuid) {
         List<FactionMemberBean> beans = new ArrayList<>();
 
@@ -43,20 +43,27 @@ public class FactionMembersProperty extends ImplementationProperty implements Fa
         }
 
         factionMembersDao.saveMembers(beans);
-    }
-
-    @Override
-    public List<UUID> getMembers() {
-        return members;
-    }
+    }*/
 
     @Override
     public void addMember(UUID member) {
-        members.add(member);
+        if (!members.contains(member)) {
+            members.add(member);
+        }
     }
 
     @Override
     public void removeMember(UUID member) {
         members.remove(member);
+    }
+
+    @Override
+    public boolean containsMember(UUID member) {
+        return false;
+    }
+
+    @Override
+    public List<UUID> getMembers() {
+        return members;
     }
 }

@@ -8,10 +8,11 @@ import fr.strow.persistence.dao.factions.FactionPrefixDao;
 
 import java.util.UUID;
 
-public class FactionPrefixProperty extends ImplementationProperty implements FactionPrefix {
+public class FactionPrefixProperty implements FactionPrefix, ImplementationProperty<FactionPrefix> {
 
     private final FactionPrefixDao factionPrefixDao;
 
+    private UUID uuid;
     private String prefix;
 
     @Inject
@@ -21,8 +22,9 @@ public class FactionPrefixProperty extends ImplementationProperty implements Fac
 
     @Override
     public boolean load(UUID uuid) {
-        FactionPrefixBean bean = factionPrefixDao.loadFactionPrefix(uuid);
+        this.uuid = uuid;
 
+        FactionPrefixBean bean = factionPrefixDao.loadFactionPrefix(uuid);
         prefix = bean.getPrefix();
 
         return true;
@@ -31,7 +33,6 @@ public class FactionPrefixProperty extends ImplementationProperty implements Fac
     @Override
     public void save(UUID uuid) {
         FactionPrefixBean bean = new FactionPrefixBean(uuid, prefix);
-
         factionPrefixDao.saveFactionPrefix(bean);
     }
 
@@ -42,6 +43,10 @@ public class FactionPrefixProperty extends ImplementationProperty implements Fac
 
     @Override
     public void setPrefix(String prefix) {
-        this.prefix = prefix;
+        if (!this.prefix.equals(prefix)) {
+            this.prefix = prefix;
+
+            save(uuid);
+        }
     }
 }

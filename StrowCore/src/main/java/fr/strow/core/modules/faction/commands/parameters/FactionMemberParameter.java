@@ -11,9 +11,11 @@ package fr.strow.core.modules.faction.commands.parameters;
 import com.google.inject.Inject;
 import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.player.StrowPlayer;
+import fr.strow.api.services.Messaging;
 import fr.strow.core.utils.commands.parameters.PlayerParameter;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandSender;
 
 import java.util.*;
@@ -21,12 +23,14 @@ import java.util.*;
 public class FactionMemberParameter extends Parameter<StrowPlayer> {
 
     private final PlayerParameter playerParameter;
+    private final Messaging messaging;
 
     @Inject
-    public FactionMemberParameter(PlayerParameter playerParameter) {
+    public FactionMemberParameter(PlayerParameter playerParameter, Messaging messaging) {
         super("joueur");
 
         this.playerParameter = playerParameter;
+        this.messaging = messaging;
     }
 
     @Override
@@ -43,8 +47,8 @@ public class FactionMemberParameter extends Parameter<StrowPlayer> {
                     }
 
                     @Override
-                    public String getMessage(String o) {
-                        return "Ce joueur n'est membre d'aucune faction";
+                    public BaseComponent getMessage(String o) {
+                        return messaging.errorMessage("Ce joueur n'est membre d'aucune faction");
                     }
                 }
         ));

@@ -15,10 +15,9 @@ import fr.strow.api.game.faction.FactionManager;
 import fr.strow.api.game.faction.FactionName;
 import fr.strow.api.game.faction.player.FactionInvitation;
 import fr.strow.api.game.faction.player.FactionProfile;
+import fr.strow.api.game.player.Nickname;
 import fr.strow.api.game.player.PlayerManager;
-import fr.strow.api.game.player.Pseudo;
 import fr.strow.api.game.player.StrowPlayer;
-import fr.strow.api.property.PropertiesEntity;
 import fr.strow.api.services.Messaging;
 import fr.strow.api.services.Scheduler;
 import fr.strow.core.modules.faction.commands.parameters.GuestParameter;
@@ -28,7 +27,6 @@ import me.choukas.commands.api.CommandDescription;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.concurrent.TimeUnit;
 
@@ -46,7 +44,8 @@ public class FactionInviteCommand extends EvolvedCommand {
     public FactionInviteCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager, Messaging messaging, Scheduler scheduler) {
         super(CommandDescription.builder()
                 .withName("invite")
-                .withDescription("Inviter un joueur à rejoindre sa faction")
+                .withDescription("faction.invite")
+                .withDescription("Inviter un joueur à rejoindre votre faction")
                 .build());
 
         this.commandService = commandService;
@@ -67,7 +66,7 @@ public class FactionInviteCommand extends EvolvedCommand {
 
     @Override
     protected void execute(CommandSender sender) {
-        StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
+        StrowPlayer strowSender = playerManager.getPlayer(sender);
 
         StrowPlayer receiver = readArg();
 
@@ -77,16 +76,15 @@ public class FactionInviteCommand extends EvolvedCommand {
     private void sendInvitation(StrowPlayer sender, StrowPlayer receiver) {
         Faction faction = factionManager.getFaction(sender.getProperty(FactionProfile.class).getUniqueId());
 
-        ((PropertiesEntity<StrowPlayer>) receiver).registerProperty(FactionInvitation.class);
-        receiver.getProperty(FactionInvitation.class).build(sender.getUniqueId(), faction.getUniqueId());
+        receiver.registerProperty(FactionInvitation.class, new FactionInvitation.Factory(sender.getUniqueId(), faction.getUniqueId()));
 
-        messaging.sendMessage(receiver, "Vous avez reçu une invitation pour rejoindre la faction de %s.", receiver.getProperty(Pseudo.class).getPseudo());
-        messaging.sendMessage(receiver, "Cette invitation expirera dans %u minutes.", TIMER);
+        messaging.sendMessage(receiver, "Vous avez reçu une invitation pour rejoindre la faction de %s.", receiver.getProperty(Nickname.class).getNickname());
+        messaging.sendMessage(receiver, "Cette invitation expirera au bout de %u minutes.", TIMER);
 
         TextComponent component = new TextComponent("Cliquez ici pour accepter cette invitation");
         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/faction join %s", faction.getProperty(FactionName.class).getName())));
 
         // Delete the property after TIMER minutes
-        scheduler.runTaskLater(() -> ((PropertiesEntity<StrowPlayer>) receiver).unregisterProperty(FactionInvitation.class), TIMER, TimeUnit.MINUTES);
+        scheduler.runTaskLater(() -> receiver.unregisterProperty(FactionInvitation.class), TIMER, TimeUnit.MINUTES);
     }
 }

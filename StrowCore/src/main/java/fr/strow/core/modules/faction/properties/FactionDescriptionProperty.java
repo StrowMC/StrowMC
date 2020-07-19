@@ -8,10 +8,11 @@ import fr.strow.persistence.dao.factions.FactionDescriptionDao;
 
 import java.util.UUID;
 
-public class FactionDescriptionProperty extends ImplementationProperty implements FactionDescription {
+public class FactionDescriptionProperty implements FactionDescription, ImplementationProperty<FactionDescription> {
 
     private final FactionDescriptionDao factionDescriptionDao;
 
+    private UUID factionUuid;
     private String description;
 
     @Inject
@@ -21,9 +22,10 @@ public class FactionDescriptionProperty extends ImplementationProperty implement
 
     @Override
     public boolean load(UUID factionUuid) {
-        if (factionDescriptionDao.hasDescription(factionUuid)) {
-            FactionDescriptionBean bean = factionDescriptionDao.loadFactionDescription(factionUuid);
+        this.factionUuid = factionUuid;
 
+        if (factionDescriptionDao.hasFactionDescription(factionUuid)) {
+            FactionDescriptionBean bean = factionDescriptionDao.loadFactionDescription(factionUuid);
             description = bean.getDescription();
 
             return true;
@@ -35,7 +37,6 @@ public class FactionDescriptionProperty extends ImplementationProperty implement
     @Override
     public void save(UUID factionUuid) {
         FactionDescriptionBean bean = new FactionDescriptionBean(factionUuid, description);
-
         factionDescriptionDao.saveFactionDescription(bean);
     }
 
@@ -46,6 +47,10 @@ public class FactionDescriptionProperty extends ImplementationProperty implement
 
     @Override
     public void setDescription(String description) {
-        this.description = description;
+        if (this.description == null || !this.description.equals(description)) {
+            this.description = description;
+
+            save(factionUuid);
+        }
     }
 }

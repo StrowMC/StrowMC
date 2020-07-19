@@ -8,16 +8,34 @@
 
 package fr.strow.api.game.faction.player;
 
-import fr.strow.api.game.Property;
 import fr.strow.api.game.player.StrowPlayer;
+import fr.strow.api.property.PropertyFactory;
+import fr.strow.api.property.RegistrableProperty;
 
 import java.util.UUID;
 
-public interface FactionInvitation extends Property<StrowPlayer> {
+public interface FactionInvitation extends RegistrableProperty<StrowPlayer, FactionInvitation.Factory> {
 
     UUID getSender();
 
     UUID getFaction();
 
-    void build(UUID sender, UUID faction);
+    class Factory extends PropertyFactory {
+
+        private final UUID sender;
+        private final UUID faction;
+
+        public Factory(UUID sender, UUID faction) {
+            this.sender = sender;
+            this.faction = faction;
+        }
+
+        public UUID getSender() {
+            return sender;
+        }
+
+        public UUID getFaction() {
+            return faction;
+        }
+    }
 }

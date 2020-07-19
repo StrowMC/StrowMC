@@ -1,41 +1,92 @@
 package fr.strow.persistence.dao.factions;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
-import fr.strow.persistence.Tables;
 import fr.strow.persistence.beans.factions.FactionHomeBean;
-import fr.strow.persistence.dao.AbstractDao;
-import fr.strow.persistence.data.redis.RedisAccess;
-import redis.clients.jedis.Jedis;
+import fr.strow.persistence.data.sql.SQLAccess;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
-public class FactionHomeDao extends AbstractDao {
+public class FactionHomeDao {
+
+    private final SQLAccess sqlAccess;
 
     @Inject
-    public FactionHomeDao(RedisAccess redisAccess, Gson gson) {
-        super(redisAccess, gson);
+    public FactionHomeDao(SQLAccess sqlAccess) {
+        this.sqlAccess = sqlAccess;
     }
 
-    public boolean hasHome(UUID factionUuid) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            return jedis.hexists(Tables.FACTION_HOMES, factionUuid.toString());
+    public boolean hasFactionHome(UUID factionUuid) {
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT 1 FROM faction_homes WHERE faction_uuid = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, factionUuid.toString());
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
+
+        return false;
     }
 
     public FactionHomeBean loadFactionHome(UUID factionUuid) {
-        FactionHomeBean bean;
+        FactionHomeBean bean = null;
 
-        try (Jedis jedis = redisAccess.getResource()) {
-            bean = gson.fromJson(jedis.hget(Tables.FACTION_HOMES, factionUuid.toString()), FactionHomeBean.class);
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT * FROM faction_homes WHERE faction_uuid = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, factionUuid.toString());
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int locationId = resultSet.getInt("location_id");
+
+                        bean = new FactionHomeBean(factionUuid, locationId);
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
 
         return bean;
     }
 
-    public void saveFactionHome(FactionHomeBean bean) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            jedis.hset(Tables.FACTION_HOMES, bean.getFactionUuid().toString(), gson.toJson(bean));
+    public void insertFactionHome(FactionHomeBean bean) {
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "INSERT INTO faction_homes (faction_uuid, location_id) VALUES (?, ?)";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, bean.getFactionUuid().toString());
+                statement.setInt(2, bean.getLocationId());
+
+                statement.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void deleteFactionHome(UUID factionUuid) {
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "DELETE FROM faction_homes WHERE faction_uuid = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, factionUuid.toString());
+
+                statement.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
     }
 }

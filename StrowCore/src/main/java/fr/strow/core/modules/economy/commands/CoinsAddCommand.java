@@ -40,10 +40,7 @@ public class CoinsAddCommand extends EvolvedCommand {
         StrowPlayer player = readArg();
         int amount = readArg();
 
-        player
-                .getProperty(Economy.class)
-                .addCoins(amount);
-
-        messaging.sendMessage(player, "Vous avez reçu %d$", amount);
+        player.getProperty(Economy.class).addCoins(amount);
+        messaging.sendMessage(player, "Votre compte a été crédité de %d$", amount);
     }
 }

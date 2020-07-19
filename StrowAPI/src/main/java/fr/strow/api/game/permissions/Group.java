@@ -8,8 +8,10 @@
 
 package fr.strow.api.game.permissions;
 
-import fr.strow.api.game.Property;
 import fr.strow.api.game.player.StrowPlayer;
+import fr.strow.api.property.Property;
+
+import java.util.Map;
 
 public interface Group extends Property<StrowPlayer> {
 
@@ -18,4 +20,6 @@ public interface Group extends Property<StrowPlayer> {
     void setRole(Role role);
 
     boolean hasPermission(String permission);
+
+    Map<String, Boolean> getPermissions();
 }

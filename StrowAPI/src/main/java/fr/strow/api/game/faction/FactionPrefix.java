@@ -1,6 +1,6 @@
 package fr.strow.api.game.faction;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.property.Property;
 
 public interface FactionPrefix extends Property<Faction> {
 

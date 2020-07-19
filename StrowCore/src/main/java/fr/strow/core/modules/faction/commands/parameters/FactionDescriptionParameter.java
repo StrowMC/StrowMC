@@ -1,8 +1,10 @@
 package fr.strow.core.modules.faction.commands.parameters;
 
 import com.google.inject.Inject;
+import fr.strow.api.services.Messaging;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -11,11 +13,14 @@ import java.util.regex.Pattern;
 
 public class FactionDescriptionParameter extends Parameter<String> {
 
-    private final Pattern PATTERN = Pattern.compile(".{3,254}");
+    private static final Pattern PATTERN = Pattern.compile(".{3,254}");
+
+    private final Messaging messaging;
 
     @Inject
-    public FactionDescriptionParameter() {
+    public FactionDescriptionParameter(Messaging messaging) {
         super("description", true);
+        this.messaging = messaging;
     }
 
     @Override
@@ -27,8 +32,8 @@ public class FactionDescriptionParameter extends Parameter<String> {
             }
 
             @Override
-            public String getMessage(String arg) {
-                return "La description de la faction doit comporter au moins de 3 caractères";
+            public BaseComponent getMessage(String arg) {
+                return messaging.errorMessage("La description de la faction doit comporter au moins de 3 caractères");
             }
         });
     }

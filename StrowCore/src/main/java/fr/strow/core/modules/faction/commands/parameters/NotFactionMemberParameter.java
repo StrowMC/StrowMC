@@ -13,6 +13,7 @@ import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -39,7 +40,7 @@ public class NotFactionMemberParameter extends Parameter<StrowPlayer> {
                     }
 
                     @Override
-                    public String getMessage(String o) {
+                    public BaseComponent getMessage(String o) {
                         return null;
                     }
                 }

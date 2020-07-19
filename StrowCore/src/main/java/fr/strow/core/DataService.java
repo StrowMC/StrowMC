@@ -10,7 +10,6 @@ package fr.strow.core;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import fr.strow.persistence.bridges.*;
 import fr.strow.persistence.data.sql.SQLAccess;
 
 public class DataService {
@@ -24,26 +23,9 @@ public class DataService {
 
     public void start() {
         injector.getInstance(SQLAccess.class).initPool();
-
-        injector.getInstance(FactionProfilesBridge.class).loadFactionProfiles();
-        injector.getInstance(FactionsBridge.class).loadFactions();
-        injector.getInstance(LocationsBridge.class).loadLocations();
-        injector.getInstance(PermissionsBridge.class).loadPermissions();
-        injector.getInstance(PlayersBridge.class).loadPlayers();
-        injector.getInstance(QuestsBridge.class).loadQuests();
-        injector.getInstance(SanctionsBridge.class).loadSanctions();
-        injector.getInstance(StatsBridge.class).loadStats();
     }
 
     public void shutdown() {
-        injector.getInstance(FactionProfilesBridge.class).unloadFactionProfiles();
-        injector.getInstance(FactionsBridge.class).unloadFactions();
-        injector.getInstance(LocationsBridge.class).unloadLocations();
-        injector.getInstance(PlayersBridge.class).unloadPlayers();
-        injector.getInstance(QuestsBridge.class).unloadQuests();
-        injector.getInstance(SanctionsBridge.class).unloadSanctions();
-        injector.getInstance(StatsBridge.class).unloadStats();
-
         injector.getInstance(SQLAccess.class).closePool();
     }
 }

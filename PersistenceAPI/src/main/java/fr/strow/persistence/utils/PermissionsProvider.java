@@ -9,24 +9,23 @@
 package fr.strow.persistence.utils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PermissionsProvider {
 
-    public static ArrayList<String> getPermissions(Object permissionBean) {
-        ArrayList<String> permissions = new ArrayList<>();
+    public static Map<String, Boolean> getPermissions(Object permissionBean) {
+        Map<String, Boolean> permissions = new HashMap<>();
 
         for (Field field : permissionBean.getClass().getDeclaredFields()) {
             Permission permission = field.getAnnotation(Permission.class);
 
-            if (permission != null) {
+            if (permission != null && field.getType() == Boolean.class) {
                 // Field is annotated with @Permission
                 field.setAccessible(true);
 
                 try {
-                    if (field.getBoolean(permissionBean)) {
-                        permissions.add(permission.value());
-                    }
+                    permissions.put(permission.value(), field.getBoolean(permissionBean));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }

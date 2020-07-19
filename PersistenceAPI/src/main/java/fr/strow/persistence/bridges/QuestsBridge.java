@@ -2,7 +2,6 @@ package fr.strow.persistence.bridges;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
-import fr.strow.persistence.Tables;
 import fr.strow.persistence.beans.quests.QuestProgressBean;
 import fr.strow.persistence.data.redis.RedisAccess;
 import fr.strow.persistence.data.sql.SQLAccess;
@@ -17,11 +16,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class QuestsBridge extends AbstractBridge {
+public class QuestsBridge{
 
-    @Inject
+    /*@Inject
     public QuestsBridge(SQLAccess sqlAccess, RedisAccess redisAccess, Gson gson) {
-        super(sqlAccess, redisAccess, gson);
+        //super(sqlAccess, redisAccess, gson);
     }
 
     public void loadQuests() {
@@ -100,5 +99,5 @@ public class QuestsBridge extends AbstractBridge {
 
             statement.executeUpdate();
         }
-    }
+    }*/
 }

@@ -3,14 +3,15 @@ package fr.strow.core.modules.player;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import fr.strow.api.commands.CommandService;
-import fr.strow.api.game.player.PlayerManager;
-import fr.strow.api.game.player.Pseudo;
+import fr.strow.api.game.player.Name;
+import fr.strow.api.game.player.Nickname;
 import fr.strow.api.game.player.StrowPlayer;
 import fr.strow.api.module.StrowModule;
 import fr.strow.api.property.PropertiesHandler;
 import fr.strow.core.modules.player.listeners.PlayerJoinListener;
 import fr.strow.core.modules.player.listeners.PlayerQuitListener;
-import fr.strow.core.modules.player.properties.PseudoProperty;
+import fr.strow.core.modules.player.properties.NameProperty;
+import fr.strow.core.modules.player.properties.NicknameProperty;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,7 +39,8 @@ public class PlayerModule extends StrowModule {
     public void onEnable() {
         super.onEnable();
 
-        bindProperty(StrowPlayer.class, Pseudo.class, PseudoProperty.class);
+        bindProperty(StrowPlayer.class, Name.class, NameProperty.class);
+        bindProperty(StrowPlayer.class, Nickname.class, NicknameProperty.class);
     }
 
     @Override

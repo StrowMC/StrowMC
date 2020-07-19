@@ -8,7 +8,9 @@
 
 package fr.strow.api.game.faction.player;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.property.Property;
+
+import java.util.Map;
 
 public interface FactionGroup extends Property<FactionProfile> {
 
@@ -17,4 +19,6 @@ public interface FactionGroup extends Property<FactionProfile> {
     void setRole(FactionRole role);
 
     boolean hasPermission(String permission);
+
+    Map<String, Boolean> getPermissions();
 }

@@ -40,10 +40,7 @@ public class CoinsRemoveCommand extends EvolvedCommand {
         StrowPlayer player = readArg();
         int amount = readArg();
 
-        player
-                .getProperty(Economy.class)
-                .removeCoins(amount);
-
-        messaging.sendMessage(player, "Vous avez perdu %d$", amount);
+        player.getProperty(Economy.class).removeCoins(amount);
+        messaging.sendMessage(player, "Votre compte a été débité de %d$", amount);
     }
 }

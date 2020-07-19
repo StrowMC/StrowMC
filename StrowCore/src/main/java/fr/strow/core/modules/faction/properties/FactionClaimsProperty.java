@@ -2,20 +2,20 @@ package fr.strow.core.modules.faction.properties;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.faction.FactionClaims;
+import fr.strow.api.property.EmptyPropertyFactory;
 import fr.strow.api.property.ImplementationProperty;
 import fr.strow.persistence.beans.factions.FactionClaimBean;
 import fr.strow.persistence.dao.factions.FactionClaimsDao;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-public class FactionClaimsProperty extends ImplementationProperty implements FactionClaims {
+public class FactionClaimsProperty implements FactionClaims, ImplementationProperty<FactionClaims> {
 
     private final FactionClaimsDao factionClaimsDao;
 
+    private UUID factionUuid;
     private List<Chunk> claims;
 
     @Inject
@@ -25,8 +25,9 @@ public class FactionClaimsProperty extends ImplementationProperty implements Fac
 
     @Override
     public boolean load(UUID factionUuid) {
-        if (factionClaimsDao.hasClaims(factionUuid)) {
-            claims = new ArrayList<>();
+        this.factionUuid = factionUuid;
+
+        if (factionClaimsDao.hasFactionClaims(factionUuid)) {
             List<FactionClaimBean> beans = factionClaimsDao.loadFactionClaims(factionUuid);
 
             for (FactionClaimBean bean : beans) {
@@ -34,8 +35,8 @@ public class FactionClaimsProperty extends ImplementationProperty implements Fac
                 int x = bean.getX();
                 int z = bean.getZ();
 
-                Chunk chunk = Bukkit.getWorld(world).getChunkAt(x, z);
-                claims.add(chunk);
+                Chunk claim = Bukkit.getWorld(world).getChunkAt(x, z);
+                claims.add(claim);
             }
 
             return true;
@@ -44,29 +45,62 @@ public class FactionClaimsProperty extends ImplementationProperty implements Fac
         }
     }
 
-    @Override
+    /*@Override
     public void save(UUID factionUuid) {
         List<FactionClaimBean> beans = new ArrayList<>();
 
-        for (Chunk chunk : claims) {
-            String world = chunk.getWorld().getName();
-            int x = chunk.getX();
-            int z = chunk.getZ();
-
-            FactionClaimBean bean = new FactionClaimBean(factionUuid, world, x, z);
+        for (Chunk claim : claims) {
+            FactionClaimBean bean = createBean(claim);
             beans.add(bean);
         }
 
         factionClaimsDao.saveFactionClaims(beans);
+    }*/
+
+    @Override
+    public void addClaim(Chunk claim) {
+        if (!containsClaim(claim)) {
+            FactionClaimBean bean = createBean(claim);
+            factionClaimsDao.insertFactionClaim(bean);
+        }
     }
 
     @Override
-    public List<Chunk> getClaims() {
-        return claims;
+    public void removeClaim(Chunk claim) {
+        if (containsClaim(claim)) {
+            int id = claims.indexOf(claim);
+
+            FactionClaimBean bean = createBean(id, claim);
+            factionClaimsDao.deleteFactionClaim(bean);
+
+            claims.remove(claim);
+        }
     }
 
     @Override
-    public boolean contains(Chunk chunk) {
-        return claims.contains(chunk);
+    public boolean containsClaim(Chunk claim) {
+        return claims.contains(claim);
+    }
+
+    @Override
+    public void onRegister(UUID factionUuid, EmptyPropertyFactory factory) {
+        claims = new ArrayList<>();
+    }
+
+    @Override
+    public void onUnregister(UUID factionUuid) {
+        factionClaimsDao.deleteFactionClaims(factionUuid);
+    }
+
+    private FactionClaimBean createBean(Chunk claim) {
+        return createBean(-1, claim);
+    }
+
+    private FactionClaimBean createBean(int id, Chunk claim) {
+        String world = claim.getWorld().getName();
+        int x = claim.getX();
+        int z = claim.getZ();
+
+        return new FactionClaimBean(id, factionUuid, world, x, z);
     }
 }

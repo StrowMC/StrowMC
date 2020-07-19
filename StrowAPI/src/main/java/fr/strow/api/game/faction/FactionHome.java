@@ -1,9 +1,10 @@
 package fr.strow.api.game.faction;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.property.EmptyPropertyFactory;
+import fr.strow.api.property.RegistrableProperty;
 import org.bukkit.Location;
 
-public interface FactionHome extends Property<Faction> {
+public interface FactionHome extends RegistrableProperty<Faction, EmptyPropertyFactory> {
 
     Location getHome();
 

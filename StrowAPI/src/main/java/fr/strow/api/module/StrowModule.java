@@ -10,7 +10,7 @@ package fr.strow.api.module;
 
 import fr.strow.api.commands.CommandService;
 import fr.strow.api.configuration.AbstractConfiguration;
-import fr.strow.api.game.Property;
+import fr.strow.api.property.Property;
 import fr.strow.api.property.ImplementationProperty;
 import fr.strow.api.property.PropertiesHandler;
 import fr.strow.api.property.PropertiesOwner;
@@ -65,8 +65,8 @@ public abstract class StrowModule {
         }
     }
 
-    protected <T extends PropertiesOwner<T>> void bindProperty(Class<T> owner, Class<? extends Property<T>> property, Class<? extends ImplementationProperty> implementation) {
-        propertiesHandler.bindProperty(owner, property, implementation);
+    protected <O extends PropertiesOwner<O>, P extends Property<O>> void bindProperty(Class<O> owner, Class<P> property, Class<? extends ImplementationProperty<P>> implementation) {
+      propertiesHandler.bindProperty(owner, property, implementation);
     }
 
     protected <T extends PropertiesOwner<T>> void unbindProperty(Class<T> owner, Class<? extends Property<T>> property) {

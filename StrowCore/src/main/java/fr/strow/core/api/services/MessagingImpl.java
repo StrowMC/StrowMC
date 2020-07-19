@@ -2,11 +2,14 @@ package fr.strow.core.api.services;
 
 import com.google.inject.Inject;
 import fr.strow.api.game.Messenger;
+import fr.strow.api.game.player.Name;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
 import fr.strow.api.services.Messaging;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -27,10 +30,21 @@ public class MessagingImpl implements Messaging {
     @Override
     public void sendMessage(Messenger messenger, BaseComponent component) {
         for (UUID uuid : messenger.getRecipients()) {
-            StrowPlayer player = playerManager.getPlayer(uuid);
+            if (playerManager.isConnected(uuid)) {
+                StrowPlayer player = playerManager.getPlayer(uuid);
 
-            if (player.isConnected()) {
-                Bukkit.getPlayer(uuid).spigot().sendMessage(component);
+                Bukkit.getPlayer(player.getProperty(Name.class).getName()).spigot().sendMessage(component);
+            }
+        }
+    }
+
+    @Override
+    public void sendMessage(Messenger messenger, Predicate<UUID> filter, BaseComponent component) {
+        for (UUID uuid : messenger.getRecipients()) {
+            if (playerManager.isConnected(uuid) && filter.test(uuid)) {
+                StrowPlayer player = playerManager.getPlayer(uuid);
+
+                Bukkit.getPlayer(player.getProperty(Name.class).getName()).spigot().sendMessage(component);
             }
         }
     }
@@ -38,12 +52,33 @@ public class MessagingImpl implements Messaging {
     @Override
     public void sendMessage(Messenger messenger, String message, Object... args) {
         for (UUID uuid : messenger.getRecipients()) {
-            StrowPlayer player = playerManager.getPlayer(uuid);
+            if (playerManager.isConnected(uuid)) {
+                StrowPlayer player = playerManager.getPlayer(uuid);
 
-            if (player.isConnected()) {
-                Bukkit.getPlayer(uuid).sendMessage(String.format(message, args));
+                Bukkit.getPlayer(player.getProperty(Name.class).getName()).sendMessage(String.format(message, args));
             }
         }
+    }
+
+    @Override
+    public void sendMessage(Messenger messenger, Predicate<UUID> filter, String message, Object... args) {
+        for (UUID uuid : messenger.getRecipients()) {
+            if (playerManager.isConnected(uuid) && filter.test(uuid)) {
+                StrowPlayer player = playerManager.getPlayer(uuid);
+
+                Bukkit.getPlayer(player.getProperty(Name.class).getName()).sendMessage(String.format(message, args));
+            }
+        }
+    }
+
+    @Override
+    public BaseComponent errorMessage(String message) {
+        return new TextComponent(ChatColor.RED + message);
+    }
+
+    @Override
+    public BaseComponent errorMessage(String message, Object... args) {
+        return errorMessage(String.format(message, args));
     }
 
     @Override
@@ -60,7 +95,7 @@ public class MessagingImpl implements Messaging {
 
     @Override
     public void broadcastMessage(String message, Predicate<UUID> filter, Object... args) {
-        for (StrowPlayer player : playerManager.getPlayers().connected().asList()) {
+        for (StrowPlayer player : playerManager.getPlayers().values()) {
             if (filter.test(player.getUniqueId())) sendMessage(player, message, args);
         }
     }

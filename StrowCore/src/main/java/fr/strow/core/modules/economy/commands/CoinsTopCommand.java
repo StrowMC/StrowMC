@@ -9,46 +9,43 @@
 package fr.strow.core.modules.economy.commands;
 
 import com.google.inject.Inject;
-import fr.strow.api.game.economy.Economy;
-import fr.strow.api.game.player.Pseudo;
-import fr.strow.api.game.player.StrowPlayer;
-import fr.strow.api.services.EconomyService;
+import fr.strow.persistence.dao.EconomyDao;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
 import org.bukkit.command.CommandSender;
 
-import java.util.List;
+import java.util.Map;
 
 public class CoinsTopCommand extends EvolvedCommand {
 
     private static final int TOP = 10;
 
-    private final EconomyService economyService;
+    private final EconomyDao economyDao;
 
     @Inject
-    public CoinsTopCommand(EconomyService economyService) {
+    public CoinsTopCommand(EconomyDao economyDao) {
         super(CommandDescription.builder()
                 .withName("top")
-                .withDescription("Afficher les " + TOP + " joueurs les plus riches du serveur")
+                .withDescription("Afficher les joueur dont le solde est le plus élevé")
                 .build());
 
-        this.economyService = economyService;
+        this.economyDao = economyDao;
 
         define();
     }
 
     @Override
     protected void execute(CommandSender sender) {
-        List<StrowPlayer> players = economyService.getRichestPlayers(TOP);
+        Map<String, Integer> players = economyDao.getRichestPlayers(TOP);
 
-        for (int i = 0; i < TOP; i++) {
-            StrowPlayer player = players.get(i);
+        int rank = 1;
+        for (Map.Entry<String, Integer> player : players.entrySet()) {
+            String pseudo = player.getKey();
+            int coins = player.getValue();
 
-            sender.sendMessage(String.format("%d. %s : %d",
-                    i + 1,
-                    player.getProperty(Pseudo.class).getPseudo(),
-                    player.getProperty(Economy.class).getCoins())
-            );
+            sender.sendMessage(String.format("%d. %s : %d", rank, pseudo, coins));
+
+            rank++;
         }
     }
 }

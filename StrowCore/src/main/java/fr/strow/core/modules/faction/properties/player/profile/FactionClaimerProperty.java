@@ -12,11 +12,11 @@ import com.google.inject.Inject;
 import fr.strow.api.game.faction.player.FactionClaimer;
 import fr.strow.api.property.ImplementationProperty;
 import fr.strow.persistence.beans.factions.profile.FactionClaimerBean;
-import fr.strow.persistence.dao.factions.profile.FactionClaimerDao;
+import fr.strow.persistence.dao.factions.player.FactionClaimerDao;
 
 import java.util.UUID;
 
-public class FactionClaimerProperty extends ImplementationProperty implements FactionClaimer {
+public class FactionClaimerProperty implements FactionClaimer, ImplementationProperty<FactionClaimer> {
 
     private final FactionClaimerDao factionClaimerDao;
 
@@ -29,7 +29,7 @@ public class FactionClaimerProperty extends ImplementationProperty implements Fa
 
     @Override
     public boolean load(UUID uuid) {
-        FactionClaimerBean bean = factionClaimerDao.loadClaimer(uuid);
+        FactionClaimerBean bean = factionClaimerDao.loadFactionClaimer(uuid);
         claimer = bean.isClaimer();
 
         return true;
@@ -38,7 +38,7 @@ public class FactionClaimerProperty extends ImplementationProperty implements Fa
     @Override
     public void save(UUID uuid) {
         FactionClaimerBean bean = new FactionClaimerBean(uuid, claimer);
-        factionClaimerDao.saveClaimer(bean);
+        factionClaimerDao.saveFactionClaimer(bean);
     }
 
     @Override

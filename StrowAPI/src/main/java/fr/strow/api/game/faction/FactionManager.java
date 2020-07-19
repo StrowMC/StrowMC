@@ -16,13 +16,13 @@ public interface FactionManager {
 
     boolean factionExists(String name);
 
-    Faction loadFaction(UUID uuid);
+    //Faction loadFaction(UUID uuid);
 
-    void unloadFactions();
+    //void unloadFactions();
 
     Faction getFaction(UUID uuid);
 
-    Faction getFaction(String name) throws IllegalArgumentException;
+   // Faction getFaction(String name) throws IllegalArgumentException;
 
-    FactionsCollection getFactions();
+    //FactionsCollection getFactions();
 }

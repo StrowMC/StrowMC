@@ -17,15 +17,11 @@ import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.faction.player.FactionUUID;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
-import fr.strow.api.property.PropertiesEntity;
 import fr.strow.core.modules.faction.commands.parameters.FactionDescriptionParameter;
 import fr.strow.core.modules.faction.commands.requirements.SenderIsInFactionRequirement;
 import me.choukas.commands.EvolvedCommand;
 import me.choukas.commands.api.CommandDescription;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.Optional;
 
 public class FactionDescriptionCommand extends EvolvedCommand {
 
@@ -38,6 +34,8 @@ public class FactionDescriptionCommand extends EvolvedCommand {
         super(CommandDescription.builder()
                 .withName("description")
                 .withAliases("desc")
+                .withPermission("faction.description")
+                .withDescription("Changer la description de votre faction")
                 .build());
 
         this.commandService = commandService;
@@ -51,28 +49,24 @@ public class FactionDescriptionCommand extends EvolvedCommand {
     protected void define() {
         addRequirement(commandService.getRequirement(SenderIsInFactionRequirement.class));
 
-        addParameter(commandService.getParameter(FactionDescriptionParameter.class), false);
+        addParameter(commandService.getParameter(FactionDescriptionParameter.class), true);
     }
 
     @Override
     protected void execute(CommandSender sender) {
-        StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
+        StrowPlayer strowSender = playerManager.getPlayer(sender);
 
-        Optional<String> description = readOptionalArg();
+        String description = readArg();
 
-        if (description.isPresent()) {
-            Faction faction = factionManager.getFaction(strowSender
-                    .getProperty(FactionProfile.class)
-                    .getProperty(FactionUUID.class)
-                    .getFactionUuid());
+        Faction faction = factionManager.getFaction(strowSender
+                .getProperty(FactionProfile.class)
+                .getProperty(FactionUUID.class)
+                .getFactionUuid());
 
-            if (!faction.getOptionalProperty(FactionDescription.class).isPresent()) {
-                ((PropertiesEntity<Faction>) faction).registerProperty(FactionDescription.class);
-            }
-
-            faction.getProperty(FactionDescription.class).setDescription(description.get());
-        } else {
-
+        if (!faction.getOptionalProperty(FactionDescription.class).isPresent()) {
+            faction.registerProperty(FactionDescription.class);
         }
+
+        faction.getProperty(FactionDescription.class).setDescription(description);
     }
 }

@@ -12,7 +12,7 @@ import com.google.inject.Inject;
 import fr.strow.api.game.faction.player.FactionAutoClaiming;
 import fr.strow.api.property.ImplementationProperty;
 
-public class FactionAutoClaimingProperty extends ImplementationProperty implements FactionAutoClaiming {
+public class FactionAutoClaimingProperty implements FactionAutoClaiming, ImplementationProperty<FactionAutoClaiming> {
 
     private boolean autoClaim = false;
 

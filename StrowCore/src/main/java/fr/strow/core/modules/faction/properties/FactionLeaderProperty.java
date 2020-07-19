@@ -8,10 +8,11 @@ import fr.strow.persistence.dao.factions.FactionLeaderDao;
 
 import java.util.UUID;
 
-public class FactionLeaderProperty extends ImplementationProperty implements FactionLeader {
+public class FactionLeaderProperty implements FactionLeader, ImplementationProperty<FactionLeader> {
 
     private final FactionLeaderDao factionLeaderDao;
 
+    private UUID uuid;
     private UUID leader;
 
     @Inject
@@ -21,8 +22,9 @@ public class FactionLeaderProperty extends ImplementationProperty implements Fac
 
     @Override
     public boolean load(UUID uuid) {
-        FactionLeaderBean bean = factionLeaderDao.loadFactionLeaderUuid(uuid);
+        this.uuid = uuid;
 
+        FactionLeaderBean bean = factionLeaderDao.loadFactionLeader(uuid);
         leader = bean.getLeaderUuid();
 
         return true;
@@ -31,8 +33,7 @@ public class FactionLeaderProperty extends ImplementationProperty implements Fac
     @Override
     public void save(UUID uuid) {
         FactionLeaderBean bean = new FactionLeaderBean(uuid, leader);
-
-        factionLeaderDao.saveFactionLeaderUuid(bean);
+        factionLeaderDao.saveFactionLeader(bean);
     }
 
     @Override
@@ -42,6 +43,10 @@ public class FactionLeaderProperty extends ImplementationProperty implements Fac
 
     @Override
     public void setLeader(UUID leader) {
-        this.leader = leader;
+        if (this.leader != leader) {
+            this.leader = leader;
+
+            save(uuid);
+        }
     }
 }

@@ -1,73 +1,81 @@
 package fr.strow.persistence.dao.factions;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
-import fr.strow.persistence.Tables;
-import fr.strow.persistence.beans.factions.FactionBean;
-import fr.strow.persistence.dao.factions.profile.FactionProfileDao;
-import fr.strow.persistence.data.redis.RedisAccess;
 import fr.strow.persistence.data.sql.SQLAccess;
-import redis.clients.jedis.Jedis;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 import java.util.UUID;
 
 public class FactionDao {
 
     private final SQLAccess sqlAccess;
-    private final RedisAccess redisAccess;
-    private final Gson gson;
 
     @Inject
-    public FactionDao(SQLAccess sqlAccess, RedisAccess redisAccess, Gson gson, FactionMembersDao factionMembersDao, FactionProfileDao factionProfileDao) {
+    public FactionDao(SQLAccess sqlAccess) {
         this.sqlAccess = sqlAccess;
-        this.redisAccess = redisAccess;
-        this.gson = gson;
+    }
+
+    public boolean factionExists(String name) {
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT 1 FROM factions WHERE name = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, name);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return false;
     }
 
     public boolean factionExists(UUID uuid) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            return jedis.hexists(Tables.FACTIONS, uuid.toString());
-        }
-    }
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT 1 FROM factions WHERE uuid = ?";
 
-    public UUID getUUIDFromName(String name) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            Optional<FactionBean> optionalFaction = jedis.hgetAll(Tables.FACTIONS)
-                    .values()
-                    .stream()
-                    .map(faction ->
-                            gson.fromJson(faction, FactionBean.class))
-                    .filter(faction ->
-                            faction.getName().equals(name))
-                    .findAny();
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, uuid.toString());
 
-            if (optionalFaction.isPresent()) {
-                return optionalFaction.get().getUuid();
-            } else {
-                throw new IllegalArgumentException();
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
             }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
+
+        return false;
     }
 
-    public void createFaction(FactionBean bean) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            jedis.hset(Tables.FACTIONS, bean.getUuid().toString(), gson.toJson(bean));
+    public void createFaction(UUID uuid, String name, String prefix, UUID leaderUuid, String description, int points) {
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "INSERT INTO factions (uuid, name, prefix, leader_uuid, description, points) VALUES (?, ?, ?, ?, ?, ?)";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, uuid.toString());
+                statement.setString(2, name);
+                statement.setString(3, prefix);
+                statement.setString(4, leaderUuid.toString());
+                statement.setString(5, description);
+                statement.setInt(6, points);
+
+                statement.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
     }
 
     public void deleteFaction(UUID uuid) {
-        // Delete in redis
-        try (Jedis jedis = redisAccess.getResource()) {
-            jedis.hdel(Tables.FACTIONS, uuid.toString());
-        }
-
-        // Delete in sql
         try (Connection connection = sqlAccess.getConnection()) {
-            final String SQL = "DELETE FROM " + Tables.FACTIONS + " WHERE uuid = ?";
+            final String SQL = "DELETE FROM factions WHERE uuid = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(SQL)) {
                 statement.setString(1, uuid.toString());

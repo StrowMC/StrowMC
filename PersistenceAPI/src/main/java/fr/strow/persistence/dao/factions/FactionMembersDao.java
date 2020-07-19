@@ -1,47 +1,48 @@
 package fr.strow.persistence.dao.factions;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
-import fr.strow.persistence.Tables;
 import fr.strow.persistence.beans.factions.FactionMemberBean;
-import fr.strow.persistence.dao.AbstractDao;
-import fr.strow.persistence.data.redis.RedisAccess;
-import redis.clients.jedis.Jedis;
+import fr.strow.persistence.data.sql.SQLAccess;
 
-import java.lang.reflect.Type;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FactionMembersDao extends AbstractDao {
+public class FactionMembersDao {
+
+    private final SQLAccess sqlAccess;
 
     @Inject
-    public FactionMembersDao(RedisAccess redisAccess, Gson gson) {
-        super(redisAccess, gson);
+    public FactionMembersDao(SQLAccess sqlAccess) {
+        this.sqlAccess = sqlAccess;
     }
 
     public List<FactionMemberBean> loadMembers(UUID factionUuid) {
-        Type type = new TypeToken<List<FactionMemberBean>>() {}.getType();
-        List<FactionMemberBean> beans;
+        List<FactionMemberBean> beans = new ArrayList<>();
 
-        try (Jedis jedis = redisAccess.getResource()) {
-            beans = gson.fromJson(jedis.hget(Tables.FACTION_MEMBERS, factionUuid.toString()), type);
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT uuid FROM faction_profiles WHERE faction_uuid = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, factionUuid.toString());
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+
+                        FactionMemberBean bean = new FactionMemberBean(uuid, factionUuid);
+                        beans.add(bean);
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
 
         return beans;
-    }
-
-    public void saveMembers(List<FactionMemberBean> beans) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            for (FactionMemberBean bean : beans) {
-                jedis.hset(Tables.FACTION_MEMBERS, bean.getFactionUuid().toString(), gson.toJson(bean));
-            }
-        }
-    }
-
-    public void deleteMembers(UUID factionUuid) {
-        try (Jedis jedis = redisAccess.getResource()) {
-            jedis.hdel(Tables.FACTION_MEMBERS, factionUuid.toString());
-        }
     }
 }

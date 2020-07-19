@@ -11,17 +11,16 @@ package fr.strow.core.modules.player.managers;
 import com.google.inject.Inject;
 import fr.strow.api.game.permissions.Role;
 import fr.strow.api.game.player.PlayerManager;
-import fr.strow.api.game.player.PlayersCollection;
 import fr.strow.api.game.player.StrowPlayer;
-import fr.strow.api.property.ImplementationProperty;
-import fr.strow.api.property.PropertiesGrouping;
 import fr.strow.api.property.PropertiesHandler;
 import fr.strow.core.modules.player.StrowPlayerImpl;
-import fr.strow.persistence.beans.PlayerBean;
 import fr.strow.persistence.dao.PlayerDao;
-import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerManagerImpl implements PlayerManager {
 
@@ -37,48 +36,42 @@ public class PlayerManagerImpl implements PlayerManager {
     }
 
     @Override
-    public boolean playerExists(UUID uuid) {
-        return playerDao.playerExists(uuid);
-    }
-
-    @Override
     public boolean playerExists(String name) {
-        UUID uuid = playerDao.getUUIDFromPseudo(name);
-
-        return playerDao.playerExists(uuid);
+        return playerDao.playerExists(name);
     }
 
     @Override
-    public StrowPlayer loadPlayer(UUID uuid) {
-        StrowPlayer player;
+    public StrowPlayer loadPlayer(String name) {
+        UUID uuid;
+        if (!playerDao.playerExists(name)) {
+            do {
+                uuid = UUID.randomUUID();
+            } while (playerDao.playerNameExists(uuid));
 
-        if (players.containsKey(uuid)) {
-            player = players.get(uuid);
+            playerDao.createPlayer(name, uuid, name, Role.PLAYER.getId(), 0);
         } else {
-            if (!playerExists(uuid)) {
-                // TODO Change role
-                PlayerBean bean = new PlayerBean(uuid, Bukkit.getPlayer(uuid).getName(), Role.DEVELOPER.getId(), 0);
-                playerDao.createPlayer(bean);
-            }
-
-            player = new StrowPlayerImpl(propertiesHandler);
-            players.put(uuid, player);
+            uuid = playerDao.getUUIDFromName(name);
         }
 
-        ((PropertiesGrouping<StrowPlayer>) player).load(uuid);
-
-        player.connect();
+        StrowPlayer player = getPlayer(uuid);
+        players.put(uuid, player);
 
         return player;
     }
 
     @Override
-    public void unloadPlayer(UUID uuid) {
-        StrowPlayer player = players.get(uuid);
+    public void unloadPlayer(String name) {
+        UUID uuid = playerDao.getUUIDFromName(name);
 
-        ((ImplementationProperty) player).save(uuid);
+        StrowPlayerImpl player = (StrowPlayerImpl) players.get(uuid);
+        player.save(uuid);
 
-        player.disconnect();
+        players.remove(uuid);
+    }
+
+    @Override
+    public boolean isConnected(UUID uuid) {
+        return players.containsKey(uuid);
     }
 
     @Override
@@ -88,7 +81,7 @@ public class PlayerManagerImpl implements PlayerManager {
         if (players.containsKey(uuid)) {
             player = players.get(uuid);
         } else {
-            if (playerExists(uuid)) {
+            if (playerDao.playerNameExists(uuid)) {
                 player = loadPlayer(uuid);
             } else {
                 throw new IllegalArgumentException();
@@ -99,24 +92,39 @@ public class PlayerManagerImpl implements PlayerManager {
     }
 
     @Override
-    public StrowPlayer getPlayer(String pseudo) {
-        Optional<StrowPlayer> optionalPlayer = getPlayers()
-                .withPseudo(pseudo)
-                .get();
-
-        return optionalPlayer.orElseGet(() -> getPlayer(playerDao.getUUIDFromPseudo(pseudo)));
+    public StrowPlayer getPlayer(CommandSender sender) {
+        if (sender instanceof Player) {
+            return getPlayer(sender);
+        } else {
+            throw new IllegalArgumentException("CommandSender must be a player");
+        }
     }
 
     @Override
-    public PlayersCollection getPlayers() {
-        List<StrowPlayer> players = new ArrayList<>();
-        List<UUID> uuids = playerDao.getPlayers();
+    public StrowPlayer getPlayer(Player player) {
+        UUID uuid = playerDao.getUUIDFromName(player.getName());
 
-        for (UUID uuid : uuids) {
-            StrowPlayer player = getPlayer(uuid);
-            players.add(player);
-        }
+        return getPlayer(uuid);
+    }
 
-        return new PlayersCollection(players);
+    @Override
+    public StrowPlayer getPlayer(String nickname) {
+        UUID uuid = playerDao.getUUIDFromNickname(nickname);
+
+        return getPlayer(uuid);
+    }
+
+    @Override
+    public Map<UUID, StrowPlayer> getPlayers() {
+       return players;
+    }
+
+    private StrowPlayer loadPlayer(UUID uuid) {
+        StrowPlayerImpl player = new StrowPlayerImpl(propertiesHandler);
+        player.load(uuid);
+
+        players.put(uuid, player);
+
+        return player;
     }
 }

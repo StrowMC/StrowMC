@@ -10,7 +10,6 @@ package fr.strow.persistence.bridges;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
-import fr.strow.persistence.Tables;
 import fr.strow.persistence.beans.moderation.BanBean;
 import fr.strow.persistence.beans.moderation.MuteBean;
 import fr.strow.persistence.data.redis.RedisAccess;
@@ -21,9 +20,9 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SanctionsBridge extends AbstractBridge {
+public class SanctionsBridge  {
 
-    @Inject
+    /*@Inject
     public SanctionsBridge(SQLAccess sqlAccess, RedisAccess redisAccess, Gson gson) {
         super(sqlAccess, redisAccess, gson);
     }
@@ -212,5 +211,5 @@ public class SanctionsBridge extends AbstractBridge {
             statement.setTimestamp(4, bean.getStartingTimestamp());
             statement.setTimestamp(5, bean.getEndingTimestamp());
         }
-    }
+    }*/
 }

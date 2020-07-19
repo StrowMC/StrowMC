@@ -12,41 +12,47 @@ import com.google.inject.Inject;
 import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
+import fr.strow.api.services.Messaging;
+import fr.strow.core.utils.commands.requirements.SenderIsPlayerRequirement;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Requirement;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SenderIsNotInFactionRequirement extends Requirement {
 
+    private final SenderIsPlayerRequirement senderIsPlayerRequirement;
     private final PlayerManager playerManager;
+    private final Messaging messaging;
 
     @Inject
-    public SenderIsNotInFactionRequirement(PlayerManager playerManager) {
+    public SenderIsNotInFactionRequirement(SenderIsPlayerRequirement senderIsPlayerRequirement, PlayerManager playerManager, Messaging messaging) {
+        this.senderIsPlayerRequirement = senderIsPlayerRequirement;
         this.playerManager = playerManager;
+        this.messaging = messaging;
     }
 
     @Override
     public List<Condition<CommandSender>> getConditions() {
-        return Collections.singletonList(new Condition<CommandSender>() {
+        List<Condition<CommandSender>> conditions = new ArrayList<>(senderIsPlayerRequirement.getConditions());
+
+        conditions.add(new Condition<CommandSender>() {
             @Override
             public boolean check(CommandSender sender) {
-                if (sender instanceof Player) {
-                    StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
+                StrowPlayer strowSender = playerManager.getPlayer(sender.getName());
 
-                    return !strowSender.getOptionalProperty(FactionProfile.class).isPresent();
-                } else {
-                    return false;
-                }
+                return !strowSender.getOptionalProperty(FactionProfile.class).isPresent();
             }
 
             @Override
-            public String getMessage(CommandSender sender) {
-                return "Vous devez quitter votre faction pour exécuter cette commande";
+            public BaseComponent getMessage(CommandSender sender) {
+                return messaging.errorMessage("Vous devez quitter votre faction pour exécuter cette commande");
             }
         });
+
+        return conditions;
     }
 }

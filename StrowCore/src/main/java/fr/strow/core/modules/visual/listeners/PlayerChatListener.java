@@ -10,7 +10,7 @@ import fr.strow.api.game.faction.player.FactionUUID;
 import fr.strow.api.game.permissions.Group;
 import fr.strow.api.game.permissions.Role;
 import fr.strow.api.game.player.PlayerManager;
-import fr.strow.api.game.player.Pseudo;
+import fr.strow.api.game.player.Nickname;
 import fr.strow.api.game.player.StrowPlayer;
 import fr.strow.api.services.Messaging;
 import org.bukkit.event.EventHandler;
@@ -37,7 +37,7 @@ public class PlayerChatListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         event.setCancelled(true);
 
-        StrowPlayer player = playerManager.getPlayer(event.getPlayer().getUniqueId());
+        StrowPlayer player = playerManager.getPlayer(event.getPlayer().getName());
         Role role = player.getProperty(Group.class).getRole();
 
         String factionPrefix = "";
@@ -60,8 +60,8 @@ public class PlayerChatListener implements Listener {
                 role.getColor(),
                 role.getPrefix(),
                 role.getColor(),
-                player.getProperty(Pseudo.class)
-                        .getPseudo());
+                player.getProperty(Nickname.class)
+                        .getNickname());
 
         messaging.broadcastMessage(message);
     }

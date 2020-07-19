@@ -52,11 +52,8 @@ public class CoinsCommand extends EvolvedCommand {
 
     @Override
     protected void execute(CommandSender sender) {
-        StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
+        StrowPlayer strowSender = playerManager.getPlayer(sender.getName());
 
-        messaging.sendMessage(strowSender, "Vous possédez %s$ sur votre compte",
-                strowSender
-                        .getProperty(Economy.class)
-                        .getCoins());
+        messaging.sendMessage(strowSender, "Vous possédez %s$ sur votre compte", strowSender.getProperty(Economy.class).getCoins());
     }
 }

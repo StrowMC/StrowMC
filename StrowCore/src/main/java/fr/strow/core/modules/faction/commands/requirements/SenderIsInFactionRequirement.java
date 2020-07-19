@@ -12,9 +12,11 @@ import com.google.inject.Inject;
 import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
+import fr.strow.api.services.Messaging;
 import fr.strow.core.utils.commands.requirements.SenderIsPlayerRequirement;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Requirement;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -26,11 +28,13 @@ public class SenderIsInFactionRequirement extends Requirement {
 
     private final SenderIsPlayerRequirement senderIsPlayerRequirement;
     private final PlayerManager playerManager;
+    private final Messaging messaging;
 
     @Inject
-    public SenderIsInFactionRequirement(SenderIsPlayerRequirement senderIsPlayerRequirement, PlayerManager playerManager) {
+    public SenderIsInFactionRequirement(SenderIsPlayerRequirement senderIsPlayerRequirement, PlayerManager playerManager, Messaging messaging) {
         this.senderIsPlayerRequirement = senderIsPlayerRequirement;
         this.playerManager = playerManager;
+        this.messaging = messaging;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class SenderIsInFactionRequirement extends Requirement {
             @Override
             public boolean check(CommandSender sender) {
                 if (sender instanceof Player) {
-                    StrowPlayer strowSender = playerManager.getPlayer(((Player) sender).getUniqueId());
+                    StrowPlayer strowSender = playerManager.getPlayer(sender.getName());
                     Optional<FactionProfile> optionalFactionProfile = strowSender.getOptionalProperty(FactionProfile.class);
 
                     return optionalFactionProfile.isPresent();
@@ -51,8 +55,8 @@ public class SenderIsInFactionRequirement extends Requirement {
             }
 
             @Override
-            public String getMessage(CommandSender sender) {
-                return "Vous devez être dans une faction pour exécuter cette commande";
+            public BaseComponent getMessage(CommandSender sender) {
+                return messaging.errorMessage("Vous devez être dans une faction pour exécuter cette commande");
             }
         });
 

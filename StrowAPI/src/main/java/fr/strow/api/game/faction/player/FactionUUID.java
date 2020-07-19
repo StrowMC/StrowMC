@@ -8,7 +8,7 @@
 
 package fr.strow.api.game.faction.player;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.property.Property;
 
 import java.util.UUID;
 

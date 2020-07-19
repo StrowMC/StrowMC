@@ -9,26 +9,28 @@
 package fr.strow.core.modules.player.listeners;
 
 import com.google.inject.Inject;
+import fr.strow.api.game.permissions.PermissionsManager;
 import fr.strow.api.game.player.PlayerManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.UUID;
-
 public class PlayerQuitListener implements Listener {
 
     private final PlayerManager playerManager;
+    private final PermissionsManager permissionsManager;
 
     @Inject
-    public PlayerQuitListener(PlayerManager playerManager) {
+    public PlayerQuitListener(PlayerManager playerManager, PermissionsManager permissionsManager) {
         this.playerManager = playerManager;
+        this.permissionsManager = permissionsManager;
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        UUID player = event.getPlayer().getUniqueId();
+        String name = event.getPlayer().getName();
 
-        playerManager.unloadPlayer(player);
+        playerManager.unloadPlayer(name);
+        permissionsManager.unloadPermissions(name);
     }
 }

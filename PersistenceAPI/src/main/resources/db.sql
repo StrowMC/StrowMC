@@ -20,15 +20,25 @@ CREATE TABLE ctf_stats
     PRIMARY KEY (uuid)
 );
 
+DROP TABLE IF EXISTS event_participants;
+CREATE TABLE event_participants
+(
+    uuid VARCHAR(36),
+    event_id INT,
+
+    PRIMARY KEY (uuid)
+);
+
 DROP TABLE IF EXISTS faction_claims;
 CREATE TABLE faction_claims
 (
+    id           INT AUTO_INCREMENT,
     faction_uuid VARCHAR(36),
     world        VARCHAR(255),
     x            INTEGER,
     z            INTEGER,
 
-    PRIMARY KEY (faction_uuid)
+    PRIMARY KEY (id)
 );
 
 DROP TABLE IF EXISTS faction_chests;
@@ -52,16 +62,37 @@ CREATE TABLE faction_homes
 DROP TABLE IF EXISTS faction_permissions;
 CREATE TABLE faction_permissions
 (
-    role_id         SMALLINT,
-    faction_disband BOOLEAN,
+    role_id             SMALLINT,
+    faction_autoclaim   BOOLEAN,
+    faction_claim       BOOLEAN,
+    faction_demote      BOOLEAN,
+    faction_description BOOLEAN,
+    faction_disband     BOOLEAN,
+    faction_invite      BOOLEAN,
+    faction_kick        BOOLEAN,
+    faction_promote     BOOLEAN,
+    faction_sethome     BOOLEAN,
+    faction_unclaim     BOOLEAN,
+    faction_unclaimall  BOOLEAN,
 
     PRIMARY KEY (role_id)
 );
 
-INSERT INTO faction_permissions(role_id, faction_disband)
-VALUES (0, 0),
-       (1, 0),
-       (2, 1);
+INSERT INTO faction_permissions(role_id,
+                                faction_autoclaim,
+                                faction_claim,
+                                faction_demote,
+                                faction_description,
+                                faction_disband,
+                                faction_invite,
+                                faction_kick,
+                                faction_promote,
+                                faction_sethome,
+                                faction_unclaim,
+                                faction_unclaimall)
+VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+       (1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1),
+       (2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 DROP TABLE IF EXISTS faction_profiles;
 CREATE TABLE faction_profiles
@@ -159,12 +190,13 @@ VALUES (0, 1),
 DROP TABLE IF EXISTS players;
 CREATE TABLE players
 (
-    uuid    VARCHAR(36),
-    pseudo  VARCHAR(255) UNIQUE,
-    role_id SMALLINT,
-    coins   INT,
+    name     VARCHAR(255) UNIQUE NOT NULL,
+    uuid     VARCHAR(36) UNIQUE  NOT NULL,
+    nickname VARCHAR(255),
+    role_id  SMALLINT,
+    coins    INT,
 
-    PRIMARY KEY (uuid)
+    PRIMARY KEY (name)
 );
 
 DROP TABLE IF EXISTS quest_progresses;

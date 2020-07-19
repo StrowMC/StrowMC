@@ -2,7 +2,7 @@ package fr.strow.core;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import fr.strow.api.game.Property;
+import fr.strow.api.property.Property;
 import fr.strow.api.property.ImplementationProperty;
 import fr.strow.api.property.PropertiesHandler;
 import fr.strow.api.property.PropertiesOwner;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class CorePropertiesHandler implements PropertiesHandler {
 
-    private static final Map<Class<? extends PropertiesOwner<?>>, Map<Class<? extends Property<?>>, Class<? extends ImplementationProperty>>> properties = new HashMap<>();
+    private static final Map<Class<? extends PropertiesOwner<?>>, Map<Class<? extends Property<?>>, Class<? extends ImplementationProperty<?>>>> properties = new HashMap<>();
 
     private final Injector injector;
 
@@ -25,7 +25,7 @@ public class CorePropertiesHandler implements PropertiesHandler {
     }
 
     @Override
-    public <T extends PropertiesOwner<T>> void bindProperty(Class<T> owner, Class<? extends Property<T>> property, Class<? extends ImplementationProperty> implementation) {
+    public <O extends PropertiesOwner<O>, P extends Property<O>> void bindProperty(Class<O> owner, Class<P> property, Class<? extends ImplementationProperty<P>> implementation) {
         if (!properties.containsKey(owner)) {
             properties.put(owner, new HashMap<>());
         }
@@ -34,19 +34,19 @@ public class CorePropertiesHandler implements PropertiesHandler {
     }
 
     @Override
-    public <T extends PropertiesOwner<T>> void unbindProperty(Class<T> owner, Class<? extends Property<T>> property) {
+    public <O extends PropertiesOwner<O>> void unbindProperty(Class<O> owner, Class<? extends Property<O>> property) {
         properties.get(owner).remove(property);
     }
 
     @Override
-    public <T extends PropertiesOwner<T>> void unbindProperties(Class<T> owner) {
+    public <O extends PropertiesOwner<O>> void unbindProperties(Class<O> owner) {
         properties.remove(owner);
     }
 
-
+    @SuppressWarnings("unchecked")
     @Override
-    public <T extends PropertiesOwner<T>> ImplementationProperty getProperty(Class<T> owner, Class<? extends Property<T>> property) {
-        Class<? extends ImplementationProperty> implementation = properties.get(owner).get(property);
+    public <O extends PropertiesOwner<O>, P extends Property<O>> ImplementationProperty<P> getProperty(Class<O> owner, Class<? extends P> property) {
+        Class<? extends ImplementationProperty<P>> implementation = (Class<? extends ImplementationProperty<P>>) properties.get(owner).get(property);
 
         if (implementation == null) {
             throw new IllegalArgumentException("Illegal property : Maybe she isn't binded ?");
@@ -55,15 +55,16 @@ public class CorePropertiesHandler implements PropertiesHandler {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public <T extends PropertiesOwner<T>> Map<Class<? extends Property<T>>, ImplementationProperty> getProperties(Class<T> owner, UUID uuid) {
-        Map<Class<? extends Property<T>>, ImplementationProperty> properties = new HashMap<>();
+    public <O extends PropertiesOwner<O>, P extends Property<O>> Map<Class<? extends P>, ImplementationProperty<? extends P>> getProperties(Class<O> owner, UUID uuid) {
+        Map<Class<? extends P>, ImplementationProperty<? extends P>> properties = new HashMap<>();
 
-        for (Class<? extends Property<T>> property : getProperties(owner)) {
-            ImplementationProperty implementation = getProperty(owner, property);
+        for (Class<? extends Property<O>> property : getProperties(owner)) {
+            ImplementationProperty<? extends P> implementation = (ImplementationProperty<? extends P>) getProperty(owner, property);
 
             if (implementation.load(uuid)) {
-                properties.put(property, implementation);
+                properties.put((Class<? extends P>) property, implementation);
             }
         }
 
@@ -71,11 +72,11 @@ public class CorePropertiesHandler implements PropertiesHandler {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends PropertiesOwner<T>> List<Class<? extends Property<T>>> getProperties(Class<T> owner) {
+    private <O extends PropertiesOwner<O>> List<Class<? extends Property<O>>> getProperties(Class<O> owner) {
         return CorePropertiesHandler.properties.get(owner)
                 .keySet()
                 .stream()
-                .map(property -> (Class<? extends Property<T>>) property)
+                .map(property -> (Class<? extends Property<O>>) property)
                 .collect(Collectors.toList());
     }
 }

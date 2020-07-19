@@ -1,6 +1,6 @@
 package fr.strow.api.game.moderation;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.property.Property;
 
 import java.util.List;
 

@@ -1,11 +1,10 @@
 package fr.strow.api.game.faction;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.property.EmptyPropertyFactory;
+import fr.strow.api.property.RegistrableProperty;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Optional;
-
-public interface FactionChest extends Property<Faction> {
+public interface FactionChest extends RegistrableProperty<Faction, EmptyPropertyFactory> {
 
     /**
      * Get the faction chest

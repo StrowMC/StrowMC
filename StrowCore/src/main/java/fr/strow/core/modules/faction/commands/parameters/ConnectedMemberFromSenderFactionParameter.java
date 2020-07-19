@@ -5,10 +5,11 @@ import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.faction.player.FactionUUID;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
+import fr.strow.api.services.Messaging;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,13 +19,15 @@ public class ConnectedMemberFromSenderFactionParameter extends Parameter<StrowPl
 
     private final FactionConnectedMemberParameter factionMemberParameter;
     private final PlayerManager playerManager;
+    private final Messaging messaging;
 
     @Inject
-    public ConnectedMemberFromSenderFactionParameter(FactionConnectedMemberParameter factionMemberParameter, PlayerManager playerManager) {
+    public ConnectedMemberFromSenderFactionParameter(FactionConnectedMemberParameter factionMemberParameter, PlayerManager playerManager, Messaging messaging) {
         super("joueur");
 
         this.factionMemberParameter = factionMemberParameter;
         this.playerManager = playerManager;
+        this.messaging = messaging;
     }
 
 
@@ -40,15 +43,15 @@ public class ConnectedMemberFromSenderFactionParameter extends Parameter<StrowPl
                                 .getProperty(FactionProfile.class)
                                 .getProperty(FactionUUID.class)
                                 .getFactionUuid()
-                                .equals(playerManager.getPlayer(((Player) sender).getUniqueId())
+                                .equals(playerManager.getPlayer(sender)
                                         .getProperty(FactionProfile.class)
                                         .getProperty(FactionUUID.class)
                                         .getFactionUuid());
                     }
 
                     @Override
-                    public String getMessage(String o) {
-                        return "Ce joueur n'appartient pas à votre faction";
+                    public BaseComponent getMessage(String o) {
+                        return messaging.errorMessage("Ce joueur n'appartient pas à votre faction");
                     }
                 }
         ));
