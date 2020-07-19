@@ -3,6 +3,7 @@ package fr.strow.core.utils.commands.parameters;
 import com.google.inject.Inject;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
+import fr.strow.api.services.Messaging;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -14,12 +15,14 @@ import java.util.List;
 public class PlayerParameter extends Parameter<StrowPlayer> {
 
     private final PlayerManager playerManager;
+    private final Messaging messaging;
 
     @Inject
-    public PlayerParameter(PlayerManager playerManager) {
+    public PlayerParameter(PlayerManager playerManager, Messaging messaging) {
         super("player");
 
         this.playerManager = playerManager;
+        this.messaging = messaging;
     }
 
     @Override
@@ -31,8 +34,8 @@ public class PlayerParameter extends Parameter<StrowPlayer> {
             }
 
             @Override
-            public BaseComponent getMessage(String s) {
-                return "Ce joueur n'existe pas";
+            public BaseComponent[] getMessage(String s) {
+                return messaging.errorMessage("Ce joueur n'existe pas");
             }
         });
     }

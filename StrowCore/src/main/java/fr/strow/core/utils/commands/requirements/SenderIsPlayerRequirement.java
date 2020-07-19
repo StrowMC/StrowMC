@@ -9,6 +9,7 @@
 package fr.strow.core.utils.commands.requirements;
 
 import com.google.inject.Inject;
+import fr.strow.api.services.Messaging;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Requirement;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -20,8 +21,11 @@ import java.util.List;
 
 public class SenderIsPlayerRequirement extends Requirement {
 
+    private final Messaging messaging;
+
     @Inject
-    public SenderIsPlayerRequirement() {
+    public SenderIsPlayerRequirement(Messaging messaging) {
+        this.messaging = messaging;
     }
 
     @Override
@@ -33,8 +37,8 @@ public class SenderIsPlayerRequirement extends Requirement {
             }
 
             @Override
-            public BaseComponent getMessage(CommandSender sender) {
-                return "Vous devez être un joueur pour exécuter cette commande";
+            public BaseComponent[] getMessage(CommandSender sender) {
+                return messaging.errorMessage("Vous devez être un joueur pour exécuter cette commande");
             }
         });
     }

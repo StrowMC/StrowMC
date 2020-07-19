@@ -1,5 +1,6 @@
 package fr.strow.core.modules.permissions.managers;
 
+import com.google.inject.Inject;
 import fr.strow.api.game.faction.player.FactionGroup;
 import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.permissions.Group;
@@ -17,11 +18,12 @@ import java.util.Map;
 
 public class PermissionsManagerImpl implements PermissionsManager {
 
+    private static final Map<String, PermissionAttachment> attachments = new HashMap<>();
+
     private final JavaPlugin plugin;
     private final PlayerManager playerManager;
 
-    private final Map<String, PermissionAttachment> attachments = new HashMap<>();
-
+    @Inject
     public PermissionsManagerImpl(JavaPlugin plugin, PlayerManager playerManager) {
         this.plugin = plugin;
         this.playerManager = playerManager;
@@ -29,14 +31,12 @@ public class PermissionsManagerImpl implements PermissionsManager {
 
     @Override
     public void loadPermissions(String name) {
-        if (!attachments.containsKey(name)) {
-            Player player = Bukkit.getPlayer(name);
-            PermissionAttachment attachment = player.addAttachment(plugin);
+        Player player = Bukkit.getPlayer(name);
+        PermissionAttachment attachment = player.addAttachment(plugin);
 
-            attachments.put(name, attachment);
+        attachments.put(name, attachment);
 
-            reloadPermissions(name);
-        }
+        reloadPermissions(name);
     }
 
     @Override

@@ -114,7 +114,7 @@ public class FactionClaimCommand extends EvolvedCommand {
                         }
 
                         @Override
-                        public BaseComponent getMessage(CommandSender sender) {
+                        public BaseComponent[] getMessage(CommandSender sender) {
                             return messaging.errorMessage("Ce territoire appartient déjà à votre faction");
                         }
                     },
@@ -127,7 +127,7 @@ public class FactionClaimCommand extends EvolvedCommand {
                         }
 
                         @Override
-                        public BaseComponent getMessage(CommandSender sender) {
+                        public BaseComponent[] getMessage(CommandSender sender) {
                             return messaging.errorMessage("Ce territoire appartient déjà à une autre faction");
                         }
                     }

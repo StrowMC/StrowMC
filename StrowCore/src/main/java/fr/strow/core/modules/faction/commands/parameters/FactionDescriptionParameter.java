@@ -32,7 +32,7 @@ public class FactionDescriptionParameter extends Parameter<String> {
             }
 
             @Override
-            public BaseComponent getMessage(String arg) {
+            public BaseComponent[] getMessage(String arg) {
                 return messaging.errorMessage("La description de la faction doit comporter au moins de 3 caractères");
             }
         });

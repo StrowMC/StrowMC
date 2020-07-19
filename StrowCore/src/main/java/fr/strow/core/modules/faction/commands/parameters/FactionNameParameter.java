@@ -37,7 +37,7 @@ public class FactionNameParameter extends Parameter<String> {
                     }
 
                     @Override
-                    public BaseComponent getMessage(String arg) {
+                    public BaseComponent[] getMessage(String arg) {
                         return messaging.errorMessage("Le nom de la faction doit commencer par une lettre et doit comporter aumoins 3 caractères");
                     }
                 },
@@ -48,7 +48,7 @@ public class FactionNameParameter extends Parameter<String> {
                     }
 
                     @Override
-                    public BaseComponent getMessage(String arg) {
+                    public BaseComponent[] getMessage(String arg) {
                         return messaging.errorMessage("Ce nom est déjà pris par une autre faction");
                     }
                 }

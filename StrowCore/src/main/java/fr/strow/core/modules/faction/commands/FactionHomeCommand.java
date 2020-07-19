@@ -105,7 +105,7 @@ public class FactionHomeCommand extends EvolvedCommand {
                         }
 
                         @Override
-                        public BaseComponent getMessage(CommandSender o) {
+                        public BaseComponent[] getMessage(CommandSender o) {
                             return messaging.errorMessage("Votre faction n'a pas de home");
                         }
                     }

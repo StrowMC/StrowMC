@@ -20,7 +20,7 @@ public class PermissionsProvider {
         for (Field field : permissionBean.getClass().getDeclaredFields()) {
             Permission permission = field.getAnnotation(Permission.class);
 
-            if (permission != null && field.getType() == Boolean.class) {
+            if (permission != null && field.getType() == boolean.class) {
                 // Field is annotated with @Permission
                 field.setAccessible(true);
 

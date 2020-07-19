@@ -3,7 +3,6 @@ package fr.strow.core.modules.faction.commands.parameters;
 import com.google.inject.Inject;
 import fr.strow.api.game.faction.player.FactionGroup;
 import fr.strow.api.game.faction.player.FactionProfile;
-import fr.strow.api.game.faction.player.FactionRole;
 import fr.strow.api.game.player.Name;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
@@ -47,7 +46,7 @@ public class MotedMemberParameter extends Parameter<StrowPlayer> {
                     }
 
                     @Override
-                    public BaseComponent getMessage(String arg) {
+                    public BaseComponent[] getMessage(String arg) {
                         return messaging.errorMessage("Vous ne pouvez pas vous promouvoir ou vous rétrograder vous même");
                     }
                 },
@@ -70,7 +69,7 @@ public class MotedMemberParameter extends Parameter<StrowPlayer> {
                     }
 
                     @Override
-                    public BaseComponent getMessage(String arg) {
+                    public BaseComponent[] getMessage(String arg) {
                         return messaging.errorMessage("Vous ne pouvez pas promouvoir ou rétrograder un joueur dont le rôle est supérieur ou égal au votre");
                     }
                 }

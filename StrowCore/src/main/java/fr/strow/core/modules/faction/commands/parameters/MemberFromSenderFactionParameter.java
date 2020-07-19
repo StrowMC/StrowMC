@@ -48,7 +48,7 @@ public class MemberFromSenderFactionParameter extends Parameter<StrowPlayer> {
                     }
 
                     @Override
-                    public BaseComponent getMessage(String arg) {
+                    public BaseComponent[] getMessage(String arg) {
                         return messaging.errorMessage("Ce joueur n'appartient pas à votre faction");
                     }
                 }

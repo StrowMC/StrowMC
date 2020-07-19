@@ -46,7 +46,7 @@ public class GuestParameter extends Parameter<StrowPlayer> {
                     }
 
                     @Override
-                    public BaseComponent getMessage(String arg) {
+                    public BaseComponent[] getMessage(String arg) {
                         return messaging.errorMessage("Vous ne pouvez pas vous inviter vous-même");
                     }
                 },
@@ -60,7 +60,7 @@ public class GuestParameter extends Parameter<StrowPlayer> {
                     }
 
                     @Override
-                    public BaseComponent getMessage(String arg) {
+                    public BaseComponent[] getMessage(String arg) {
                         return messaging.errorMessage("%s a déjà reçu une invitation. Attendez qu'il y réponde.", arg);
                     }
                 }));

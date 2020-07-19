@@ -55,7 +55,7 @@ public class SenderIsInFactionRequirement extends Requirement {
             }
 
             @Override
-            public BaseComponent getMessage(CommandSender sender) {
+            public BaseComponent[] getMessage(CommandSender sender) {
                 return messaging.errorMessage("Vous devez être dans une faction pour exécuter cette commande");
             }
         });

@@ -17,6 +17,7 @@ import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.faction.player.FactionUUID;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
+import fr.strow.api.services.Messaging;
 import fr.strow.core.modules.faction.commands.parameters.FactionDescriptionParameter;
 import fr.strow.core.modules.faction.commands.requirements.SenderIsInFactionRequirement;
 import me.choukas.commands.EvolvedCommand;
@@ -28,9 +29,10 @@ public class FactionDescriptionCommand extends EvolvedCommand {
     private final CommandService commandService;
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+    private final Messaging messaging;
 
     @Inject
-    public FactionDescriptionCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager) {
+    public FactionDescriptionCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager, Messaging messaging) {
         super(CommandDescription.builder()
                 .withName("description")
                 .withAliases("desc")
@@ -41,6 +43,7 @@ public class FactionDescriptionCommand extends EvolvedCommand {
         this.commandService = commandService;
         this.playerManager = playerManager;
         this.factionManager = factionManager;
+        this.messaging = messaging;
 
         define();
     }
@@ -68,5 +71,7 @@ public class FactionDescriptionCommand extends EvolvedCommand {
         }
 
         faction.getProperty(FactionDescription.class).setDescription(description);
+
+        messaging.sendMessage(strowSender, "La description de votre faction a bien été mise à jour.");
     }
 }

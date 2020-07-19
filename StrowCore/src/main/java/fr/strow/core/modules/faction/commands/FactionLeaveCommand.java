@@ -29,6 +29,7 @@ import me.choukas.commands.api.Requirement;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FactionLeaveCommand extends EvolvedCommand {
@@ -51,21 +52,25 @@ public class FactionLeaveCommand extends EvolvedCommand {
         this.factionManager = factionManager;
         this.permissionsManager = permissionsManager;
         this.messaging = messaging;
+
+        define();
     }
 
     @Override
     protected void define() {
-        addRequirement(commandService.getRequirement(SenderIsInFactionRequirement.class));
+        addRequirement(commandService.getRequirement(SenderIsNotLeaderRequirement.class));
     }
 
     @Override
     protected void execute(CommandSender sender) {
         StrowPlayer strowSender = playerManager.getPlayer(sender);
 
-        Faction faction = factionManager.getFaction(strowSender
-                .getProperty(FactionProfile.class)
-                .getProperty(FactionUUID.class)
-                .getFactionUuid());
+        Faction faction = factionManager.getFaction(
+                strowSender
+                        .getProperty(FactionProfile.class)
+                        .getProperty(FactionUUID.class)
+                        .getFactionUuid()
+        );
 
         strowSender.unregisterProperty(FactionProfile.class);
         permissionsManager.reloadPermissions(strowSender);
@@ -74,11 +79,12 @@ public class FactionLeaveCommand extends EvolvedCommand {
         messaging.sendMessage(faction, "%s a quitté la faction !", strowSender.getProperty(Nickname.class).getNickname());
     }
 
-    static class SenderIsNotLeaderRequirement extends Requirement {
+    public static class SenderIsNotLeaderRequirement extends Requirement {
 
         private final SenderIsInFactionRequirement senderIsInFactionRequirement;
         private final PlayerManager playerManager;
 
+        @Inject
         public SenderIsNotLeaderRequirement(SenderIsInFactionRequirement senderIsInFactionRequirement, PlayerManager playerManager) {
             this.senderIsInFactionRequirement = senderIsInFactionRequirement;
             this.playerManager = playerManager;
@@ -86,7 +92,7 @@ public class FactionLeaveCommand extends EvolvedCommand {
 
         @Override
         public List<Condition<CommandSender>> getConditions() {
-            List<Condition<CommandSender>> conditions = senderIsInFactionRequirement.getConditions();
+            List<Condition<CommandSender>> conditions = new ArrayList<>(senderIsInFactionRequirement.getConditions());
 
             conditions.add(new Condition<CommandSender>() {
                 @Override
@@ -101,12 +107,13 @@ public class FactionLeaveCommand extends EvolvedCommand {
                 }
 
                 @Override
-                public BaseComponent getMessage(CommandSender sender) {
+                public BaseComponent[] getMessage(CommandSender sender) {
                     BaseComponent text = new TextComponent("Pour quitter votre faction, vous devez la dissoudre");
+                    text.addExtra("[Je la dissoue]");
                     text.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/faction disband"));
                     text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Cliquez ici pour dissoudre votre faction").create()));
 
-                    return text;
+                    return new BaseComponent[] {text};
                 }
             });
 

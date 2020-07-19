@@ -16,9 +16,9 @@ public interface Messaging {
 
     void sendMessage(Messenger messenger, Predicate<UUID> filter, String message, Object... args);
 
-    BaseComponent errorMessage(String message);
+    BaseComponent[] errorMessage(String message);
 
-    BaseComponent errorMessage(String message, Object... args);
+    BaseComponent[] errorMessage(String message, Object... args);
 
     void sendErrorMessage(UUID uuid, String message, Object... args);
 

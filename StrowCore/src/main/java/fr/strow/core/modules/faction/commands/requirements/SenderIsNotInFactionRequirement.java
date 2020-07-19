@@ -48,7 +48,7 @@ public class SenderIsNotInFactionRequirement extends Requirement {
             }
 
             @Override
-            public BaseComponent getMessage(CommandSender sender) {
+            public BaseComponent[] getMessage(CommandSender sender) {
                 return messaging.errorMessage("Vous devez quitter votre faction pour exécuter cette commande");
             }
         });

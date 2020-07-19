@@ -41,6 +41,7 @@ public class FactionPromoteCommand extends EvolvedCommand {
     private final PermissionsManager permissionsManager;
     private final Messaging messaging;
 
+    @Inject
     public FactionPromoteCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager, PermissionsManager permissionsManager, Messaging messaging) {
         super(CommandDescription.builder()
                 .withName("promote")
@@ -129,7 +130,7 @@ public class FactionPromoteCommand extends EvolvedCommand {
                         }
 
                         @Override
-                        public BaseComponent getMessage(String arg) {
+                        public BaseComponent[] getMessage(String arg) {
                             return messaging.errorMessage("Ce joueur ne peut plus être rétrogradé car il est déjà membre");
                         }
                     }

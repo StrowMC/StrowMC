@@ -129,7 +129,7 @@ public class FactionDemoteCommand extends EvolvedCommand {
                         }
 
                         @Override
-                        public BaseComponent getMessage(String arg) {
+                        public BaseComponent[] getMessage(String arg) {
                             return messaging.errorMessage("Ce joueur ne peut plus être rétrogradé car il est déjà membre");
                         }
                     }

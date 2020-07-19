@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.Name;
 import fr.strow.api.game.player.StrowPlayer;
+import fr.strow.api.services.Messaging;
 import me.choukas.commands.api.Condition;
 import me.choukas.commands.api.Parameter;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -18,12 +19,14 @@ import java.util.List;
 public class ConnectedPlayerParameter extends Parameter<StrowPlayer> {
 
     private final PlayerManager playerManager;
+    private final Messaging messaging;
 
     @Inject
-    public ConnectedPlayerParameter(PlayerManager playerManager) {
+    public ConnectedPlayerParameter(PlayerManager playerManager, Messaging messaging) {
         super("player");
 
         this.playerManager = playerManager;
+        this.messaging = messaging;
     }
 
     @Override
@@ -38,8 +41,8 @@ public class ConnectedPlayerParameter extends Parameter<StrowPlayer> {
             }
 
             @Override
-            public BaseComponent getMessage(String s) {
-                return "Ce joueur n'est pas connecté";
+            public BaseComponent[] getMessage(String s) {
+                return messaging.errorMessage("Ce joueur n'est pas connecté");
             }
         });
     }

@@ -39,7 +39,7 @@ public class AmountParameter extends Parameter<Integer> {
             }
 
             @Override
-            public BaseComponent getMessage(String o) {
+            public BaseComponent[] getMessage(String o) {
                 return messaging.errorMessage("Vous devez saisir un nombre strictement positif et inférieur ou égal à " + MAX_AMOUNT);
             }
         });

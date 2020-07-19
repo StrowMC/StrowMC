@@ -72,12 +72,12 @@ public class MessagingImpl implements Messaging {
     }
 
     @Override
-    public BaseComponent errorMessage(String message) {
-        return new TextComponent(ChatColor.RED + message);
+    public BaseComponent[] errorMessage(String message) {
+        return TextComponent.fromLegacyText(ChatColor.RED + message);
     }
 
     @Override
-    public BaseComponent errorMessage(String message, Object... args) {
+    public BaseComponent[] errorMessage(String message, Object... args) {
         return errorMessage(String.format(message, args));
     }
 

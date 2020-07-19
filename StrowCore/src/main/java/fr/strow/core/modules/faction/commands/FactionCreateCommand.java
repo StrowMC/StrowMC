@@ -14,8 +14,11 @@ import fr.strow.api.game.faction.FactionManager;
 import fr.strow.api.game.faction.events.FactionCreateEvent;
 import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.faction.player.FactionRole;
+import fr.strow.api.game.permissions.PermissionsManager;
+import fr.strow.api.game.player.Nickname;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
+import fr.strow.api.services.Messaging;
 import fr.strow.core.modules.faction.commands.parameters.FactionDescriptionParameter;
 import fr.strow.core.modules.faction.commands.parameters.FactionNameParameter;
 import fr.strow.core.modules.faction.commands.requirements.SenderIsNotInFactionRequirement;
@@ -32,11 +35,13 @@ public class FactionCreateCommand extends EvolvedCommand {
     private final CommandService commandService;
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+    private final PermissionsManager permissionsManager;
     private final JavaPlugin plugin;
     private final FactionDao factionDao;
+    private final Messaging messaging;
 
     @Inject
-    public FactionCreateCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager, JavaPlugin plugin, FactionDao factionDao) {
+    public FactionCreateCommand(CommandService commandService, PlayerManager playerManager, FactionManager factionManager, PermissionsManager permissionsManager, JavaPlugin plugin, FactionDao factionDao, Messaging messaging) {
         super(CommandDescription.builder()
                 .withName("create")
                 .withAliases("c")
@@ -46,8 +51,10 @@ public class FactionCreateCommand extends EvolvedCommand {
         this.commandService = commandService;
         this.playerManager = playerManager;
         this.factionManager = factionManager;
+        this.permissionsManager = permissionsManager;
         this.plugin = plugin;
         this.factionDao = factionDao;
+        this.messaging = messaging;
 
         define();
     }
@@ -78,6 +85,7 @@ public class FactionCreateCommand extends EvolvedCommand {
 
             // Register property
             leader.registerProperty(FactionProfile.class, new FactionProfile.Factory(factionUuid, FactionRole.LEADER, 100, true));
+            permissionsManager.reloadPermissions(leader);
 
             String prefix = name.substring(0, 3);
             String description = readOptionalArg(String.class).orElse(null);
@@ -85,8 +93,10 @@ public class FactionCreateCommand extends EvolvedCommand {
             // Insert faction in SQL
             factionDao.createFaction(factionUuid, name, prefix, leaderUuid, description, 0);
 
-            /*// Load faction
-            factionManager.loadFaction(factionUuid);*/
+            messaging.broadcastMessage("%s a crée la faction %s",
+                    leader.getProperty(Nickname.class).getNickname(),
+                    name
+            );
         }
     }
 }

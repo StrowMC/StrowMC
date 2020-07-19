@@ -41,11 +41,12 @@ public class FactionCommand extends EvolvedCommand {
         addSubCommand(commandService.getCommand(FactionJoinCommand.class));
         addSubCommand(commandService.getCommand(FactionKickCommand.class));
         addSubCommand(commandService.getCommand(FactionLeadCommand.class));
+        addSubCommand(commandService.getCommand(FactionLeaveCommand.class));
         addSubCommand(commandService.getCommand(FactionPromoteCommand.class));
         addSubCommand(commandService.getCommand(FactionSetHomeCommand.class));
-        addSubCommand(commandService.getCommand(FactionShowCommand.class));
+        /*addSubCommand(commandService.getCommand(FactionShowCommand.class));
         addSubCommand(commandService.getCommand(FactionTopCommand.class));
         addSubCommand(commandService.getCommand(FactionUnClaimAllCommand.class));
-        addSubCommand(commandService.getCommand(FactionUnClaimCommand.class));
+        addSubCommand(commandService.getCommand(FactionUnClaimCommand.class));*/
     }
 }

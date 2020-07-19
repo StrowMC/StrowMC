@@ -8,11 +8,7 @@
 
 package fr.strow.api;
 
-import fr.strow.api.commands.CommandService;
 import fr.strow.api.module.StrowModule;
-import me.choukas.commands.EvolvedCommand;
-import me.choukas.commands.utils.Tuple;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Map;

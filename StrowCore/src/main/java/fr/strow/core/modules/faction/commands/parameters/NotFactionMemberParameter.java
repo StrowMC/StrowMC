@@ -40,7 +40,7 @@ public class NotFactionMemberParameter extends Parameter<StrowPlayer> {
                     }
 
                     @Override
-                    public BaseComponent getMessage(String o) {
+                    public BaseComponent[] getMessage(String o) {
                         return null;
                     }
                 }

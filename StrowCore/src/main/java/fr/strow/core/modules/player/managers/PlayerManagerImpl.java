@@ -94,7 +94,7 @@ public class PlayerManagerImpl implements PlayerManager {
     @Override
     public StrowPlayer getPlayer(CommandSender sender) {
         if (sender instanceof Player) {
-            return getPlayer(sender);
+            return getPlayer(sender.getName());
         } else {
             throw new IllegalArgumentException("CommandSender must be a player");
         }

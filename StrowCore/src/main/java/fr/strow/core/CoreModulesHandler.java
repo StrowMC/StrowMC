@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import fr.strow.api.module.ModulesHandler;
 import fr.strow.api.module.StrowModule;
-import fr.strow.core.modules.events.EventsModule;
 import fr.strow.core.modules.shop.ShopModule;
 import fr.strow.core.modules.visual.VisualModule;
 import fr.strow.core.modules.economy.EconomyModule;
@@ -25,7 +24,6 @@ public class CoreModulesHandler implements ModulesHandler {
 
     static {
         modules.add(EconomyModule.class);
-        modules.add(EventsModule.class);
         modules.add(FactionModule.class);
         modules.add(ModerationModule.class);
         modules.add(PermissionsModule.class);

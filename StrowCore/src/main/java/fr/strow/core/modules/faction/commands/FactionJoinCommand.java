@@ -18,7 +18,6 @@ import fr.strow.api.game.faction.player.FactionInvitation;
 import fr.strow.api.game.faction.player.FactionProfile;
 import fr.strow.api.game.faction.player.FactionRole;
 import fr.strow.api.game.permissions.PermissionsManager;
-import fr.strow.api.game.player.Name;
 import fr.strow.api.game.player.Nickname;
 import fr.strow.api.game.player.PlayerManager;
 import fr.strow.api.game.player.StrowPlayer;
@@ -119,7 +118,7 @@ public class FactionJoinCommand extends EvolvedCommand {
                         }
 
                         @Override
-                        public BaseComponent getMessage(CommandSender sender) {
+                        public BaseComponent[] getMessage(CommandSender sender) {
                             return messaging.errorMessage("Vous n'avez pas reçu d'invitation à rejoindre une faction");
                         }
                     }
