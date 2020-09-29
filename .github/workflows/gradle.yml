@@ -5,8 +5,8 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: 
-       - '**'
+    branches:
+      - "**"
   pull_request:
     branches: [ master ]
 
@@ -16,12 +16,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Clone EvolvedCommands
+        run: git clone --branch dev https://github.com/Choukas69/EvolvedCommands.git
+      - name: Build with Gradle
+        run: ./gradlew build

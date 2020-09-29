@@ -12,20 +12,18 @@ import fr.strow.persistence.utils.Permission;
 import fr.strow.persistence.utils.PermissionsProvider;
 
 import java.util.List;
+import java.util.Map;
 
 public class ProxyPermissionsBean {
-
-    private final int roleId;
 
     @Permission("perm")
     private final boolean perm;
 
-    public ProxyPermissionsBean(int roleId, boolean perm) {
-        this.roleId = roleId;
+    public ProxyPermissionsBean(boolean perm) {
         this.perm = perm;
     }
 
-    public List<String> getPermissions() {
+    public Map<String, Boolean> getPermissions() {
         return PermissionsProvider.getPermissions(this);
     }
 }

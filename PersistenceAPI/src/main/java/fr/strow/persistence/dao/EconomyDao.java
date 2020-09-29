@@ -8,46 +8,86 @@
 
 package fr.strow.persistence.dao;
 
-import com.google.gson.Gson;
-import fr.strow.persistence.Tables;
+import com.google.inject.Inject;
 import fr.strow.persistence.beans.EconomyBean;
-import fr.strow.persistence.beans.PlayerBean;
-import fr.strow.persistence.data.redis.RedisAccess;
-import redis.clients.jedis.Jedis;
+import fr.strow.persistence.data.sql.SQLAccess;
 
-import java.util.UUID;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 public class EconomyDao {
 
-    private final RedisAccess redisAccess;
-    private final Gson gson;
+    private final SQLAccess sqlAccess;
 
-    public EconomyDao(RedisAccess redisAccess, Gson gson) {
-        this.redisAccess = redisAccess;
-        this.gson = gson;
+    @Inject
+    public EconomyDao(SQLAccess sqlAccess) {
+        this.sqlAccess = sqlAccess;
     }
 
     public EconomyBean loadEconomy(UUID uuid) {
-        EconomyBean bean;
+        EconomyBean bean = null;
 
-        try (Jedis jedis = redisAccess.getResource()) {
-            PlayerBean playerBean = gson.fromJson(jedis.hget(Tables.PLAYERS, uuid.toString()), PlayerBean.class);
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT coins FROM players WHERE uuid = ?";
 
-            int coins = playerBean.getCoins();
-            bean = new EconomyBean(uuid, coins);
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, uuid.toString());
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int coins = resultSet.getInt("coins");
+
+                        bean = new EconomyBean(uuid, coins);
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
 
         return bean;
     }
 
     public void saveEconomy(EconomyBean bean) {
-        UUID uuid = bean.getUuid();
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "UPDATE players SET coins = ? WHERE uuid = ?";
 
-        try (Jedis jedis = redisAccess.getResource()) {
-            PlayerBean playerBean = gson.fromJson(jedis.hget(Tables.PLAYERS, uuid.toString()), PlayerBean.class);
-            playerBean.setCoins(bean.getCoins());
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setInt(1, bean.getCoins());
+                statement.setString(2, bean.getUuid().toString());
 
-            jedis.hset(Tables.PLAYERS, uuid.toString(), gson.toJson(playerBean));
+                statement.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
+    }
+
+    public Map<String, Integer> getRichestPlayers(int n) {
+        Map<String, Integer> richestPlayers = new LinkedHashMap<>();
+
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT pseudo, coins FROM players ORDER BY coins DESC LIMIT ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setInt(1, n);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        String pseudo = resultSet.getString("pseudo");
+                        int coins = resultSet.getInt("coins");
+
+                        richestPlayers.put(pseudo, coins);
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return richestPlayers;
     }
 }

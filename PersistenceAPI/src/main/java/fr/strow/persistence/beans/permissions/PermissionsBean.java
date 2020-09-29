@@ -8,8 +8,8 @@
 
 package fr.strow.persistence.beans.permissions;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PermissionsBean {
 
@@ -19,10 +19,10 @@ public class PermissionsBean {
         this.proxyPermissionsBean = proxyPermissionsBean;
     }
 
-    public List<String> getPermissions() {
-        List<String> permissions = new ArrayList<>();
+    public Map<String, Boolean> getPermissions() {
+        Map<String, Boolean> permissions = new HashMap<>();
 
-        permissions.addAll(proxyPermissionsBean.getPermissions());
+        permissions.putAll(proxyPermissionsBean.getPermissions());
 
         return permissions;
     }

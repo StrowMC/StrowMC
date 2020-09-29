@@ -8,13 +8,16 @@
 
 package fr.strow.api.game.economy;
 
-import fr.strow.api.game.Property;
+import fr.strow.api.property.Property;
+import fr.strow.api.game.player.StrowPlayer;
 
-public interface Economy extends Property {
+public interface Economy extends Property<StrowPlayer> {
 
     int getCoins();
 
     void addCoins(int amount);
+
+    void setCoins(int coins);
 
     void removeCoins(int amount);
 }

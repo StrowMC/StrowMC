@@ -1,4 +1,4 @@
-plugins{
+plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '5.1.0'
     id 'maven-publish'
@@ -7,7 +7,7 @@ plugins{
 group 'fr.strow'
 version '1.0-SNAPSHOT'
 
-configure(subprojects.findAll {it.name != 'EvolvedCommands'}) {
+configure(subprojects.findAll { it.name != 'EvolvedCommands' }) {
 
     apply plugin: 'java'
     apply plugin: 'com.github.johnrengelman.shadow'
@@ -40,16 +40,19 @@ configure(subprojects.findAll {it.name != 'EvolvedCommands'}) {
             url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
         }
         maven {
-            name = 'Guice'
-            url = 'https://mvnrepository.com/artifact/com.google.inject/guice'
+            name 'Guice'
+            url 'https://mvnrepository.com/artifact/com.google.inject/guice'
+        }
+        maven {
+            name 'SLF4J Logger'
+            url 'https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12'
         }
     }
 
     dependencies {
         implementation group: 'org.spigotmc', name: 'spigot-api', version: '1.8.8-R0.1-SNAPSHOT'
         implementation group: 'com.google.inject', name: 'guice', version: '4.0'
-
-        testImplementation group: 'junit', name: 'junit', version: '4.12'
+        implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.30'
     }
 
     def pluginName = project.name + '.jar'
@@ -59,7 +62,7 @@ configure(subprojects.findAll {it.name != 'EvolvedCommands'}) {
         destinationDirectory = file('build/')
     }
 
-    task copyToServer (type: Copy) {
+    task copyToServer(type: Copy) {
         from 'build/' + pluginName
         into serverPath
     }

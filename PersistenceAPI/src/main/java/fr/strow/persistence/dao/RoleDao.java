@@ -8,49 +8,61 @@
 
 package fr.strow.persistence.dao;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
-import fr.strow.persistence.beans.PlayerBean;
 import fr.strow.persistence.beans.RoleBean;
-import fr.strow.persistence.data.redis.RedisAccess;
-import redis.clients.jedis.Jedis;
+import fr.strow.persistence.data.sql.SQLAccess;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
 public class RoleDao {
 
-    private static final String REDIS_KEY = "players";
-
-    private final RedisAccess redisAccess;
-    private final Gson gson;
+    private final SQLAccess sqlAccess;
 
     @Inject
-    public RoleDao(RedisAccess redisAccess, Gson gson) {
-        this.redisAccess = redisAccess;
-        this.gson = gson;
+    public RoleDao(SQLAccess sqlAccess) {
+        this.sqlAccess = sqlAccess;
     }
 
     public RoleBean loadRole(UUID uuid) {
-        RoleBean bean;
+        RoleBean bean = null;
 
-        try (Jedis jedis = redisAccess.getResource()) {
-            PlayerBean playerBean = gson.fromJson(jedis.hget(REDIS_KEY, uuid.toString()), PlayerBean.class);
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "SELECT role_id FROM players WHERE uuid = ?";
 
-            int roleId = playerBean.getRoleId();
-            bean = new RoleBean(uuid, roleId);
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setString(1, uuid.toString());
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int roleId = resultSet.getInt("role_id");
+
+                        bean = new RoleBean(uuid, roleId);
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
 
         return bean;
     }
 
     public void saveRole(RoleBean bean) {
-        UUID uuid = bean.getUuid();
+        try (Connection connection = sqlAccess.getConnection()) {
+            final String SQL = "UPDATE players SET role_id = ? WHERE uuid = ?";
 
-        try (Jedis jedis = redisAccess.getResource()) {
-            PlayerBean playerBean = gson.fromJson(jedis.hget(REDIS_KEY, uuid.toString()), PlayerBean.class);
-            playerBean.setRoleId(bean.getRoleId());
+            try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+                statement.setInt(1, bean.getRoleId());
+                statement.setString(2, bean.getUuid().toString());
 
-            jedis.hset(REDIS_KEY, uuid.toString(), gson.toJson(playerBean));
+                statement.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
     }
 }

@@ -9,7 +9,7 @@
 package fr.strow.core.api.utils;
 
 import com.google.inject.Inject;
-import fr.strow.api.utils.Scheduler;
+import fr.strow.api.services.Scheduler;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
